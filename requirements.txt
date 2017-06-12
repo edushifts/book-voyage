@@ -1,0 +1,8 @@
+Django==1.11.2
+django-extensions==1.7.9
+django-geojson==2.10.0
+django-leaflet==0.22.0
+jsonfield==2.0.1
+psycopg2==2.7.1
+pytz==2017.2
+six==1.10.0
