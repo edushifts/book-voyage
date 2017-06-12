@@ -21,12 +21,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< Updated upstream:bookvoyage/settings/base.py
-=======
-ALLOWED_HOSTS = ['192.168.33.10','book.edushifts.world']
-
-
->>>>>>> Stashed changes:bookvoyage/settings.py
 # Application definition
 
 INSTALLED_APPS = [
@@ -72,29 +66,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bookvoyage.wsgi.application'
 
-<<<<<<< Updated upstream:bookvoyage/settings/base.py
-=======
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-# Since the production server uses postgresql, we will also during development
-
-# Make sure to fill in your own database credentials here:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
-        'USER': 'mydatabaseuser',
-        'PASSWORD': 'mypassword',
-        'NAME': 'scotchbox',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-
->>>>>>> Stashed changes:bookvoyage/settings.py
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
