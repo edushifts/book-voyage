@@ -35,12 +35,13 @@ We are very open to suggestions to extend the platform in interesting directions
 
 The current version of Book Voyage is a skeleton website: it does not yet do any of the things we want it to do. However, by ***June 14th*** we want to have a first production version out, so you get a real opportunity to shape this project in the days to come. Excitement! :grin:
 
-You can use any major operating system, but a Linux (virtual) machine is recommended. If you don't run Linux already, [this virtual machine](https://box.scotch.io/) is pretty great. Using a [virtual python environment](https://askubuntu.com/a/865644) also comes recommended.
+You can use any major operating system, but a Linux (virtual) machine is recommended. If you don't run Linux already, [this virtual machine](https://box.scotch.io/) is pretty great. Using a [virtual python environment](https://askubuntu.com/a/865644) also comes recommended. This is what to do after you have downloaded the git repository:
 
-1. You will need to install [Django](https://www.djangoproject.com/) and its dependencies. [Here](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment) is a clear guide.
-2. We use [PostgreSQL](https://www.postgresql.org/download/) in production, which we highly recommend you also install (in favour of the easier SQLite database option). You will need the python interface [psycopg2](http://initd.org/psycopg/docs/install.html) to use it.
-3. Once PostgreSQL is running and you have downloaded the git repository, go to /bookvoyage/settings.py and change the database variables to suit your needs.
-4. Run: `python manage.py makemigrations`, then `python manage.py migrate`, and finally `python manage.py runserver 127.0.0.1:8000` (or the IP of your virtual machine).
+1. You will first need to install Python, if you haven't yet. [Here](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment) is a clear guide for multiple OSs.
+2. You can install all required dependencies by running `pip install -r requirements.txt` in the project root folder.
+3. We use [PostgreSQL](https://www.postgresql.org/download/) in production, which we highly recommend you also install (in favour of the easier SQLite database option). Once PostgreSQL is running, go to `/bookvoyage/settings/dev.py` and change the database variables to suit your needs.
+4. To allow the database to store geo-objects, please run `sudo apt-get install gdal-bin`. We have not tried installing this in [Windows](https://gis.stackexchange.com/questions/2276/installing-gdal-with-python-on-windows).
+5. Run: `python manage.py makemigrations`, then `python manage.py migrate`, and finally `python manage.py runserver 127.0.0.1:8000` (or the IP of your virtual machine).
 
 If you go to the given address in your browser and see text appearing, that means you are in business and ready to contribute!
 
