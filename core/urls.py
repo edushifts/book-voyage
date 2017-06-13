@@ -9,9 +9,9 @@ urlpatterns = [
 
 # Use GeoJSON api
 from djgeojson.views import GeoJSONLayerView
-from .models import BookLocation
+from .models import BookOwnerLoc
 
 # GeoJSON book locations hook. Returns object with all BookLocation elements.
 urlpatterns += [
-	url(r'^api/bookLocs.geojson$', GeoJSONLayerView.as_view(model=BookLocation, properties=('name','book_holding','time',)), name='bookLocs'),
+	url(r'^api/bookLocs.geojson$', GeoJSONLayerView.as_view(model=BookOwnerLoc, properties=('name','book_holding','time',)), name='bookLocs'),
 ]
