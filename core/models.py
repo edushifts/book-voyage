@@ -90,7 +90,11 @@ class BookHolding(models.Model):
         """
         String for representing the MyModelName object (in Admin site etc.)
         """
-        return (self.holder.first_name + " " + self.holder.last_name)
+        if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
+        	return (self.holder.first_name + " " + self.holder.last_name)
+        else: 
+        	return (self.holder.username)
+		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
 
 class BookLocation(models.Model):
     """
