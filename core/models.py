@@ -84,7 +84,7 @@ class BookHolding(models.Model):
     #receive_time = models.DateTimeField()
     message = models.CharField(max_length=140)
     review = models.CharField(max_length=512)
-    is_owner = models.BooleanField(default=False)
+    #is_owner = models.BooleanField(default=False)
 
     def __str__(self):
         """
