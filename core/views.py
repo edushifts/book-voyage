@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from .models import BookInstance
 from .models import BookInstance, BookHolding
+from core.serializers import BookInstanceSerializer
+
+from rest_framework import viewsets
+
 # Create your views here.
 
 def index(request):
@@ -44,3 +47,10 @@ def getPrevHolderCount(bookInstanceId):
     except BookInstance.DoesNotExist:
         prevHolders = -1
     return prevHolders
+
+class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = BookInstance.objects.all()
+    serializer_class = BookInstanceSerializer

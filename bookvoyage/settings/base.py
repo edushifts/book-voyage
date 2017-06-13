@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'djgeojson',
     'core.apps.CoreConfig',
     'django_extensions',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
