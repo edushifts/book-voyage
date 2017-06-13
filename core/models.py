@@ -69,6 +69,12 @@ class BookInstance(models.Model):
     arrived = models.BooleanField(
         default=False)
 
+    def __str__(self):
+        """
+        String for representing the MyModelName object (in Admin site etc.)
+        """
+        return ("Book " + str(self.id) + " (owned by " + self.owner.first_name + " " + self.owner.last_name + ")")
+
 class BookHolding(models.Model):
     """
     additional table for many-to-many relationship between books and holders
