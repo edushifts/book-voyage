@@ -17,8 +17,13 @@ def index(request):
     )
 
 def getBook(code):
+    """
+    Takes a secret BookInstance access code and converts it to the public BookInstance id.
+    If the given code has no corresponding book, it returns 0.
+    """
     try:
         book = BookInstance.objects.get(access_code=code).id
     except BookInstance.DoesNotExist:
-            book = -1
+        book = -1
     return book
+
