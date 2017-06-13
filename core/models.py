@@ -89,8 +89,12 @@ class BookHolding(models.Model):
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
+	Returns first and last names. If these are missing, the username is displayed instead.
         """
-        return (self.holder.first_name + " " + self.holder.last_name)
+        if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
+        	return (self.holder.first_name + " " + self.holder.last_name)
+        else: 
+        	return (self.holder.username)
 
 class BookLocation(models.Model):
     """
