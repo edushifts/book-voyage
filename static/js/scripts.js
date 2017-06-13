@@ -14,7 +14,7 @@ var Stamen_Watercolor = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/wa
 // Add all book locations to the map without discrimination
 var layer = L.geoJson();
 mainMap.addLayer(layer);
-$.getJSON("http://192.168.33.10:8000/api/bookLocs.geojson", function (data) {
+$.getJSON(location.origin + "/api/bookLocs.geojson", function (data) {
     layer.addData(data);
     //console.log(bookLocations.features[1].id);
 });
