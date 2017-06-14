@@ -7,6 +7,6 @@ from .models import Author, Book, BookInstance, BookHolding, BookOwnerLoc, BookB
 admin.site.register(Author)
 admin.site.register(Book)
 admin.site.register(BookInstance)
-admin.site.register(BookHolding)
+admin.site.register(BookHolding, LeafletGeoAdmin)
 admin.site.register(BookOwnerLoc, LeafletGeoAdmin)
 admin.site.register(BookBatch, LeafletGeoAdmin)
