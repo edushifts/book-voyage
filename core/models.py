@@ -138,6 +138,10 @@ class BookHolding(models.Model):
 		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
 
 
+    class Meta:
+        ordering = ('book_instance','time')
+
+
 class BookBatch(models.Model):
     """
     describes book release event
