@@ -55,12 +55,12 @@ class BookInstance(models.Model):
         max_length=64,
         unique=True,
     )
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
     holders = models.ManyToManyField(
         "BookHolding",
+    )
+    ownerlocation = models.ForeignKey(
+        "BookOwnerLoc",
+        on_delete=models.CASCADE,
     )
     batch = models.ForeignKey(
         "BookBatch",
@@ -75,54 +75,52 @@ class BookInstance(models.Model):
         """
         return ("Book " + str(self.id) + " (owned by " + self.owner.first_name + " " + self.owner.last_name + ")")
 
-class BookHolding(models.Model):
+
+class BookOwnerLoc(models.Model):
     """
-    additional table for many-to-many relationship between books and holders
-    keep ino about period of holding
+    table that tracks owner and owner location
     """
-    holder = models.ForeignKey(User, on_delete=models.CASCADE)
-    #receive_time = models.DateTimeField()
-    message = models.CharField(max_length=140)
-    review = models.CharField(max_length=512)
-    is_owner = models.BooleanField(default=False)
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    time = models.DateTimeField()
+    message = models.CharField(max_length=512)
+    geom = PointField()
 
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
-	Returns first and last names. If these are missing, the username is displayed instead.
+        Returns first and last names. If these are missing, the username is displayed instead.
+        """
+        if len(self.owner.first_name) >= 1 and len(self.owner.last_name) >= 1:
+        	return (self.owner.first_name + " " + self.owner.last_name)
+        else: 
+        	return (self.owner.username)
+
+class BookHolding(models.Model):
+    """
+    additional table for many-to-many relationship between books and holders
+    keep info about period of holding
+    """
+    holder = models.ForeignKey(
+    	User, 
+    	on_delete=models.CASCADE,
+    )
+    time = models.DateTimeField()
+    message = models.CharField(max_length=140)
+    geom = PointField()
+
+    def __str__(self):
+        """
+        String for representing the MyModelName object (in Admin site etc.)
         """
         if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
         	return (self.holder.first_name + " " + self.holder.last_name)
         else: 
         	return (self.holder.username)
+		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
 
-class BookLocation(models.Model):
-    """
-    notes about user travelling around the world
-    using for finding of location of the book
-    user - user
-    time - starting time point in some location
-    location - GeoIP2 object (we can use any other library)
-    """
-    id = models.AutoField(
-        primary_key=True,
-    )
-
-    geom = PointField()
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
-
-    book_holding = models.ForeignKey(
-        BookHolding,
-        on_delete=models.CASCADE)
-
-    time = models.DateTimeField()
-
-    def __str__(self):
-        return self.user.first_name + " " + self.user.last_name + " (" + self.time.strftime("%Y-%m-%d %H:%M:%S") + ")"
 
 class BookBatch(models.Model):
     event = models.CharField(max_length=64)
