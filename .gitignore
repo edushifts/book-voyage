@@ -55,3 +55,4 @@ docs/_build/
 
 # PyBuilder
 target/
+bookvoyage/config\.py
