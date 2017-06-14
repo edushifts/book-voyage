@@ -1,0 +1,33 @@
+{% extends "base_generic_withangular.html" %}
+{% load static %}
+{% block content %}
+{% include 'partials/header_backbutton.html' %}
+<div class="container-fluid" ng-app="RegisterLogin">
+    <script>
+        angular.module('RegisterLogin', [])
+            .controller('LoginController', ['$scope', function($scope) {
+                $scope.PrivacyPolicy = {
+                    value : 'Agree'
+                };
+            }]);
+    </script>
+    <div class="row">
+        <div id="registerLogin">
+            <form ng-controller="LoginController">
+                <div class="form-group">
+                    <input type="email"  placeholder="Email">
+                    <input type="password"  placeholder="Password">
+                </div>
+                <div class="checkbox">
+                    <label>
+         <input type="checkbox" ng-model="PrivacyPolicy.value">
+                    </label>
+                </div>
+                <tt>value = {{PrivacyPolicy.value}}</tt><br/>
+                <button type="submit" class="btn btn-default">Sign in</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+{% endblock content %}

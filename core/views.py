@@ -24,6 +24,12 @@ def index(request):
          'getPrevHolderCount2':getPrevHolderCount2,'getPrevHolderCount10': getPrevHolderCount10}
     )
 
+def login(request):
+    return render(request,'login.html')
+
+def footer(request):
+    return render(request,'footer.html')
+
 def getBook(code):
     """
     Takes a secret BookInstance access code and converts it to the public BookInstance id.

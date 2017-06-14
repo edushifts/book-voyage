@@ -1,35 +1,24 @@
 {% extends "base_generic.html" %}
 {% load static %}
 {% block content %}
-<header>
-	<img src="{% static 'img/EDUshifts_now_plain.svg' %}" onerror="this.src='{% static 'img/EDUshifts_now_plain.png' %}'">
-</header>
-
-<div id="mainMap"></div>
-
-<div id="codeFormConAbs">
-	<div id="codeFormCon">
-		<form class="codeForm hide-submit" action="" method="post">
+{% include 'partials/header_index.html' %}
+<div class="container-fluid">
+	<div class="row">
+		<div id="mainMap"></div>
+			<div id="codeFormConAbs">
+			<div id="codeFormCon">
+			<form class="codeForm hide-submit" action="" method="post">
 			{% csrf_token %}
 			<input id="accessCode" type="text" placeholder="access code" name="name" maxlength="9">
 			<label>
 			    <input type="submit" />
 			    <img class="arrowImg" src="{% static 'img/arrow.svg' %}" onerror="this.src='{% static 'img/arrow.png' %}'">
 		    </label>
-		</form>
+			</form>
+			</div>
+			</div>
 	</div>
 </div>
-
-
-<footer>
-<ul>
-	<li><a href="https://edushifts.world#form_4"><small>Sign-up for our newsletter</small></a></li>
-	<li>An EDUshifts project</li>
-	<li><a href="https://www.generosity.com/education-fundraising/edushifts-now-collective-book-initiative"><small>Get your own book</small></a></li>
-</ul>
-</footer>
-
-
+{% include 'footer.html' %}
 <script src="{% static 'js/scripts.js' %}"></script>
-
 {% endblock %}
