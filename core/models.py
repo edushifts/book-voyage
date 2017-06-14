@@ -103,6 +103,10 @@ class BookOwnerLoc(models.Model):
         else: 
         	return (self.owner.username + " at " + str(self.time))
 
+    class Meta:
+        verbose_name = "Book owner location"
+
+
 class BookHolding(models.Model):
     """
     additional table for many-to-many relationship between books and holders
