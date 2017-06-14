@@ -58,7 +58,7 @@ class BookInstance(models.Model):
     holders = models.ManyToManyField(
         "BookHolding",
     )
-    ownerlocation = models.ForeignKey(
+    owner_location = models.ForeignKey(
         "BookOwnerLoc",
         on_delete=models.CASCADE,
     )
@@ -67,13 +67,18 @@ class BookInstance(models.Model):
         on_delete=models.CASCADE,
     )
     arrived = models.BooleanField(
-        default=False)
+        default=False,
+    )
 
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
         """
-        return ("Book " + str(self.id) + " (owned by " + self.owner.first_name + " " + self.owner.last_name + ")")
+        if len(self.owner_location.owner.first_name) >= 1 and len(self.owner_location.owner.last_name) >= 1:
+            return ("Book " + str(self.id) + " (owned by " + self.owner_location.owner.first_name + " " + self.owner_location.owner.last_name + ")")
+        else: 
+            return ("Book " + str(self.id) + " (owned by " + self.owner_location.owner.username + ")")
+        
 
 
 class BookOwnerLoc(models.Model):
@@ -94,9 +99,9 @@ class BookOwnerLoc(models.Model):
         Returns first and last names. If these are missing, the username is displayed instead.
         """
         if len(self.owner.first_name) >= 1 and len(self.owner.last_name) >= 1:
-        	return (self.owner.first_name + " " + self.owner.last_name)
+        	return (self.owner.first_name + " " + self.owner.last_name + " at " + str(self.time))
         else: 
-        	return (self.owner.username)
+        	return (self.owner.username + " at " + str(self.time))
 
 class BookHolding(models.Model):
     """
@@ -116,9 +121,9 @@ class BookHolding(models.Model):
         String for representing the MyModelName object (in Admin site etc.)
         """
         if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
-        	return (self.holder.first_name + " " + self.holder.last_name)
+        	return (self.holder.first_name + " " + self.holder.last_name + " at " + str(self.time))
         else: 
-        	return (self.holder.username)
+        	return (self.holder.username + " at " + str(self.time))
 		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
 
 

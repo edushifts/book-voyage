@@ -10,18 +10,18 @@ def index(request):
     """
     View function for home page of site.
     """
-    getBook1 = getBook("DJK831LOK")
-    getBook2 = getBook("741KLO012")
-    getPrevHolderCount1 = getPrevHolderCount(1)
-    getPrevHolderCount2 = getPrevHolderCount(2)
-    getPrevHolderCount10 = getPrevHolderCount(10)
+    #getBook1 = getBook("DJK831LOK")
+    #getBook2 = getBook("741KLO012")
+    #getPrevHolderCount1 = getPrevHolderCount(1)
+    #getPrevHolderCount2 = getPrevHolderCount(2)
+    #getPrevHolderCount10 = getPrevHolderCount(10)
 
     # Render the test HTML template index.html
     return render(
         request,
         'index.html',
-        context={'getBook1':getBook1,'getBook2':getBook2,'getPrevHolderCount1': getPrevHolderCount1,
-         'getPrevHolderCount2':getPrevHolderCount2,'getPrevHolderCount10': getPrevHolderCount10}
+        #context={'getBook1':getBook1,'getBook2':getBook2,'getPrevHolderCount1': getPrevHolderCount1,
+         #'getPrevHolderCount2':getPrevHolderCount2,'getPrevHolderCount10': getPrevHolderCount10}
     )
 
 def getBook(code):
