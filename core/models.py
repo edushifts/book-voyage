@@ -77,26 +77,29 @@ class BookInstance(models.Model):
 
 
 class BookOwnerLoc(models.Model):
-	owner = models.ForeignKey(
-		User,
-		on_delete=models.CASCADE,
-		)
-	time = models.DateTimeField()
-	message = models.CharField(max_length=140)
-	geom = PointField()
+    """
+    table that tracks owner and owner location
+    """
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+	)
+    time = models.DateTimeField()
+    message = models.CharField(max_length=512)
+    geom = PointField()
 
-	def __str__(self):
+    def __str__(self):
 		return (self.geom)
 
 class BookHolding(models.Model):
     """
     additional table for many-to-many relationship between books and holders
-    keep ino about period of holding
+    keep info about period of holding
     """
     holder = models.ForeignKey(
     	User, 
     	on_delete=models.CASCADE,
-	)
+    )
     time = models.DateTimeField()
     message = models.CharField(max_length=140)
     geom = PointField()
