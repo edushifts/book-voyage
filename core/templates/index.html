@@ -1,19 +1,35 @@
 {% extends "base_generic.html" %}
-
-{% block content %}
-<h1>Book Voyage is running on your system</h1>
-<p>Now it's time to make it work :D </p>
-<ul>
-	<li>getBook(wrong_code) returns: {{ getBook1 }}</li>
-	<li>getBook(actual_code) returns: {{ getBook2 }}</li>
-	<li>getPrevHolderCount(1) returns: {{ getPrevHolderCount1 }}</li>
-	<li>getPrevHolderCount(2) returns: {{ getPrevHolderCount2 }}</li>
-	<li>getPrevHolderCount(10) returns: {{ getPrevHolderCount10 }}</li>
-</ul>
-
- <div id="mainMap"></div>
-
 {% load static %}
+{% block content %}
+<header>
+	<img src="{% static 'img/EDUshifts_now_plain.svg' %}" onerror="this.src='{% static 'img/EDUshifts_now_plain.png' %}'">
+</header>
+
+<div id="mainMap"></div>
+
+<div id="codeFormConAbs">
+	<div id="codeFormCon">
+		<form class="codeForm hide-submit" action="" method="post">
+			{% csrf_token %}
+			<input id="accessCode" type="text" placeholder="access code" name="name" maxlength="9">
+			<label>
+			    <input type="submit" />
+			    <img class="arrowImg" src="{% static 'img/arrow.svg' %}" onerror="this.src='{% static 'img/arrow.png' %}'">
+		    </label>
+		</form>
+	</div>
+</div>
+
+
+<footer>
+<ul>
+	<li><a href="https://edushifts.world#form_4"><small>Sign-up for our newsletter</small></a></li>
+	<li>An EDUshifts project</li>
+	<li><a href="https://www.generosity.com/education-fundraising/edushifts-now-collective-book-initiative"><small>Get your own book</small></a></li>
+</ul>
+</footer>
+
+
 <script src="{% static 'js/scripts.js' %}"></script>
 
 {% endblock %}

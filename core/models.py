@@ -83,13 +83,20 @@ class BookOwnerLoc(models.Model):
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-	)
+    )
     time = models.DateTimeField()
     message = models.CharField(max_length=512)
     geom = PointField()
 
     def __str__(self):
-		return (self.geom)
+        """
+        String for representing the MyModelName object (in Admin site etc.)
+        Returns first and last names. If these are missing, the username is displayed instead.
+        """
+        if len(self.owner.first_name) >= 1 and len(self.owner.last_name) >= 1:
+        	return (self.owner.first_name + " " + self.owner.last_name)
+        else: 
+        	return (self.owner.username)
 
 class BookHolding(models.Model):
     """

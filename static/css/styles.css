@@ -1,4 +1,132 @@
 /* define the map size */
-#mainMap {
+/*#mainMap {
 	height: 500px;
+}*/
+
+/* add fonts */
+@font-face {
+    font-family: 'BebasNeue';
+    src: url('fonts/BebasNeue.eot');
+    src: url('fonts/BebasNeue.eot?#iefix') format('embedded-opentype'),
+         url('fonts/BebasNeue.woff2') format('woff2'),
+         url('fonts/BebasNeue.woff') format('woff'),
+         url('fonts/BebasNeue.ttf') format('truetype'),
+         url('fonts/BebasNeue.svg#BebasNeue') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/* overall dimenions */
+* {
+	padding: 0;
+    margin: 0;
+}
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+}
+
+#mainMap {
+	height: 80vh;
+    width: 100vw;
+    z-index: 4000;
+}
+
+header {
+	height: 15vh;
+    width: 100vw;
+    background: #1d335f;
+}
+
+footer {
+	height: 5vh;
+    width: 100vw;
+}
+
+/* header style */
+header img {
+	height: 10vh;
+	text-align:center;
+	padding-top: 2vh;
+	display: block;
+    margin: 0 auto;
+}
+
+/* form element */
+#codeFormConAbs {
+	position: absolute;
+	bottom: 100px;
+	z-index: 6000;
+
+    width: 400px;
+    margin-left: -200px;
+    left: 50%;
+}
+
+#codeFormCon {
+	position: relative;
+	background: #1d335f;
+	color: #fff;
+	display: block;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#accessCode {
+	background: #1d335f;
+	border: none;
+	color: #fff;
+	font-size: 50px;
+	font-family: BebasNeue;
+	font-size: 60px;
+	width: 250px;
+	margin-left: 20px;
+	font-weight: bold;
+}
+
+.arrowImg {
+	width: 40px;
+	padding-left: 30px;
+	cursor: pointer;
+}
+
+form.hide-submit input[type="submit"] { display: none;}
+
+/* footer style */
+footer {
+	background: #1d335f;
+    color: #fff;
+    text-align: center;
+
+    padding-bottom: 0px;
+    font-family: BebasNeue;
+    font-size: 4vh;
+}
+
+footer li + li:before{
+    content: " | ";
+    padding: 0 10px;
+}
+
+footer li {
+	display: inline;
+	list-style-type: none;
+}
+
+footer li a {
+	color: white;
+}
+
+@media (max-width: 720px) {
+    footer {
+    font-size: 3vh;
+	}
+}
+
+@media (max-width: 560px) {
+    footer {
+    font-size: 2vh;
+	}
 }
