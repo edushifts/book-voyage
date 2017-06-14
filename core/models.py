@@ -55,12 +55,12 @@ class BookInstance(models.Model):
         max_length=64,
         unique=True,
     )
-    owner = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-    )
     holders = models.ManyToManyField(
         "BookHolding",
+    )
+    ownerlocation = models.ForeignKey(
+        "BookOwnerLoc",
+        on_delete=models.CASCADE,
     )
     batch = models.ForeignKey(
         "BookBatch",
@@ -75,16 +75,31 @@ class BookInstance(models.Model):
         """
         return ("Book " + str(self.id) + " (owned by " + self.owner.first_name + " " + self.owner.last_name + ")")
 
+
+class BookOwnerLoc(models.Model):
+	owner = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		)
+	time = models.DateTimeField()
+	message = models.CharField(max_length=140)
+	geom = PointField()
+
+	def __str__(self):
+		return (self.geom)
+
 class BookHolding(models.Model):
     """
     additional table for many-to-many relationship between books and holders
     keep ino about period of holding
     """
-    holder = models.ForeignKey(User, on_delete=models.CASCADE)
-    #receive_time = models.DateTimeField()
+    holder = models.ForeignKey(
+    	User, 
+    	on_delete=models.CASCADE,
+	)
+    time = models.DateTimeField()
     message = models.CharField(max_length=140)
-    review = models.CharField(max_length=512)
-    #is_owner = models.BooleanField(default=False)
+    geom = PointField()
 
     def __str__(self):
         """
@@ -96,33 +111,6 @@ class BookHolding(models.Model):
         	return (self.holder.username)
 		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
 
-class BookLocation(models.Model):
-    """
-    notes about user travelling around the world
-    using for finding of location of the book
-    user - user
-    time - starting time point in some location
-    location - GeoIP2 object (we can use any other library)
-    """
-    id = models.AutoField(
-        primary_key=True,
-    )
-
-    geom = PointField()
-
-    #user = models.ForeignKey(
-     #   User,
-      #  on_delete=models.CASCADE,
-    #)
-
-    book_holding = models.ForeignKey(
-        BookHolding,
-        on_delete=models.CASCADE)
-
-    time = models.DateTimeField()
-
-    def __str__(self):
-        return self.user.first_name + " " + self.user.last_name + " (" + self.time.strftime("%Y-%m-%d %H:%M:%S") + ")"
 
 class BookBatch(models.Model):
     event = models.CharField(max_length=64)
