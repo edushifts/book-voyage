@@ -43,7 +43,7 @@ def getPrevHolderCount(bookInstanceId):
     try:
         # first check if the given book instance exists
         BookInstance.objects.get(id=bookInstanceId)
-        prevHolders = BookHolding.objects.filter(bookinstance__id=bookInstanceId).count()
+        prevHolders = BookHolding.objects.filter(book_instance_id=bookInstanceId).count()
     except BookInstance.DoesNotExist:
         prevHolders = -1
     return prevHolders

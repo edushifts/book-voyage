@@ -15,8 +15,8 @@ class Author(models.Model):
     """
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
-    bio = models.CharField(max_length=512)
     date_of_birth = models.DateField()
+    bio = models.CharField(max_length=512)
 
     def __str__(self):
         """
@@ -25,11 +25,15 @@ class Author(models.Model):
         return (self.first_name + " " + self.last_name)
 
 class Book(models.Model):
-    authors = models.ManyToManyField(Author)
+    """
+    class of books - unique published work in circulation
+    abstract - contains summary of book
+    cover - contains cover image of book
+    """
     title = models.CharField(max_length=64)
+    authors = models.ManyToManyField(Author)
     abstract = models.CharField(max_length=512)
-    cover = models.ImageField
-    #language = 
+    cover = models.ImageField(upload_to = "bookCovers")
 
     def __str__(self):
         """
@@ -38,28 +42,24 @@ class Book(models.Model):
         return self.title
 
 class BookInstance(models.Model):
-    """class of bookinstances:
-    id - created automatically
-    owner - many-to-one (foreign key) with user
-    holders - many-to-many with users
+    """
+    class of book instances: physical copies of a book
+    id - explicitly made as key attribute
+    access_code - unique, secret identifier
+    book - refers to unique book object
+    batch - object with when and where it was released
+    arrived - whether the book has arrived at owner already
     """
 
     id = models.AutoField(
         primary_key=True,
     )
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE,
-    )
     access_code = models.CharField(
         max_length=64,
         unique=True,
     )
-    holders = models.ManyToManyField(
-        "BookHolding",
-    )
-    owner_location = models.ForeignKey(
-        "BookOwnerLoc",
+    book = models.ForeignKey(
+        Book,
         on_delete=models.CASCADE,
     )
     batch = models.ForeignKey(
@@ -73,15 +73,11 @@ class BookInstance(models.Model):
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
+        Returns book id, and unique username.
         """
-        if len(self.owner_location.owner.first_name) >= 1 and len(self.owner_location.owner.last_name) >= 1:
-            return ("Book " + str(self.id) + " (owned by " + self.owner_location.owner.first_name + " " + self.owner_location.owner.last_name + ")")
-        else: 
-            return ("Book " + str(self.id) + " (owned by " + self.owner_location.owner.username + ")")
+        return ("Book #" + str(self.id) + " (owned by " + BookOwning.objects.filter(book_instance=self.id).values('owner__username').order_by("time").last()["owner__username"]) + ")"
         
-
-
-class BookOwnerLoc(models.Model):
+class BookOwning(models.Model):
     """
     table that tracks owner and owner location
     """
@@ -89,9 +85,13 @@ class BookOwnerLoc(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    book_instance = models.ForeignKey(
+        BookInstance,
+        on_delete=models.CASCADE,
+    )
     time = models.DateTimeField()
     message = models.CharField(max_length=512)
-    geom = PointField()
+    location = PointField()
 
     def __str__(self):
         """
@@ -103,22 +103,26 @@ class BookOwnerLoc(models.Model):
         else: 
         	return (self.owner.username + " at " + str(self.time))
 
-    class Meta:
-        verbose_name = "Book owner location"
-
-
 class BookHolding(models.Model):
     """
-    additional table for many-to-many relationship between books and holders
-    keep info about period of holding
+    describes action of holding a book instance at a particular moment
+    holder - user that registered the book
+    book_instance - refers to book copy
+    time - time of registration
+    message - personal message posted by user at location
+    location - place of registration
     """
     holder = models.ForeignKey(
     	User, 
     	on_delete=models.CASCADE,
     )
+    book_instance = models.ForeignKey(
+        BookInstance, 
+        on_delete=models.CASCADE,
+    )
     time = models.DateTimeField()
-    message = models.CharField(max_length=140)
-    geom = PointField()
+    message = models.CharField(max_length=512)
+    location = PointField()
 
     def __str__(self):
         """
@@ -132,9 +136,16 @@ class BookHolding(models.Model):
 
 
 class BookBatch(models.Model):
+    """
+    describes book release event
+    event - event name
+    country - country name
+    location - place of distribution
+    date - first day of distribution (will default to time 00:00)
+    """
     event = models.CharField(max_length=64)
     country = models.CharField(max_length=64)
-    geom = PointField()
+    location = PointField()
     date = models.DateField()
 
     def __str__(self):
