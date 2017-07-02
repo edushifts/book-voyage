@@ -1,0 +1,31 @@
+/* footer style */
+footer {
+  height: 5vh;
+  background: #1d335f;
+  color: #fff;
+  text-align: center;
+}
+footer ul {
+  font-size: 2.5vh;
+  padding: 1vh 0 0.5vh 0;
+  margin: 0 auto;
+}
+footer li + li:before{
+  content: " | ";
+  padding: 0 10px;
+}
+
+footer li {
+  display: inline;
+  list-style-type: none;
+}
+
+footer li a {
+  color: white;
+}
+
+@media screen and (min-width: 480px) {
+  body {
+    background-color: lightgreen;
+  }
+}

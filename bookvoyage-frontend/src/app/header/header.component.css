@@ -1,0 +1,13 @@
+/* header style */
+header {
+  height: 15vh;
+  width: 100vw;
+  background: #1d335f;
+}
+header img {
+  height: 10vh;
+  text-align:center;
+  padding-top: 2vh;
+  display: block;
+  margin: 0 auto;
+}

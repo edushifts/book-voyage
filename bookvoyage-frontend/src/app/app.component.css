@@ -1,0 +1,52 @@
+/* overall dimensions */
+html, body {
+  letter-spacing: 0.1em;
+  font-family: 'BebasNeue', sans-serif;
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+}
+
+.mainContent {
+  height: 80vh;
+  width: 100vw;
+  z-index: 4000;
+}
+
+/* forms */
+#codeFormConAbs, #registerLogin form {
+  position: absolute;
+  bottom: 100px;
+  z-index: 6000;
+  width: 400px;
+  margin-left: -200px;
+  left: 50%;
+}
+
+/* registerLogin */
+#registerLogin form {
+  font-size: 2.5vh;
+  padding-top: 1vh;
+}
+#registerLogin form input {
+  margin-bottom: 1vh;
+  letter-spacing: 0.1em;
+  padding: 0.5vh;
+  background: #1D335F;
+  border: none;
+  width: 100%;
+  color: #fff;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: white;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: white;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: white;
+}
+form.hide-submit input[type="submit"] { display: none;}

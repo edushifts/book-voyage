@@ -1,0 +1,26 @@
+/* form element */
+#codeFormCon {
+  position: relative;
+  background: #1d335f;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#accessCode {
+  background: #1d335f;
+  border: none;
+  color: #fff;
+  width: 250px;
+  margin-left: 20px;
+  font-weight: bold;
+  font-family: 'BebasNeue';
+  font-size: 60px;
+}
+
+.arrowImg {
+  width: 40px;
+  padding-left: 30px;
+  cursor: pointer;
+}
