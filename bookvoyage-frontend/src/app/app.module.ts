@@ -6,6 +6,7 @@ import { FooterComponent } from './footer/footer.component';
 import { OverviewMapComponent } from './overview-map/overview-map.component';
 import { HeaderComponent } from './header/header.component';
 import { CodeFormComponent } from './code-form/code-form.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { CodeFormComponent } from './code-form/code-form.component';
     FooterComponent,
     OverviewMapComponent,
     HeaderComponent,
-    CodeFormComponent
+    CodeFormComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule
