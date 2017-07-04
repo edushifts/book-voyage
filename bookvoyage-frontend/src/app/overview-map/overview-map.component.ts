@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from "../../environments/environment";
+import {ActivatedRoute} from "@angular/router";
 
 // prevents Typescript errors with leaflet and jquery
 declare let L: any;
@@ -49,10 +50,23 @@ function rainbow(numOfSteps, step) {
 })
 export class OverviewMapComponent implements OnInit {
   geoData;
+  wrongCode = false;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
+
+    this.route
+        .queryParams
+        .subscribe(params => {
+          if (+params['codeError'] === 1) {
+            this.wrongCode = true;
+            alert("The code you entered was incorrect :( ")
+          } else {
+            this.wrongCode = false;
+            // nothing happens
+          }
+        })
 
     // Define maximum map bounds (to avoid moving off the map)
     var bounds = new L.LatLngBounds(new L.LatLng(85, -180), new L.LatLng(-85, 180));

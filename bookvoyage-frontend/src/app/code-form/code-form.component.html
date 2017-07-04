@@ -1,9 +1,9 @@
 <div id="codeFormConAbs">
   <div id="codeFormCon">
-    <form class="codeForm hide-submit" action="" method="post">
-      <input id="accessCode" type="text" placeholder="access code" name="name" maxlength="9">
+    <form (ngSubmit)="onAccessCode()" class="codeForm hide-submit" #codeForm="ngForm">
+      <input id="accessCode" type="text" placeholder="access code" name="accessCode" maxlength="9" ngModel>
       <label>
-        <input type="submit" />
+        <input type="submit">
         <img class="arrowImg" src="assets/img/arrow.svg" onerror="this.src='assets/img/arrow.png'">
       </label>
     </form>
