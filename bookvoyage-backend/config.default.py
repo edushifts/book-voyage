@@ -34,3 +34,13 @@ SECRET_KEY = 'mqmz#+d=$x&m^tv1^aywcw7dbor+sqhs(#gjv9wh96(30lu7zq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# Set up mail configuration
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'mail.example.com'
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'rick'
+#EMAIL_HOST_PASSWORD = 'multiverse'
+#DEFAULT_FROM_EMAIL = 'rick@example.com'
+#SERVER_EMAIL = 'rick@example.com'
