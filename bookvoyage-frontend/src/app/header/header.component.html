@@ -1,3 +1,19 @@
 <header>
-  <a routerLink="/"><img src="assets/img/EDUshifts_now_plain.svg" onerror="this.src='/assets/img/EDUshifts_now_plain.png'"></a>
+  <a routerLink="/"><img style="cursor: pointer" src="assets/img/EDUshifts_now_plain.svg" onerror="this.src='/assets/img/EDUshifts_now_plain.png'"></a>
+
+<div *ngIf="showAccountButtons;">
+  <div *ngIf="isLoggedIn; else login" class="rightButton">
+    <a style="cursor: pointer" (click)="openProfile()" >
+    PROFILE
+  </a>
+    <a style="cursor: pointer" (click)="logout()" >
+      LOGOUT
+    </a>
+  </div>
+  <ng-template #login>
+    <a routerLink="/login" class="rightButton">
+      LOGIN
+    </a>
+  </ng-template>
+</div>
 </header>

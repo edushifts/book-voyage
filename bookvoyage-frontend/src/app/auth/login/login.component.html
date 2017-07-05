@@ -1,40 +1,17 @@
-<!--<div class="container-fluid" ng-app="RegisterLogin">-->
-  <!--<script>-->
-    <!--angular.module('RegisterLogin', [])-->
-      <!--.controller('LoginController', ['$scope', function($scope) {-->
-        <!--$scope.PrivacyPolicy = {-->
-          <!--value : 'Agree'-->
-        <!--};-->
-      <!--}]);-->
-  <!--</script>-->
-  <!--<div class="row">-->
-    <!--<div id="registerLogin">-->
-      <!--<form ng-controller="LoginController">-->
-        <!--<div class="form-group">-->
-          <!--<input type="email"  placeholder="Email">-->
-          <!--<input type="password"  placeholder="Password">-->
-        <!--</div>-->
-        <!--<div class="checkbox">-->
-          <!--<label>-->
-            <!--<input type="checkbox" ng-model="PrivacyPolicy.value">-->
-          <!--</label>-->
-        <!--</div>-->
-        <!--<tt>value = {{PrivacyPolicy.value}}</tt><br/>-->
-        <!--<button type="submit" class="btn btn-default">Sign in</button>-->
-      <!--</form>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-
-<div class="container-fluid">
-  <div class="row">
-    <div class="mainContent">
-      <form>
-        <input [value]="secretCode" disabled code>
-        <input email>
-        <input password>
-        <input confirmPassword>
-      </form>
-    </div>
-  </div>
+<div class="mainContent">
+  <form (ngSubmit)="loginUser(form)" #form="ngForm">
+    <p class="menuBig">LOG IN</p>
+    <input
+      ngModel
+      required
+      email
+      type="email"
+      id="email"
+      name="email"
+      placeholder="e-mail address"
+      #email="ngModel">
+    <span *ngIf="!email.valid && email.touched" class="help-block">Please enter a valid e-mail address</span>
+    <input ngModel required type="password" id="password" name="password" placeholder="password">
+    <input [disabled]="!form.valid" type="submit" value="Enter">
+  </form>
 </div>

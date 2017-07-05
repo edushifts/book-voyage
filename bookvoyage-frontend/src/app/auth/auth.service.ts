@@ -1,13 +1,20 @@
 import {ActivatedRoute, Params} from "@angular/router";
-import {Http} from "@angular/http";
+import {Http,  Headers, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService{
   accessCode = '';
+  public token: string;
 
-  constructor(private http: Http) {}
+  constructor(private http: Http) {
+    // set token if saved in local storage
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.token = currentUser && currentUser.token;
+  }
 
   registerUser(username, password1, password2, email) {
     let newUser = {
@@ -17,7 +24,45 @@ export class AuthService{
       email: email
     }
 
-    return this.http.post(environment.apiUrl + "api-auth/registration/", newUser);
+    return this.http.post(environment.apiUrl + "api-auth/registration/", newUser)
+      .map(
+        (response: Response) => {
+          // on success, return token
+          return response.json().token;
+        }
+      )
+      .catch(
+      (error: Response) => {
+        return Observable.throw(error);
+      });
+  }
+
+  setToken(token) {
+    this.token = token;
+  }
+
+  login(username: string, password: string) {
+    let user = {
+      username: username,
+      password: password
+    }
+
+    return this.http.post(environment.apiUrl + 'api-auth/login/', user);
+  }
+
+  logout(): void {
+    // clear token remove user from local storage to log user out
+    this.token = null;
+    localStorage.removeItem('currentUser');
+  }
+
+  isLoggedIn() {
+    if (localStorage.getItem('currentUser')) {
+      // logged in so return true
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

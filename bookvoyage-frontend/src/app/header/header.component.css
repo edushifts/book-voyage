@@ -11,3 +11,17 @@ header img {
   display: block;
   margin: 0 auto;
 }
+
+.rightButton {
+  color: white;
+  position: absolute;
+  right: 4vw;
+  top: 6vh;
+  font-size: 5vh;
+}
+
+@media screen and (max-width: 700px) {
+  .rightButton {
+    display: none !important;
+  }
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
+import {HeaderService} from "../header/header.service";
 
 // prevents Typescript errors with leaflet and jquery
 declare let L: any;
@@ -52,16 +53,24 @@ export class OverviewMapComponent implements OnInit {
   geoData;
   wrongCode = false;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,
+              private headerService: HeaderService) { }
 
   ngOnInit() {
-
+    this.headerService.showAccountButtons = true;
     this.route
         .queryParams
         .subscribe(params => {
           if (+params['codeError'] === 1) {
             this.wrongCode = true;
             alert("The code you entered was incorrect :( ")
+          } else {
+            this.wrongCode = false;
+            // nothing happens
+          }
+          if (+params['loggedIn'] === 1) {
+            this.wrongCode = true;
+            alert("You are logged in now.")
           } else {
             this.wrongCode = false;
             // nothing happens

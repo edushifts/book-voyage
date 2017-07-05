@@ -13,6 +13,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import {FormsModule} from "@angular/forms";
 import {AuthService} from "./auth/auth.service";
 import {HttpModule} from "@angular/http";
+import {HeaderService} from "./header/header.service";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import {HttpModule} from "@angular/http";
     FormsModule,
     HttpModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, HeaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
