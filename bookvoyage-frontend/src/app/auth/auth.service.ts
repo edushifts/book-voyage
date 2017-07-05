@@ -1,5 +1,4 @@
-import {ActivatedRoute, Params} from "@angular/router";
-import {Http,  Headers, Response} from "@angular/http";
+import {Http, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
 import { Observable } from 'rxjs';
@@ -8,7 +7,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class AuthService{
   accessCode = '';
-  public token: string;
+  private token: string = '';
 
   constructor(private http: Http) {
     // set token if saved in local storage
@@ -28,6 +27,7 @@ export class AuthService{
       .map(
         (response: Response) => {
           // on success, return token
+          // console.log(response.json().token);
           return response.json().token;
         }
       )
@@ -39,6 +39,7 @@ export class AuthService{
 
   setToken(token) {
     this.token = token;
+    console.log(token);
   }
 
   login(username: string, password: string) {

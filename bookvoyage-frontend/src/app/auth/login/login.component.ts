@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
           let token = response.json() && response.json().token;
           if (token) {
             // set token property
-            this.authService.token = token;
+            this.authService.setToken(token);
 
             // store username and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('currentUser', JSON.stringify({username: email, token: token}));

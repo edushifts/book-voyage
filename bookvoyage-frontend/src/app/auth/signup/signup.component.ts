@@ -16,7 +16,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   passwordMismatch = false;
   subscribeSignUp;
   error = '';
-  userNameError= '';
+  usernameError= '';
   passwordError = '';
   passwordConfirmError = '';
 
@@ -59,20 +59,31 @@ export class SignupComponent implements OnInit, OnDestroy {
     // if not, block rest of function
     if (password !== passwordConfirm) {
       this.passwordMismatch = true;
-      this.passwordConfirmError = "Your password did not match"
+      this.passwordConfirmError = "Your password did not match";
       return;
     }
     // create account at backend
     this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm, email).subscribe(
-      (token: string) => {
-        this.authService.setToken(token);
+      (token) => {
+        // login
+        this.authService.login(email, password);
+        
         this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
         },
       (errorData) => {
         // report on email errors
         let errors = errorData.json();
+        this.usernameError = '';
         if (errors.username) {
-          this.userNameError = errors.username + " " + errors.email;
+          for (let error of errors.password1) {
+            this.usernameError += error;
+          }
+          form.controls['email'].setErrors({'valid': false});
+        }
+        if (errors.email) {
+          for (let error of errors.password1) {
+            this.usernameError += error;
+          }
           form.controls['email'].setErrors({'valid': false});
         }
 
@@ -93,10 +104,6 @@ export class SignupComponent implements OnInit, OnDestroy {
           }
           form.controls['passwordConfirm'].setErrors({'valid': false});
         }
-
-
-
-
       }
     );
 
