@@ -22,7 +22,7 @@ class Author(models.Model):
         """
         String for representing the MyModelName object (in Admin site etc.)
         """
-        return (self.first_name + " " + self.last_name)
+        return self.first_name + " " + self.last_name
 
 class Book(models.Model):
     """
@@ -78,7 +78,7 @@ class BookInstance(models.Model):
         if len(BookOwning.objects.filter(book_instance=self.id).values('owner__username')) >= 1:
             return ("Book #" + str(self.id) + " (owned by " + BookOwning.objects.filter(book_instance=self.id).values('owner__username').order_by("time").last()["owner__username"]) + ")"
         else:
-            return ("Book #" + str(self.id)) 
+            return "Book #" + str(self.id)
         
 class BookOwning(models.Model):
     """
@@ -90,6 +90,7 @@ class BookOwning(models.Model):
     )
     book_instance = models.ForeignKey(
         BookInstance,
+        related_name='ownings',
         on_delete=models.CASCADE,
     )
     time = models.DateTimeField()
@@ -102,9 +103,9 @@ class BookOwning(models.Model):
         Returns first and last names. If these are missing, the username is displayed instead.
         """
         if len(self.owner.first_name) >= 1 and len(self.owner.last_name) >= 1:
-        	return (self.owner.first_name + " " + self.owner.last_name + " at " + str(self.time))
+            return self.owner.first_name + " " + self.owner.last_name + " at " + str(self.time)
         else: 
-        	return (self.owner.username + " at " + str(self.time))
+            return self.owner.username + " at " + str(self.time)
 
 class BookHolding(models.Model):
     """
@@ -120,7 +121,8 @@ class BookHolding(models.Model):
     	on_delete=models.CASCADE,
     )
     book_instance = models.ForeignKey(
-        BookInstance, 
+        BookInstance,
+        related_name='holdings',
         on_delete=models.CASCADE,
     )
     time = models.DateTimeField()
@@ -132,10 +134,10 @@ class BookHolding(models.Model):
         String for representing the MyModelName object (in Admin site etc.)
         """
         if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
-        	return (self.holder.first_name + " " + self.holder.last_name + " at " + str(self.time))
+            return self.holder.first_name + " " + self.holder.last_name + " at " + str(self.time)
         else: 
-        	return (self.holder.username + " at " + str(self.time))
-		#If no first name is enetered then the username is displayed (otherwise there would be no holder name)
+            return self.holder.username + " at " + str(self.time)
+        #If no first name is entered then the username is displayed (otherwise there would be no holder name)
 
 
     class Meta:

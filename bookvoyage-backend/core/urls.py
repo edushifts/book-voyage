@@ -12,6 +12,7 @@ from .models import BookHolding
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'bookInstances', views.BookInstanceViewSet)
+router.register(r'bookHoldings', views.BookHoldingViewSet)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
@@ -25,7 +26,14 @@ urlpatterns = [
 
 # GeoJSON book locations hook. Returns object with all BookLocation elements.
 urlpatterns += [
-    url(r'^api/bookLocs.geojson$', GeoJSONLayerView.as_view(model=BookHolding, geometry_field='location', properties=('book_instance','holder','time','message',)), name='bookLocs',),
+    url(r'^api/bookLocs.geojson$',
+        GeoJSONLayerView.as_view(
+            model=BookHolding,
+            geometry_field='location',
+            properties=('book_instance','holder','time','message',
+                        )
+        ),
+        name='bookLocs',),
 ]
 
 # catch-all for Angular app

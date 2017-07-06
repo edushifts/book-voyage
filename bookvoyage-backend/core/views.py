@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import BookInstance, BookHolding
-from core.serializers import BookInstanceSerializer
+from core.serializers import BookInstanceSerializer, BookHoldingSerializer
 
 from rest_framework import viewsets
 
@@ -49,10 +49,10 @@ def getPrevHolderCount(bookInstanceId):
     try:
         # first check if the given book instance exists
         BookInstance.objects.get(id=bookInstanceId)
-        prevHolders = BookHolding.objects.filter(book_instance_id=bookInstanceId).count()
+        prev_holders = BookHolding.objects.filter(book_instance_id=bookInstanceId).count()
     except BookInstance.DoesNotExist:
-        prevHolders = -1
-    return prevHolders
+        prev_holders = -1
+    return prev_holders
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -60,3 +60,10 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
+
+class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = BookHolding.objects.all()
+    serializer_class = BookHoldingSerializer
