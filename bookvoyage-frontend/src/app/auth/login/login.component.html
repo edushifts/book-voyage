@@ -1,0 +1,17 @@
+<div class="mainContent">
+  <form (ngSubmit)="loginUser(form)" #form="ngForm">
+    <p class="menuBig">LOG IN</p>
+    <input
+      ngModel
+      required
+      email
+      type="email"
+      id="email"
+      name="email"
+      placeholder="e-mail address"
+      #email="ngModel">
+    <span *ngIf="!email.valid && email.touched" class="help-block">Please enter a valid e-mail address</span>
+    <input ngModel required type="password" id="password" name="password" placeholder="password">
+    <input [disabled]="!form.valid" type="submit" value="Enter">
+  </form>
+</div>

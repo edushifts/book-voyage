@@ -6,6 +6,14 @@ import { FooterComponent } from './footer/footer.component';
 import { OverviewMapComponent } from './overview-map/overview-map.component';
 import { HeaderComponent } from './header/header.component';
 import { CodeFormComponent } from './code-form/code-form.component';
+import { LoginComponent } from './auth/login/login.component';
+import {AppRoutingModule} from "./app-routing.module";
+import { ManageAccountComponent } from './auth/manage-account/manage-account.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import {FormsModule} from "@angular/forms";
+import {AuthService} from "./auth/auth.service";
+import {HttpModule} from "@angular/http";
+import {HeaderService} from "./header/header.service";
 
 @NgModule({
   declarations: [
@@ -13,12 +21,18 @@ import { CodeFormComponent } from './code-form/code-form.component';
     FooterComponent,
     OverviewMapComponent,
     HeaderComponent,
-    CodeFormComponent
+    CodeFormComponent,
+    LoginComponent,
+    ManageAccountComponent,
+    SignupComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpModule
   ],
-  providers: [],
+  providers: [AuthService, HeaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

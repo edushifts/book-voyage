@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'corsheaders',
 ]
@@ -55,6 +56,16 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
 
 ROOT_URLCONF = 'bookvoyage.urls'
 
@@ -124,13 +135,21 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "node_modules"),
 ]
 
-
 # Add trusted external sources that can pull from the API
 CORS_ORIGIN_WHITELIST = (
     '192.168.33.10:4200',
+    '127.0.0.1:4200'
 )
 CSRF_TRUSTED_ORIGINS = (
     '192.168.33.10:4200',
+    '127.0.0.1:4200'
 )
+
+REST_USE_JWT = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+# TODO : add e-mail verification
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 from config import *

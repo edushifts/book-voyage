@@ -1,0 +1,22 @@
+<div class="mainContent">
+  <form (ngSubmit)="createAccount(form)" #form="ngForm">
+    <input type="text" [value]="secretCode" disabled class="code">
+    <p class="menuBig">JOURNEY FOUND</p>
+    <input
+      ngModel
+      required
+      email
+      type="email"
+      id="email"
+      name="email"
+      placeholder="e-mail address"
+      #email="ngModel">
+    <span *ngIf="!email.valid && email.touched" class="help-block">{{ userNameError }}</span>
+    <input #password="ngModel" ngModel required type="password" id="password" name="password" placeholder="password">
+    <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
+    <input #passwordConfirm="ngModel" ngModel  required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password">
+    <span *ngIf="passwordMismatch || (!passwordConfirm.valid && passwordConfirm.touched)" class="help-block">{{ passwordConfirmError }}</span>
+    <input [disabled]="!form.valid" type="submit" value="Create Account">
+    <span *ngIf="error !== ''" class="help-block">{{ error }}</span>
+  </form>
+</div>
