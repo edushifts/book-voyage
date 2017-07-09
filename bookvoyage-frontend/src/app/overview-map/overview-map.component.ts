@@ -153,7 +153,7 @@ export class OverviewMapComponent implements OnInit {
           let batchMarker = L.marker(batchLocation, {icon: orangeIcon}).addTo(mainMap);
 
           // add event details
-          batchMarker.bindPopup("<b>Event:" + batch.event + "</b><br>" + batch.country + "<br>" + batch.date );
+          batchMarker.bindPopup("<b>Event: " + batch.event + "</b><br>" + batch.country + "<br>" + batch.date );
 
           // create array to hold marker locations to draw polyline between them
           let holdingLocations = [];
@@ -165,7 +165,14 @@ export class OverviewMapComponent implements OnInit {
           for (let bookHolding of bookInstance.holdings) {
             let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
             let holdingMarker = L.marker(holdingLocation, {icon: blueIcon}).addTo(mainMap);
-            holdingLocations.push(holdingLocation);
+
+            // add pop-up message
+            if (batchLocation) {
+
+              // TO-DO: check if anonymous
+              holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
+            }
+              holdingLocations.push(holdingLocation);
           }
 
           // define line color with book instance id and then draw it
