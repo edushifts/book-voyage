@@ -7,5 +7,5 @@ export const environment = {
   production: false,
   assetRoot: "/assets/",
   root: "/",
-  apiUrl: "http://192.168.33.10:8000/"
+  apiUrl: "http://api.edushifts.world:8000/",
 };
