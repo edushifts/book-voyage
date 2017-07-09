@@ -20,11 +20,11 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "./assets/css/leaflet.css",
-        "./assets/css/styles.css"
+        "../node_modules/leaflet/dist/leaflet.css"
       ],
       "scripts": [
-        "./assets/js/leaflet.js"
+        "../node_modules/leaflet/dist/leaflet.js",
+        "../node_modules/leaflet-polylinedecorator/leaflet.polylineDecorator.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
