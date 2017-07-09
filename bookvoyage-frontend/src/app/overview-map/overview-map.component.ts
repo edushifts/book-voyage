@@ -144,6 +144,18 @@ export class OverviewMapComponent implements OnInit {
             //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
           });
 
+          // define icon for marker
+          let greenIcon = L.icon({
+            iconUrl:  environment.assetRoot +  'img/icons/marker-icon_green.png',
+            shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+
+            //iconSize:     [38, 95], // size of the icon
+            //shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+          });
+
           // add special marker for batch location
           // TODO: make batch locations be rendered only once
 
@@ -167,12 +179,31 @@ export class OverviewMapComponent implements OnInit {
             let holdingMarker = L.marker(holdingLocation, {icon: blueIcon}).addTo(mainMap);
 
             // add pop-up message
-            if (batchLocation) {
+            // TODO: change requisites
+            if (holdingLocation) {
 
               // TO-DO: check if anonymous
               holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
             }
               holdingLocations.push(holdingLocation);
+          }
+
+          // place the (last) owner on the map of this instance
+          // get amount of owners
+          let bookOwningAmount = bookInstance.ownings.length;
+          if (bookOwningAmount !== 0) {
+            let currentOwning = bookInstance.ownings[bookOwningAmount-1];
+            console.log(currentOwning);
+            let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
+            let owningMarker = L.marker(owningLocation, {icon: greenIcon}).addTo(mainMap);
+
+
+            // add pop-up message
+            // TODO: change requisites
+            if (owningLocation) {
+              // TO-DO: check if anonymous
+              owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
+            }
           }
 
           // define line color with book instance id and then draw it
