@@ -10,7 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-ALLOWED_HOSTS = []
+# Set your server credentials here
+HOST_FRONTEND = "example.com"
+HOST_BACKEND = "example.com"
+
+# Set allowed host to render admin panel
+ALLOWED_HOSTS = [HOST_BACKEND]
+
+# Add trusted external source(s) that can pull from the API
+CORS_ORIGIN_WHITELIST = (
+    HOST_FRONTEND
+)
+CSRF_TRUSTED_ORIGINS = (
+    HOST_FRONTEND
+)
+
+# Uncomment to allow all sources to access API
+# CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -36,11 +52,11 @@ SECRET_KEY = 'mqmz#+d=$x&m^tv1^aywcw7dbor+sqhs(#gjv9wh96(30lu7zq'
 DEBUG = True
 
 # Set up mail configuration
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'mail.example.com'
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'rick'
-#EMAIL_HOST_PASSWORD = 'multiverse'
-#DEFAULT_FROM_EMAIL = 'rick@example.com'
-#SERVER_EMAIL = 'rick@example.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'mail.example.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'rick'
+# EMAIL_HOST_PASSWORD = 'multiverse'
+# DEFAULT_FROM_EMAIL = 'rick@example.com'
+# SERVER_EMAIL = 'rick@example.com'

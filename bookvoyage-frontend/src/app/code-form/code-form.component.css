@@ -24,3 +24,5 @@
   padding-left: 30px;
   cursor: pointer;
 }
+
+form.hide-submit input[type="submit"] { display: none;}
