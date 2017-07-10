@@ -66,6 +66,25 @@ export class AuthService{
     }
   }
 
+  checkCode(accessCode) {
+    let request = {
+      accessCode: accessCode,
+    };
+
+    return this.http.post(environment.apiUrl + "api/codeExists/", request)
+      .map(
+        (response: Response) => {
+          // on success, return token
+          // console.log(response.json().token);
+          return response.json().valid;
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
 }
 
 
