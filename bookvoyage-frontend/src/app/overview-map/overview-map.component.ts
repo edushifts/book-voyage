@@ -193,7 +193,7 @@ export class OverviewMapComponent implements OnInit {
           let bookOwningAmount = bookInstance.ownings.length;
           if (bookOwningAmount !== 0) {
             let currentOwning = bookInstance.ownings[bookOwningAmount-1];
-            console.log(currentOwning);
+            // console.log(currentOwning);
             let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
             let owningMarker = L.marker(owningLocation, {icon: greenIcon}).addTo(mainMap);
 
