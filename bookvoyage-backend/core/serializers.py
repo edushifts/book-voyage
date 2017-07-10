@@ -1,5 +1,5 @@
-import json
 from rest_framework import serializers
+
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
 from django.contrib.auth.models import User
 
@@ -53,9 +53,6 @@ class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BookInstance
         fields = ('arrived', 'batch', 'ownings', 'holdings') # 'batch','book','holdings','owner'
-
-
-
                   
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
 #     snippets = serializers.HyperlinkedRelatedField(queryset=Snippet.objects.all(), view_name='snippet-detail', many=True)

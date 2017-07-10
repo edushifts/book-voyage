@@ -1,8 +1,14 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
-from .models import BookInstance, BookHolding
-from core.serializers import BookInstanceSerializer, BookHoldingSerializer
+from rest_framework.decorators import api_view
 
-from rest_framework import viewsets
+from .models import BookInstance, BookHolding, BookCode
+from core.serializers import BookInstanceSerializer, BookHoldingSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from rest_framework import viewsets, status
+
 
 # Create your views here.
 
@@ -41,19 +47,6 @@ def getBook(code):
         book = -1
     return book
 
-def getPrevHolderCount(bookInstanceId):
-    """
-    Takes a BookInstance id and returns the count of previous book holders.
-    If the BookInstance does not exists, it returns -1.
-    """
-    try:
-        # first check if the given book instance exists
-        BookInstance.objects.get(id=bookInstanceId)
-        prev_holders = BookHolding.objects.filter(book_instance_id=bookInstanceId).count()
-    except BookInstance.DoesNotExist:
-        prev_holders = -1
-    return prev_holders
-
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
@@ -61,9 +54,29 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
 
-class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+# UNUSED
+# class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+#     """
+#     This viewset automatically provides `list` and `detail` actions.
+#     """
+#     queryset = BookHolding.objects.all()
+#     serializer_class = BookHoldingSerializer
+
+class CodeExists(APIView):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    View to list all users in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
     """
-    queryset = BookHolding.objects.all()
-    serializer_class = BookHoldingSerializer
+
+    def post(self, request):
+        """
+        Return a list of all users.
+        """
+        try:
+            code = BookCode.objects.get(book_code=request.data["accessCode"])  # retrieve the user using accessCode
+        except BookCode.DoesNotExist:
+            return Response(data={'valid': False})  # return false as user does not exist
+        else:
+            return Response(data={'valid': True})  # Otherwise, return True

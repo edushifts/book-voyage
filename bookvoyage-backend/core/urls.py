@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/codeExists', views.CodeExists.as_view())
 ]
 
 
