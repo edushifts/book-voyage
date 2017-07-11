@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {environment} from "../../environments/environment";
+import {environment} from "../../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
-import {HeaderService} from "../header/header.service";
+import {HeaderService} from "../../header/header.service";
 import { Observable } from 'rxjs';
 import {Http, Response} from "@angular/http";
-import {BookService} from "./book.service";
-import {MapService, AddBookInstancesOptions} from "./map.service";
+import {BookService} from "../../book/book.service";
+import {MapService, AddBookInstancesOptions} from "../map.service";
 
 @Component({
   selector: 'app-overview-map',
@@ -53,6 +53,6 @@ export class OverviewMapComponent implements OnInit {
       drawLines: true
     }
     // Loads book instances
-    this.mapService.addBookHoldingMarkers(mainMap, bookInstanceOptions);
+    this.mapService.addBookInstances(mainMap, bookInstanceOptions);
   }
 }

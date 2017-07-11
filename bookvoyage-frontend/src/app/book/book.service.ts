@@ -22,7 +22,7 @@ export class BookService {
 
   getBookInstance(id: number) {
     // if (!this.bookInstances) {
-      return this.updateBookInstances()[id];
+      return this.updateBookInstance(id);
     // } else {
     //   return this.bookInstances[id];
     // }
@@ -33,6 +33,20 @@ export class BookService {
       .map(
         (response: Response) => {
           // on success, return all book instances
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
+  updateBookInstance(id) {
+    return this.http.get(environment.apiUrl + "api/bookInstances/" + id + "/")
+      .map(
+        (response: Response) => {
+          // on success, return specified book instance
           return response.json();
         }
       )

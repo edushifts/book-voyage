@@ -1,4 +1,4 @@
-import {BookService} from "./book.service";
+import {BookService} from "../book/book.service";
 import {environment} from "../../environments/environment";
 import {Injectable} from "@angular/core";
 
@@ -30,6 +30,11 @@ export interface AddBookInstancesOptions {
   addHolders: boolean;
   addOwners: boolean;
   drawLines: boolean;
+}
+
+export interface Coordinates {
+  lon: number;
+  lat: number;
 }
 
 @Injectable()
@@ -76,28 +81,36 @@ export class MapService {
     });
   }
 
-
   renderMap(mapId: string) {
+
     // Define maximum map bounds (to avoid moving off the map)
     let bounds = new L.LatLngBounds(new L.LatLng(85, -180), new L.LatLng(-85, 180));
 
     // Initiate Leaflet map, including initial location and scale
-    let mainMap = L.map(mapId, {
+    let map = L.map(mapId, {
       worldCopyJump: true,
       maxBounds: bounds,
       maxBoundsViscosity: 1.0
     }).setView([51.505, -0.09], 3);
 
     // Connect to the map tile provider and add tiles to the map
+    // To save resources, only on tileLayer is instantiated in one session
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
       minZoom: 2,
-      maxZoom: 16,
+      maxZoom: 9,
       ext: 'png',
-    }).addTo(mainMap);
+    }).addTo(map);
 
-    return mainMap;
+    return map;
+  }
+
+  addCustomMarker(map, coords: Coordinates, zoom: boolean) {
+    let customMarker = L.marker(coords, {icon: this.orangeIcon}).addTo(map);
+    if (zoom) {
+      map.flyTo(customMarker.getLatLng(), 9);
+    }
   }
 
   addBookBatchMarkers(mainMap) {
@@ -125,7 +138,7 @@ export class MapService {
       });
   }
 
-  addBookHoldingMarkers(mainMap, options?: AddBookInstancesOptions) {
+  addBookInstances(mainMap, options?: AddBookInstancesOptions) {
     // read optional options array and pass default values if lacking
     let addHolders = options && options.addHolders !== null ? options.addHolders : true;
     let addOwners = options && options.addOwners !== null ? options.addOwners : true;
@@ -137,7 +150,6 @@ export class MapService {
       (bookInstances) => {
 
         let bookId = 0;
-
 
         // look at each book location provided by the api
         for (let bookInstance of bookInstances) {
@@ -209,7 +221,6 @@ export class MapService {
                 owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
               }
               bookOwnings.push(owningMarker);
-              console.log(bookOwnings);
             }
           }
 
@@ -224,6 +235,104 @@ export class MapService {
 
         // create layer controls for all books and add to the map
         return L.control.layers(null, overlayMaps).addTo(mainMap);
+      },
+      (errorData) => {
+        console.log("Error loading book locations: " + errorData);
+      });
+  }
+
+  addBookInstance(map, id, options?: AddBookInstancesOptions) {
+    // read optional options array and pass default values if lacking
+    let addHolders = options && options.addHolders !== null ? options.addHolders : true;
+    let addOwners = options && options.addOwners !== null ? options.addOwners : true;
+    let drawLines = options && options.drawLines !== null ? options.drawLines : true;
+
+    this.bookService.getBookInstance(id).subscribe(
+      (bookInstance) => {
+
+        // create variables to store book instance features
+        let bookHoldings = [];
+        let bookLines = [];
+        let bookOwnings = [];
+        let batch;
+
+        if (addHolders) {
+
+          // render book instance batch location
+          let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
+          let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
+          batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + bookInstance.batch.date);
+          batch = (batchMarker);
+
+          // create array to hold marker locations to draw polyline between them
+          let holdingLocations = [];
+
+          // initiate with batch location
+          holdingLocations.push(batchLocation);
+
+          // place all holder data on map of this instance
+          for (let bookHolding of bookInstance.holdings) {
+            let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
+            let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
+
+            // add pop-up message
+            if (holdingLocation) {
+
+              holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
+            }
+            holdingLocations.push(holdingLocation);
+
+            bookHoldings.push(holdingMarker);
+          }
+
+          if (drawLines) {
+            // define line color with book instance id and then draw it
+            let lineColor = rainbow((id + 1)*10, 1);
+            let bookLine = L.polyline(holdingLocations, {color: lineColor});
+
+            // TODO: Fix this; it has an import issue
+            // // add directional arrow to polyline
+            // L.polylineDecorator(polyline, {
+            //   patterns: [
+            //     {
+            //       offset: '50%',
+            //       repeat: 0,
+            //       symbol: L.Symbol.arrowHead({pixelSize: 15, polygon: false, pathOptions: {stroke: true, color: lineColor}})
+            //     }
+            //   ]
+            // }).addTo(mainMap);
+            bookLines.push(bookLine);
+          }
+        }
+
+        // place the (last) owner on the map of this instance
+        // get amount of owners
+        if (addOwners) {
+          let bookOwningAmount = bookInstance.ownings.length;
+          if (bookOwningAmount !== 0) {
+            let currentOwning = bookInstance.ownings[bookOwningAmount - 1];
+            // console.log(currentOwning);
+            let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
+            let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
+
+            // add pop-up message
+            // TODO: change requisites
+            if (owningLocation) {
+              // TO-DO: check if anonymous
+              owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
+            }
+            bookOwnings.push(owningMarker);
+          }
+        }
+
+        // create layer group for current book and add to map
+        let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines).concat(batch);
+        //let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines);
+
+        let bookFeatureGroup = L.featureGroup(bookLayer);
+        map.flyToBounds(bookFeatureGroup.getBounds());
+        bookFeatureGroup.addTo(map);
+
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
