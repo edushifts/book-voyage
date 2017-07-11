@@ -60,14 +60,14 @@ export class SignupComponent implements OnInit, OnDestroy {
     if (password !== passwordConfirm) {
       this.passwordMismatch = true;
       this.passwordConfirmError = "Your password did not match";
+      form.controls['passwordConfirm'].setErrors({'valid': false});
       return;
     }
     // create account at backend
     this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm, email).subscribe(
       (token) => {
         // login
-        this.authService.login(email, password);
-        
+        this.authService.setToken(token);
         this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
         },
       (errorData) => {
