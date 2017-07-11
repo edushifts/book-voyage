@@ -11,7 +11,7 @@
       name="email"
       placeholder="e-mail address"
       #email="ngModel">
-    <span *ngIf="!email.valid && email.touched" class="help-block">{{ userNameError }}</span>
+    <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
     <input #password="ngModel" ngModel required type="password" id="password" name="password" placeholder="password">
     <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
     <input #passwordConfirm="ngModel" ngModel  required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password">

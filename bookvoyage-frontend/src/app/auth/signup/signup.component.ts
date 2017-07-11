@@ -75,13 +75,13 @@ export class SignupComponent implements OnInit, OnDestroy {
         let errors = errorData.json();
         this.usernameError = '';
         if (errors.username) {
-          for (let error of errors.password1) {
+          for (let error of errors.username) {
             this.usernameError += error;
           }
           form.controls['email'].setErrors({'valid': false});
         }
         if (errors.email) {
-          for (let error of errors.password1) {
+          for (let error of errors.email) {
             this.usernameError += error;
           }
           form.controls['email'].setErrors({'valid': false});
