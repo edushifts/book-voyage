@@ -4,6 +4,29 @@ from django.contrib.auth.models import User
 from djgeojson.fields import PointField
 from django.db import models
 
+class BookCode(models.Model):
+    """
+    class of book codes
+    book code - ready to be tied to a book and owner
+    """
+    book_code = models.CharField(
+        max_length=9,
+        unique=True,
+    )
+    book_batch = models.ForeignKey(
+        "BookBatch",
+        on_delete=models.CASCADE,
+        default=None,
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        """
+        String for representing the MyModelName object (in Admin site etc.)
+        """
+        return self.book_code
+
 class Author(models.Model):
     """
     class of authors:
@@ -158,7 +181,7 @@ class BookBatch(models.Model):
     date = models.DateField()
 
     def __str__(self):
-        return self.event + " (" + self.country + ")"
+        return self.event + " (" + self.country + ") | " + str(self.id)
 
     class Meta:
         verbose_name_plural = "Book batches"

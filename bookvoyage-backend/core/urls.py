@@ -6,6 +6,7 @@ from django.views.generic.base import TemplateView
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'bookInstances', views.BookInstanceViewSet)
+router.register(r'bookBatches', views.BookBatchViewSet)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
@@ -15,6 +16,7 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^api/codeExists', views.CodeExists.as_view())
 ]
 
 
