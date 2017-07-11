@@ -16,13 +16,19 @@ export class CodeFormComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router,
               private state: ActivatedRoute,
-              private loginService: AuthService) { }
+              private authService: AuthService) { }
 
   ngOnInit() {
   }
 
   ngOnDestroy() {
-    this.validitySub.unsubscribe();
+    if(this.validitySub) {
+      this.validitySub.unsubscribe();
+    }
+  }
+
+  displayCodeForm() {
+    return !this.authService.isLoggedIn();
   }
 
   onAccessCode() {
@@ -33,12 +39,12 @@ export class CodeFormComponent implements OnInit, OnDestroy {
     }
 
     // check if code is valid
-    this.validitySub = this.loginService.checkCode(this.codeForm.value['accessCode']).subscribe(
+    this.validitySub = this.authService.checkCode(this.codeForm.value['accessCode']).subscribe(
       (validity) => {
         if (!validity) {
           alert("The code you entered was incorrect :( ")
         } else{
-          this.loginService.accessCode = this.codeForm.value['accessCode'];
+          this.authService.accessCode = this.codeForm.value['accessCode'];
           this.router.navigate(['/signup'], {relativeTo: this.state});
         }
       },

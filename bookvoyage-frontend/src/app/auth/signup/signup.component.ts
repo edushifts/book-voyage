@@ -22,8 +22,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   secretCode;
 
-  constructor(private state: ActivatedRoute,
-              private authService: AuthService,
+  constructor(private authService: AuthService,
               private router: Router,
               private headerService: HeaderService) { }
 

@@ -1,4 +1,4 @@
-<div id="codeFormConAbs">
+<div id="codeFormConAbs" *ngIf="displayCodeForm()">
   <div id="codeFormCon">
     <form (ngSubmit)="onAccessCode()" class="codeForm hide-submit" #codeForm="ngForm">
       <input id="accessCode" type="text" placeholder="access code" name="accessCode" maxlength="9" ngModel>

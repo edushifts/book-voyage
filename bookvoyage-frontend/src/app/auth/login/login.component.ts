@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
@@ -9,9 +9,12 @@ import {Response} from "@angular/http";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   secretCode;
   subscribeLogin;
+  usernameError = '';
+  passwordError = '';
+  nonFieldError = '';
 
   constructor(private state: ActivatedRoute,
           private authService: AuthService,
@@ -55,6 +58,36 @@ export class LoginComponent implements OnInit {
             // return false to indicate failed login
             return false;
           }
+      },
+      (errorData) => {
+        // report on email errors
+        let errors = errorData.json();
+        console.log(errors);
+        this.usernameError = '';
+        if (errors.username) {
+          for (let error of errors.username) {
+            this.usernameError += error;
+          }
+          form.controls['email'].setErrors({'valid': false});
+        }
+
+        // report on password errors
+        if (errors.password1) {
+
+          this.passwordError = '';
+          for (let error of errors.password1) {
+            this.passwordError += error;
+          }
+          form.controls['password'].setErrors({'valid': false});
+        }
+
+        if (errors.non_field_errors) {
+          for (let error of errors.non_field_errors) {
+            this.nonFieldError += error;
+          }
+          form.controls['email'].setErrors({'valid': false});
+          form.controls['password'].setErrors({'valid': false});
+        }
       }
     );
     // create account at backend
