@@ -1,14 +1,11 @@
-from django.contrib.auth.models import User
 from django.shortcuts import render
-from rest_framework.decorators import api_view
 
-from .models import BookInstance, BookHolding, BookCode
-from core.serializers import BookInstanceSerializer, BookHoldingSerializer
+from .models import BookInstance, BookHolding, BookCode, BookBatch
+from core.serializers import BookInstanceSerializer, BookBatchSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework import viewsets, status
-
+from rest_framework import viewsets
 
 # Create your views here.
 
@@ -53,6 +50,13 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
+
+class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = BookBatch.objects.all()
+    serializer_class = BookBatchSerializer
 
 # UNUSED
 # class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):

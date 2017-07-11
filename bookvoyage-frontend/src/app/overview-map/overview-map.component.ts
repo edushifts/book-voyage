@@ -45,8 +45,7 @@ export class OverviewMapComponent implements OnInit {
     return this.http.get(environment.apiUrl + "api/bookInstances/")
       .map(
         (response: Response) => {
-          // on success, return token
-          // console.log(response.json().token);
+          // on success, return all book instances
           return response.json();
         }
       )
@@ -60,9 +59,21 @@ export class OverviewMapComponent implements OnInit {
     return this.http.get(environment.apiUrl + "api/bookInstances/")
       .map(
         (response: Response) => {
-          // on success, return token
-          // console.log(response.json().token);
+          // on success, return book instances with given id
           return response.json()[id];
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
+  getBookBatches() {
+    return this.http.get(environment.apiUrl + "api/bookBatches/")
+      .map(
+        (response: Response) => {
+          return response.json();
         }
       )
       .catch(
@@ -106,10 +117,39 @@ export class OverviewMapComponent implements OnInit {
     let Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
-      minZoom: 3,
+      minZoom: 2,
       maxZoom: 16,
       ext: 'png',
     }).addTo(mainMap);
+
+    this.getBookBatches().subscribe(
+      (bookBatches) => {
+        // define icon for marker
+        let orangeIcon = L.icon({
+          iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
+          shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+
+          //iconSize:     [38, 95], // size of the icon
+          //shadowSize:   [50, 64], // size of the shadow
+          iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
+          //shadowAnchor: [4, 62],  // the same for the shadow
+          //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        for (let bookBatch of bookBatches) {
+
+          let batchLocation = bookBatch.location.map(a => a.coordinates)[0].reverse();
+
+          // render marker
+          let batchMarker = L.marker(batchLocation, {icon: orangeIcon}).addTo(mainMap);
+
+          // add event details
+          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + bookBatch.date);
+        }
+      },
+      (errorData) => {
+        console.log("Error loading book locations: " + errorData);
+      });
 
     // Loads marker locations, displays locations on map and
     // performs onEachFeature function on each
@@ -133,18 +173,6 @@ export class OverviewMapComponent implements OnInit {
           });
 
           // define icon for marker
-          let orangeIcon = L.icon({
-            iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
-            shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
-
-            //iconSize:     [38, 95], // size of the icon
-            //shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
-            //shadowAnchor: [4, 62],  // the same for the shadow
-            //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-          });
-
-          // define icon for marker
           let greenIcon = L.icon({
             iconUrl:  environment.assetRoot +  'img/icons/marker-icon_green.png',
             shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
@@ -156,16 +184,8 @@ export class OverviewMapComponent implements OnInit {
             //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
           });
 
-          // add special marker for batch location
-          // TODO: make batch locations be rendered only once
-
-          let batch = bookInstance.batch;
+          // store book instance batch location to draw lines later on
           let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
-
-          let batchMarker = L.marker(batchLocation, {icon: orangeIcon}).addTo(mainMap);
-
-          // add event details
-          batchMarker.bindPopup("<b>Event: " + batch.event + "</b><br>" + batch.country + "<br>" + batch.date );
 
           // create array to hold marker locations to draw polyline between them
           let holdingLocations = [];
