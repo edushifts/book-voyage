@@ -14,6 +14,8 @@ import {FormsModule} from "@angular/forms";
 import {AuthService} from "./auth/auth.service";
 import {HttpModule} from "@angular/http";
 import {HeaderService} from "./header/header.service";
+import {BookService} from "./overview-map/book.service";
+import {MapService} from "./overview-map/map.service";
 
 @NgModule({
   declarations: [
@@ -30,9 +32,9 @@ import {HeaderService} from "./header/header.service";
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpModule
+    HttpModule,
   ],
-  providers: [AuthService, HeaderService],
+  providers: [AuthService, HeaderService, BookService, MapService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
