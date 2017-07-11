@@ -131,13 +131,21 @@ export class MapService {
     let addOwners = options && options.addOwners !== null ? options.addOwners : true;
     let drawLines = options && options.drawLines !== null ? options.drawLines : true;
 
+    let overlayMaps = {};
+
     this.bookService.getBookInstances().subscribe(
       (bookInstances) => {
 
         let bookId = 0;
 
+
         // look at each book location provided by the api
         for (let bookInstance of bookInstances) {
+
+          // create variables to store book instance features
+          let bookHoldings = [];
+          let bookLines = [];
+          let bookOwnings = [];
 
           if (addHolders) {
             // store book instance batch location to draw lines later on
@@ -152,7 +160,7 @@ export class MapService {
             // place all holder data on map of this instance
             for (let bookHolding of bookInstance.holdings) {
               let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
-              let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon}).addTo(mainMap);
+              let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
 
               // add pop-up message
               if (holdingLocation) {
@@ -160,12 +168,14 @@ export class MapService {
                 holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
               }
               holdingLocations.push(holdingLocation);
+
+              bookHoldings.push(holdingMarker);
             }
 
             if (drawLines) {
               // define line color with book instance id and then draw it
               let lineColor = rainbow((bookId + 1)*10, 1);
-              let polyline = L.polyline(holdingLocations, {color: lineColor}).addTo(mainMap);
+              let bookLine = L.polyline(holdingLocations, {color: lineColor});
 
               // TODO: Fix this; it has an import issue
               // // add directional arrow to polyline
@@ -178,6 +188,7 @@ export class MapService {
               //     }
               //   ]
               // }).addTo(mainMap);
+              bookLines.push(bookLine);
             }
           }
 
@@ -189,8 +200,7 @@ export class MapService {
               let currentOwning = bookInstance.ownings[bookOwningAmount - 1];
               // console.log(currentOwning);
               let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
-              let owningMarker = L.marker(owningLocation, {icon: this.greenIcon}).addTo(mainMap);
-
+              let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
 
               // add pop-up message
               // TODO: change requisites
@@ -198,11 +208,22 @@ export class MapService {
                 // TO-DO: check if anonymous
                 owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
               }
+              bookOwnings.push(owningMarker);
+              console.log(bookOwnings);
             }
           }
 
+          // create layer group for current book and add to map
+          let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines);
+          let bookLayerGroup = L.layerGroup(bookLayer);
+          bookLayerGroup.addTo(mainMap);
+          overlayMaps["book #" + bookId] = bookLayerGroup;
+
           bookId++;
         }
+
+        // create layer controls for all books and add to the map
+        return L.control.layers(null, overlayMaps).addTo(mainMap);
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
