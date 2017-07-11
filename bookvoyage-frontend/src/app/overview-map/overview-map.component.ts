@@ -82,6 +82,65 @@ export class OverviewMapComponent implements OnInit {
         });
   }
 
+  addBookBatchMarkers(mainMap) {
+    this.getBookBatches().subscribe(
+      (bookBatches) => {
+        // define icon for marker
+        let orangeIcon = L.icon({
+          iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
+          shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+
+          //iconSize:     [38, 95], // size of the icon
+          //shadowSize:   [50, 64], // size of the shadow
+          iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
+          //shadowAnchor: [4, 62],  // the same for the shadow
+          //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        let batchMarkers = [];
+
+        for (let bookBatch of bookBatches) {
+
+          let batchLocation = bookBatch.location.map(a => a.coordinates)[0].reverse();
+
+          // render marker
+          let batchMarker = L.marker(batchLocation, {icon: orangeIcon});
+
+          // add event details
+          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + bookBatch.date);
+
+          batchMarkers.push(batchMarker);
+        }
+        L.layerGroup(batchMarkers).addTo(mainMap);
+      },
+      (errorData) => {
+        console.log("Error loading book locations: " + errorData);
+      });
+  }
+
+  renderMap(mapId: string) {
+    // Define maximum map bounds (to avoid moving off the map)
+    let bounds = new L.LatLngBounds(new L.LatLng(85, -180), new L.LatLng(-85, 180));
+
+    // Initiate Leaflet map, including initial location and scale
+    let mainMap = L.map(mapId, {
+      worldCopyJump: true,
+      maxBounds: bounds,
+      maxBoundsViscosity: 1.0
+    }).setView([51.505, -0.09], 3);
+
+    // Connect to the map tile provider and add tiles to the map
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+      attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      subdomains: 'abcd',
+      minZoom: 2,
+      maxZoom: 16,
+      ext: 'png',
+    }).addTo(mainMap);
+
+    return mainMap;
+  }
+
   ngOnInit() {
     this.headerService.showAccountButtons = true;
     this.route
@@ -103,53 +162,11 @@ export class OverviewMapComponent implements OnInit {
           }
         });
 
-    // Define maximum map bounds (to avoid moving off the map)
-    let bounds = new L.LatLngBounds(new L.LatLng(85, -180), new L.LatLng(-85, 180));
+    // render basic map
+    let mainMap = this.renderMap('mainMap');
 
-    // Initate Leaflet map, including initial location and scale
-    let mainMap = L.map('mainMap', {
-      worldCopyJump: true,
-      maxBounds: bounds,
-      maxBoundsViscosity: 1.0
-    }).setView([51.505, -0.09], 3);
-
-    // Connect to the map tile provider and add tiles to the map
-    let Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-      attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      subdomains: 'abcd',
-      minZoom: 2,
-      maxZoom: 16,
-      ext: 'png',
-    }).addTo(mainMap);
-
-    this.getBookBatches().subscribe(
-      (bookBatches) => {
-        // define icon for marker
-        let orangeIcon = L.icon({
-          iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
-          shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
-
-          //iconSize:     [38, 95], // size of the icon
-          //shadowSize:   [50, 64], // size of the shadow
-          iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
-          //shadowAnchor: [4, 62],  // the same for the shadow
-          //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
-
-        for (let bookBatch of bookBatches) {
-
-          let batchLocation = bookBatch.location.map(a => a.coordinates)[0].reverse();
-
-          // render marker
-          let batchMarker = L.marker(batchLocation, {icon: orangeIcon}).addTo(mainMap);
-
-          // add event details
-          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + bookBatch.date);
-        }
-      },
-      (errorData) => {
-        console.log("Error loading book locations: " + errorData);
-      });
+    // Add book batch markers to the map
+    this.addBookBatchMarkers(mainMap);
 
     // Loads marker locations, displays locations on map and
     // performs onEachFeature function on each
