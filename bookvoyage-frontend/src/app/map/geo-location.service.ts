@@ -12,17 +12,18 @@ export class GeoLocationService {
   addressToCoord(address) {
     // clean address first
     address = address.replace(/\s/g, '+');
-
-    return this.http.get(environment.googleGeoBaseURL + address + "&key=" + environment.googleGeoAPI)
-      .map(
-        (response: Response) => {
-          return response.json().results[0].geometry.location;
-        }
-      )
-      .catch(
-        (error: Response) => {
-          return Observable.throw(error);
-        });
+    if (address !== "") {
+      return this.http.get(environment.googleGeoBaseURL + address + "&key=" + environment.googleGeoAPI)
+        .map(
+          (response: Response) => {
+            return response.json().results[0].geometry.location;
+          }
+        )
+        .catch(
+          (error: Response) => {
+            return Observable.throw(error);
+          });
+    }
   }
 
 }

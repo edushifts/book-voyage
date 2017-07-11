@@ -12,7 +12,7 @@ const appRoutes: Routes = [
   { path: 'account', component: ManageAccountComponent},
   { path: 'signup', component: SignupComponent},
   { path: 'signup', component: SignupComponent},
-  { path: 'journey', component: DetailMapComponent},
+  { path: 'continueJourney', component: DetailMapComponent},
 ];
 
 @NgModule({

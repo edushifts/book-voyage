@@ -17,6 +17,7 @@ import {HeaderService} from "./header/header.service";
 import {BookService} from "./book/book.service";
 import {MapService} from "./map/map.service";
 import { DetailMapComponent } from './map/detail-map/detail-map.component';
+import {NgSpinKitModule} from "ng-spin-kit";
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { DetailMapComponent } from './map/detail-map/detail-map.component';
     AppRoutingModule,
     FormsModule,
     HttpModule,
+    NgSpinKitModule
   ],
   providers: [AuthService, HeaderService, BookService, MapService],
   bootstrap: [AppComponent]

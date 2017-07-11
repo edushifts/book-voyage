@@ -67,7 +67,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       (token) => {
         // login
         this.authService.setToken(token);
-        this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
+        this.router.navigate(['continueJourney']);
         },
       (errorData) => {
         // report on email errors

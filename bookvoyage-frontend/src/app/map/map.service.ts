@@ -1,6 +1,9 @@
 import {BookService} from "../book/book.service";
 import {environment} from "../../environments/environment";
 import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Observable";
+import {Observer} from "rxjs/Observer";
+import {Subject} from "rxjs/Subject";
 
 // prevents Typescript errors with leaflet
 declare let L: any;
@@ -42,8 +45,17 @@ export class MapService {
   blueIcon;
   greenIcon;
   orangeIcon;
+  PurpleIcon;
+  customMarker;
+
+  holdingAmount$: Observable<number>;
+  private holdingAmount = new Subject<number>();
 
   constructor(private bookService: BookService) {
+    // make holdingAmount observable
+    this.holdingAmount$ = this.holdingAmount.asObservable();
+
+
     // define icon for marker type 1
     this.blueIcon = L.icon({
       iconUrl:  environment.assetRoot +  'img/icons/marker-icon.png',
@@ -56,7 +68,7 @@ export class MapService {
       //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
-    // define icon for marker type 1
+    // define icon for marker type 2
     this.greenIcon = L.icon({
       iconUrl:  environment.assetRoot +  'img/icons/marker-icon_green.png',
       shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
@@ -68,9 +80,21 @@ export class MapService {
       //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
     });
 
-    // define icon for marker type 1
+    // define icon for marker type 3
     this.orangeIcon = L.icon({
       iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
+      shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+
+      //iconSize:     [38, 95], // size of the icon
+      //shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
+      //shadowAnchor: [4, 62],  // the same for the shadow
+      //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
+    // define icon for marker type 4
+    this.PurpleIcon = L.icon({
+      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_purple.png',
       shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
 
       //iconSize:     [38, 95], // size of the icon
@@ -107,10 +131,17 @@ export class MapService {
   }
 
   addCustomMarker(map, coords: Coordinates, zoom: boolean) {
-    let customMarker = L.marker(coords, {icon: this.orangeIcon}).addTo(map);
+    this.customMarker = L.marker(coords, {icon: this.PurpleIcon}).addTo(map);
+
+    this.customMarker .bindPopup("This is you!");
     if (zoom) {
-      map.flyTo(customMarker.getLatLng(), 9);
+      map.flyTo(this.customMarker.getLatLng(), 9);
     }
+  }
+
+  resetCustomMarker(map) {
+    this.customMarker.removeFrom(map);
+    map.setView([51.505, -0.09], 3);
   }
 
   addBookBatchMarkers(mainMap) {
@@ -169,6 +200,7 @@ export class MapService {
             // initiate with batch location
             holdingLocations.push(batchLocation);
 
+
             // place all holder data on map of this instance
             for (let bookHolding of bookInstance.holdings) {
               let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
@@ -182,6 +214,7 @@ export class MapService {
               holdingLocations.push(holdingLocation);
 
               bookHoldings.push(holdingMarker);
+
             }
 
             if (drawLines) {
@@ -270,6 +303,7 @@ export class MapService {
           // initiate with batch location
           holdingLocations.push(batchLocation);
 
+          let holdingAmount = 0;
           // place all holder data on map of this instance
           for (let bookHolding of bookInstance.holdings) {
             let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
@@ -283,7 +317,9 @@ export class MapService {
             holdingLocations.push(holdingLocation);
 
             bookHoldings.push(holdingMarker);
+            holdingAmount++;
           }
+          this.holdingAmount.next(holdingAmount);
 
           if (drawLines) {
             // define line color with book instance id and then draw it

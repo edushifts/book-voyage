@@ -1,3 +1,4 @@
+import { OnInit } from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
@@ -5,11 +6,14 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class AuthService{
+export class AuthService implements OnInit {
   accessCode = '';
   private token: string = '';
 
   constructor(private http: Http) {
+  }
+
+  ngOnInit() {
     // set token if saved in local storage
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
