@@ -1,11 +1,11 @@
 from django.shortcuts import render
 
-from .models import BookInstance, BookHolding, BookCode, BookBatch
+from .models import BookInstance, BookBatch
 from core.serializers import BookInstanceSerializer, BookBatchSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 
 # Create your views here.
 
@@ -32,17 +32,6 @@ def login(request):
 
 def footer(request):
     return render(request,'footer.html')
-
-def getBook(code):
-    """
-    Takes a secret BookInstance access code and converts it to the public BookInstance id.
-    If the given code has no corresponding book, it returns -1.
-    """
-    try:
-        book = BookInstance.objects.get(access_code=code).id
-    except BookInstance.DoesNotExist:
-        book = -1
-    return book
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -72,6 +61,17 @@ class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
 #     queryset = BookHolding.objects.all()
 #     serializer_class = BookHoldingSerializer
 
+def get_book(code):
+    """
+    Takes a secret BookInstance access code and converts it to the public BookInstance id.
+    If the given code has no corresponding book, it returns -1.
+    """
+    try:
+        book = BookInstance.objects.get(book_code=code).id
+    except BookInstance.DoesNotExist:
+        book = -1
+    return book
+
 class CodeExists(APIView):
     """
     View to list all users in the system.
@@ -86,9 +86,8 @@ class CodeExists(APIView):
         """
         Return a list of all users.
         """
-        try:
-            code = BookCode.objects.get(book_code=request.data["accessCode"])  # retrieve the user using accessCode
-        except BookCode.DoesNotExist:
-            return Response(data={'valid': False})  # return false as user does not exist
+        book_id = get_book(request.data["accessCode"]) # retrieve the book instance id using accessCode
+        if book_id == -1:
+            return Response(data={'valid': False})  # return false as code is invalid
         else:
-            return Response(data={'valid': True})  # Otherwise, return True
+            return Response(data={'valid': True, 'book_id': book_id})  # Otherwise, return id

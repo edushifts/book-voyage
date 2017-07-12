@@ -4,29 +4,6 @@ from django.contrib.auth.models import User
 from djgeojson.fields import PointField
 from django.db import models
 
-class BookCode(models.Model):
-    """
-    class of book codes
-    book code - ready to be tied to a book and owner
-    """
-    book_code = models.CharField(
-        max_length=9,
-        unique=True,
-    )
-    book_batch = models.ForeignKey(
-        "BookBatch",
-        on_delete=models.CASCADE,
-        default=None,
-        blank=True,
-        null=True
-    )
-
-    def __str__(self):
-        """
-        String for representing the MyModelName object (in Admin site etc.)
-        """
-        return self.book_code
-
 class Author(models.Model):
     """
     class of authors:
@@ -62,7 +39,7 @@ class Book(models.Model):
         """
         String for representing the MyModelName object (in Admin site etc.)
         """
-        return self.title
+        return self.title + " | " + str(self.id)
 
 class BookInstance(models.Model):
     """
@@ -77,8 +54,8 @@ class BookInstance(models.Model):
     id = models.AutoField(
         primary_key=True,
     )
-    access_code = models.CharField(
-        max_length=64,
+    book_code = models.CharField(
+        max_length=9,
         unique=True,
     )
     book = models.ForeignKey(
@@ -88,6 +65,8 @@ class BookInstance(models.Model):
     batch = models.ForeignKey(
         "BookBatch",
         on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     arrived = models.BooleanField(
         default=False,
@@ -117,7 +96,11 @@ class BookOwning(models.Model):
         on_delete=models.CASCADE,
     )
     time = models.DateTimeField()
-    message = models.CharField(max_length=512)
+    message = models.CharField(
+        max_length=140,
+        blank=True,
+        default="",
+    )
     location = PointField()
 
     def __str__(self):
