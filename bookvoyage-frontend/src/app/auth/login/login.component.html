@@ -1,6 +1,7 @@
 <div class="mainContent">
   <form (ngSubmit)="loginUser(form)" #form="ngForm">
     <p class="menuBig">LOG IN</p>
+    <span *ngIf="!email.valid && email.touched" class="help-block">{{ nonFieldError }}</span>
     <input
       ngModel
       required
@@ -10,8 +11,9 @@
       name="email"
       placeholder="e-mail address"
       #email="ngModel">
-    <span *ngIf="!email.valid && email.touched" class="help-block">Please enter a valid e-mail address</span>
-    <input ngModel required type="password" id="password" name="password" placeholder="password">
+    <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
+    <input ngModel #password="ngModel" required type="password" id="password" name="password" placeholder="password">
+    <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
     <input [disabled]="!form.valid" type="submit" value="Enter">
   </form>
 </div>

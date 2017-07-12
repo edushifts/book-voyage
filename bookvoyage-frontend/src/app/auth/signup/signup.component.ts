@@ -22,8 +22,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
   secretCode;
 
-  constructor(private state: ActivatedRoute,
-              private authService: AuthService,
+  constructor(private authService: AuthService,
               private router: Router,
               private headerService: HeaderService) { }
 
@@ -60,28 +59,28 @@ export class SignupComponent implements OnInit, OnDestroy {
     if (password !== passwordConfirm) {
       this.passwordMismatch = true;
       this.passwordConfirmError = "Your password did not match";
+      form.controls['passwordConfirm'].setErrors({'valid': false});
       return;
     }
     // create account at backend
     this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm, email).subscribe(
       (token) => {
         // login
-        this.authService.login(email, password);
-        
-        this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
+        this.authService.setToken(token);
+        this.router.navigate(['continueJourney']);
         },
       (errorData) => {
         // report on email errors
         let errors = errorData.json();
         this.usernameError = '';
         if (errors.username) {
-          for (let error of errors.password1) {
+          for (let error of errors.username) {
             this.usernameError += error;
           }
           form.controls['email'].setErrors({'valid': false});
         }
         if (errors.email) {
-          for (let error of errors.password1) {
+          for (let error of errors.email) {
             this.usernameError += error;
           }
           form.controls['email'].setErrors({'valid': false});

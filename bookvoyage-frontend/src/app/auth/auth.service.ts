@@ -1,3 +1,4 @@
+import { OnInit } from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
@@ -5,13 +6,19 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
 @Injectable()
-export class AuthService{
-  accessCode = '';
+export class AuthService implements OnInit {
   private token: string = '';
 
+  // Sign-up classes
+  accessCode = '';
+  holdingLocation: Coordinates;
+
   constructor(private http: Http) {
+  }
+
+  ngOnInit() {
     // set token if saved in local storage
-    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.token = currentUser && currentUser.token;
   }
 
@@ -21,7 +28,7 @@ export class AuthService{
       password1: password1,
       password2: password2,
       email: email
-    }
+    };
 
     return this.http.post(environment.apiUrl + "api-auth/registration/", newUser)
       .map(
@@ -39,14 +46,14 @@ export class AuthService{
 
   setToken(token) {
     this.token = token;
-    console.log(token);
+    localStorage.setItem('currentUser', token);
   }
 
   login(username: string, password: string) {
     let user = {
       username: username,
       password: password
-    }
+    };
 
     return this.http.post(environment.apiUrl + 'api-auth/login/', user);
   }

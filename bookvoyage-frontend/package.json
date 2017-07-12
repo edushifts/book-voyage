@@ -28,6 +28,7 @@
     "jquery": "^3.2.1",
     "leaflet": "^1.1.0",
     "leaflet-polylinedecorator": "^1.1.0",
+    "ng-spin-kit": "^5.1.1",
     "rxjs": "^5.1.0",
     "zone": "^0.3.4",
     "zone.js": "^0.8.4"

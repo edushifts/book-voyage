@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './footer/footer.component';
-import { OverviewMapComponent } from './overview-map/overview-map.component';
+import { OverviewMapComponent } from './map/overview-map/overview-map.component';
 import { HeaderComponent } from './header/header.component';
 import { CodeFormComponent } from './code-form/code-form.component';
 import { LoginComponent } from './auth/login/login.component';
@@ -14,8 +14,10 @@ import {FormsModule} from "@angular/forms";
 import {AuthService} from "./auth/auth.service";
 import {HttpModule} from "@angular/http";
 import {HeaderService} from "./header/header.service";
-import {BookService} from "./overview-map/book.service";
-import {MapService} from "./overview-map/map.service";
+import {BookService} from "./book/book.service";
+import {MapService} from "./map/map.service";
+import { DetailMapComponent } from './map/detail-map/detail-map.component';
+import {NgSpinKitModule} from "ng-spin-kit";
 
 @NgModule({
   declarations: [
@@ -26,13 +28,15 @@ import {MapService} from "./overview-map/map.service";
     CodeFormComponent,
     LoginComponent,
     ManageAccountComponent,
-    SignupComponent
+    SignupComponent,
+    DetailMapComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpModule,
+    NgSpinKitModule
   ],
   providers: [AuthService, HeaderService, BookService, MapService],
   bootstrap: [AppComponent]
