@@ -36,7 +36,7 @@ export interface AddBookInstancesOptions {
 }
 
 export interface Coordinates {
-  lon: number;
+  lng: number;
   lat: number;
 }
 
@@ -46,7 +46,10 @@ export class MapService {
   greenIcon;
   orangeIcon;
   PurpleIcon;
+
   customMarker;
+  bookBounds;
+  previousHolder;
 
   holdingAmount$: Observable<number>;
   private holdingAmount = new Subject<number>();
@@ -141,7 +144,11 @@ export class MapService {
 
   resetCustomMarker(map) {
     this.customMarker.removeFrom(map);
-    map.setView([51.505, -0.09], 3);
+    map.flyToBounds(this.bookBounds);
+  }
+
+  getCustomMarkerCoords<Coordinates>(map) {
+    return this.customMarker._latlng;
   }
 
   addBookBatchMarkers(mainMap) {
@@ -291,6 +298,12 @@ export class MapService {
 
         if (addHolders) {
 
+          // report the total amount of holders
+          let holdingAmount = bookInstance.holdings.length;
+          this.holdingAmount.next(holdingAmount);
+          // store the final holder coordinates for the final animation
+          this.previousHolder = bookInstance.holdings[holdingAmount-1];
+
           // render book instance batch location
           let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
           let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
@@ -303,7 +316,6 @@ export class MapService {
           // initiate with batch location
           holdingLocations.push(batchLocation);
 
-          let holdingAmount = 0;
           // place all holder data on map of this instance
           for (let bookHolding of bookInstance.holdings) {
             let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
@@ -317,9 +329,7 @@ export class MapService {
             holdingLocations.push(holdingLocation);
 
             bookHoldings.push(holdingMarker);
-            holdingAmount++;
           }
-          this.holdingAmount.next(holdingAmount);
 
           if (drawLines) {
             // define line color with book instance id and then draw it
@@ -366,12 +376,22 @@ export class MapService {
         //let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines);
 
         let bookFeatureGroup = L.featureGroup(bookLayer);
-        map.flyToBounds(bookFeatureGroup.getBounds());
+        this.bookBounds = bookFeatureGroup.getBounds();
+        map.flyToBounds(this.bookBounds);
         bookFeatureGroup.addTo(map);
 
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
       });
+  }
+
+  bookInstanceAddedAnimation(map) {
+    let previousHolderCoords: Coordinates = {
+      lat: this.previousHolder.location[0].coordinates[0],
+      lng: this.previousHolder.location[0].coordinates[1]
+    };
+    L.polyline([previousHolderCoords, this.customMarker._latlng], {color: "black"}).addTo(map);
+    map.flyToBounds(this.bookBounds);
   }
 }

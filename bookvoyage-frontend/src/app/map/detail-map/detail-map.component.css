@@ -2,12 +2,12 @@
   height: 50vh;
 }
 
-#bottomPane {
+.bottomPane {
   height: 30vh;
   text-align: center;
 }
 
-#bottomPane > p {
+.bottomPane > p {
   max-width: 600px;
   margin: 20px auto;
   font-size: 1.5em;

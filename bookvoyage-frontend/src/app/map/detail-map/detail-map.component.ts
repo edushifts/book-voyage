@@ -3,6 +3,8 @@ import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 
 import { NgSpinKitModule } from 'ng-spin-kit'
+import {AuthService} from "../../auth/auth.service";
+import {Router} from "@angular/router";
 
 function getOrdinal(n) {
   if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
@@ -25,9 +27,12 @@ export class DetailMapComponent implements OnInit {
   loading = false;
   locationPicked = false;
   webGeoWait = false;
+  locationFinal = false;
 
   constructor(private mapService: MapService,
-              private geoLocationService: GeoLocationService) { }
+              private geoLocationService: GeoLocationService,
+              private authService: AuthService,
+              private router: Router) { }
 
   ngOnInit() {
     // render basic map
@@ -80,7 +85,7 @@ export class DetailMapComponent implements OnInit {
         (location) => {
           let coordinates: Coordinates = {
             lat: location.coords.latitude,
-            lon: location.coords.longitude
+            lng: location.coords.longitude
           };
           this.mapService.addCustomMarker(this.mainMap, coordinates, true);
           this.loading = false;
@@ -104,6 +109,14 @@ export class DetailMapComponent implements OnInit {
   }
 
   continue() {
+    this.authService.holdingLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
+    this.locationFinal = true;
 
+    // call final animation
+    this.mapService.bookInstanceAddedAnimation(this.mainMap);
+  }
+
+  complete() {
+    this.router.navigate(['/']);
   }
 }

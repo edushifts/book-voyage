@@ -7,8 +7,11 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService implements OnInit {
-  accessCode = '';
   private token: string = '';
+
+  // Sign-up classes
+  accessCode = '';
+  holdingLocation: Coordinates;
 
   constructor(private http: Http) {
   }
