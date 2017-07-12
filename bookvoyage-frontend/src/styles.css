@@ -33,7 +33,7 @@ html, body {
 }
 
 /* form element */
-#codeFormConAbs, #registerLogin form {
+.codeFormConAbs, #registerLogin form {
   position: absolute;
   bottom: 100px;
   z-index: 6000;

@@ -42,8 +42,14 @@ export class DetailMapComponent implements OnInit {
       drawLines: true
     };
 
+    // get book instance id from auth service
+    let bookId = this.authService.getBookId();
+    if (bookId == -1) {
+      this.router.navigate([''], {queryParams: {codeError: 2 }});
+    }
+
     // Loads book instance
-    let bookInstance = this.mapService.addBookInstance(this.mainMap, 2, bookInstanceOptions);
+    let bookInstance = this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
     this.mapService.holdingAmount$.subscribe(
       (amount: number) => {
         this.currentHolder = getOrdinal(amount+1);

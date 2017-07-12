@@ -1,5 +1,5 @@
-<div id="codeFormConAbs" *ngIf="displayCodeForm()">
-  <div id="codeFormCon">
+<div class="codeFormConAbs" *ngIf="displayCodeForm()">
+  <div class="codeFormCon">
     <form (ngSubmit)="onAccessCode()" class="codeForm hide-submit" #codeForm="ngForm">
       <input id="accessCode" type="text" placeholder="access code" name="accessCode" maxlength="9" ngModel>
       <label>
@@ -7,5 +7,11 @@
         <img class="arrowImg" src="assets/img/arrow.svg" onerror="this.src='assets/img/arrow.png'">
       </label>
     </form>
+  </div>
+</div>
+
+<div class="codeFormConAbs" *ngIf="displayReminder()" (click)="onReminderButton()">
+  <div class="codeFormCon reminderButton">
+    <p>Click here to finish<br>your book registration.</p>
   </div>
 </div>

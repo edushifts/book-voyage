@@ -28,7 +28,15 @@ export class CodeFormComponent implements OnInit, OnDestroy {
   }
 
   displayCodeForm() {
-    return !this.authService.isLoggedIn();
+    return !this.authService.isLoggedIn() || this.authService.getBookId() === -1;
+  }
+
+  displayReminder() {
+    return this.authService.getBookId() !== -1 && this.authService.isLoggedIn();
+  }
+
+  onReminderButton() {
+    this.router.navigate(['/continueJourney'], {relativeTo: this.state});
   }
 
   onAccessCode() {
@@ -44,8 +52,15 @@ export class CodeFormComponent implements OnInit, OnDestroy {
         if (!validity) {
           alert("The code you entered was incorrect :( ")
         } else{
-          this.authService.setAccessCode(this.codeForm.value['accessCode']);
-          this.router.navigate(['/signup'], {relativeTo: this.state});
+          // check if user is logged in already
+          // if so, immediately route to journey page
+          if (this.authService.isLoggedIn()) {
+            this.router.navigate(['/continueJourney'], {relativeTo: this.state});
+          } else {
+            this.router.navigate(['/signup'], {relativeTo: this.state});
+          }
+          // otherwise, route to signup page
+
         }
       },
       (error) => {

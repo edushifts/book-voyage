@@ -38,7 +38,29 @@ export class AuthService implements OnInit {
 
   // Sign-up classes
   private accessCode = '';
+  private bookId: number;
   private holdingLocation: Coordinates;
+
+  clearUserSessionData() {
+    this.holdingLocation = null;
+    this.bookId = null;
+    this.bookId = null;
+  }
+
+  getBookId() {
+    if (this.bookId) {
+      return this.bookId;
+    } else if (localStorage.getItem('userBookId')) {
+      return localStorage.getItem('userBookId');
+    } else {
+      return -1;
+    }
+  }
+
+  setBookId(id:number) {
+    localStorage.setItem('userBookId', "" + id);
+    this.bookId= id;
+  }
 
   setHoldingLocation(holdingLocation: Coordinates) {
     this.holdingLocation = holdingLocation;
@@ -57,8 +79,10 @@ export class AuthService implements OnInit {
 
   ngOnInit() {
     // set token if saved in local storage
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.token = currentUser && currentUser.token;
+    if (localStorage.getItem('currentUser')) {
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.token = currentUser && currentUser.token;
+    }
   }
 
   createAuthorizationHeader(headers: Headers) {
@@ -128,7 +152,8 @@ export class AuthService implements OnInit {
   logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;
-    localStorage.removeItem('currentUser');
+    localStorage.clear();
+    this.clearUserSessionData();
   }
 
   isLoggedIn() {
@@ -148,9 +173,10 @@ export class AuthService implements OnInit {
     return this.http.post(environment.apiUrl + "api/codeExists/", request)
       .map(
         (response: Response) => {
-          // on success, return token
-          // console.log(response.json().token);
-          return response.json().valid;
+          this.setAccessCode(accessCode);
+          let bookCode = response.json();
+          this.setBookId(bookCode.book_id);
+          return bookCode.valid;
         }
       )
       .catch(

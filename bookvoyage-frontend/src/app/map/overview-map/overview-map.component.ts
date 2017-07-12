@@ -26,14 +26,18 @@ export class OverviewMapComponent implements OnInit {
       .subscribe(params => {
         if (+params['codeError'] === 1) {
           this.wrongCode = true;
-          alert("The code you entered was incorrect :( ")
+          alert("The code you entered was incorrect. Please check it again.");
+        } else if (+params['codeError'] === 2) {
+          this.wrongCode = true;
+          alert("Your session has expired. Please login and enter your code again.");
         } else {
           this.wrongCode = false;
           // nothing happens
         }
+
         if (+params['loggedIn'] === 1) {
           this.wrongCode = true;
-          alert("You are logged in now.")
+          alert("You are logged in now.");
         } else {
           this.wrongCode = false;
           // nothing happens
