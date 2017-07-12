@@ -35,7 +35,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
 
     // remove buttons from header
-    this.headerService.showAccountButtons = false;
+    // this.headerService.showAccountButtons = false;
 
     // check if code exists in book database
     // if not, reroute to denial page
@@ -73,7 +73,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         // set name of person too
         this.authService.setUserName(first_name, last_name).subscribe(
           (success) => {
-            console.log("done!");
+            // console.log("done!");
         },
           (error) => {
             console.log(error);
