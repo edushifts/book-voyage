@@ -23,9 +23,8 @@ export class DetailMapComponent implements OnInit {
   mainMap;
   currentHolder = '';
   loading = false;
-  locationPicked = false;
   webGeoWait = false;
-  locationFinal = false;
+  formPhase: number = 1;
 
   constructor(private mapService: MapService,
               private geoLocationService: GeoLocationService,
@@ -62,7 +61,7 @@ export class DetailMapComponent implements OnInit {
       this.geoLocationService.addressToCoord(address).subscribe(
         (coordinates) => {
           this.loading = false;
-          this.locationPicked = true;
+          this.formPhase= 2;
           this.mapService.addCustomMarker(this.mainMap, coordinates, true);
         },
         (error) => {
@@ -88,7 +87,7 @@ export class DetailMapComponent implements OnInit {
           this.mapService.addCustomMarker(this.mainMap, coordinates, true);
           this.loading = false;
           this.webGeoWait = false;
-          this.locationPicked = true;
+          this.formPhase= 2;
         },
         (error) => {
           alert("Geolocation failed - please try again or locate by city.");
@@ -101,14 +100,14 @@ export class DetailMapComponent implements OnInit {
 
   reset() {
     this.loading = false;
-    this.locationPicked = false;
+    this.formPhase= 1;
     this.webGeoWait = false;
     this.mapService.resetCustomMarker(this.mainMap);
   }
 
   continue() {
     this.authService.setHoldingLocation(this.mapService.getCustomMarkerCoords(this.mainMap));
-    this.locationFinal = true;
+    this.formPhase = 3;
 
     // call final animation
     this.mapService.bookInstanceAddedAnimation(this.mainMap);

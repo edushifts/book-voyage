@@ -6,7 +6,7 @@
     <p class="secondaryFont">Please allow the location request by your browser</p>
   </div>
 
-  <div *ngIf="!locationPicked && !loading" class="secondaryFont bottomPane">
+  <div *ngIf="formPhase === 1 && !loading" class="secondaryFont bottomPane">
 
     <p class="topText">Look at you! Congratulations on being the {{ currentHolder }} holder of this book. Will you get it closer to its final destination?</p>
     <p class="bottomText">Please locate the place where you are reading it.</p>
@@ -22,7 +22,7 @@
     </button>
   </div>
 
-  <div *ngIf="locationPicked && !locationFinal" class="secondaryFont bottomPane">
+  <div *ngIf="formPhase === 2" class="secondaryFont bottomPane">
     <p class="topText">Aha! So that’s where it has gotten itself. Not bad!</p>
     <p class="bottomText">Does the shown location look about correct?</p>
 
@@ -35,7 +35,7 @@
     </button>
   </div>
 
-  <div *ngIf="locationFinal" class="secondaryFont bottomPane">
+  <div *ngIf="formPhase === 3" class="secondaryFont bottomPane">
     <p class="topText">Awesome! You are part of the chain now.</p>
     <p class="bottomText">Time to leave your mark with a message.</p>
 
