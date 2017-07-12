@@ -25,11 +25,14 @@ class UserGenSerializer(serializers.ModelSerializer):
 
 class OwnerGenSerializer(serializers.ModelSerializer):
     owner = UserGenSerializer(many=False, read_only=True)
-
     location = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
 
     def get_location(self, obj):
         return obj.location,  # As long as the fields are auto serializable to JSON
+
+    def get_time(self, obj):
+        return obj.time.strftime("%Y-%m-%d"),  # As long as the fields are auto serializable to JSON
 
     class Meta:
         model = BookOwning
@@ -48,9 +51,13 @@ class BookBatchSerializer(serializers.HyperlinkedModelSerializer):
 class BookHoldingSerializer(serializers.HyperlinkedModelSerializer):
     holder = UserGenSerializer(many=False, read_only=True)
     location = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
 
     def get_location(self, obj):
         return obj.location,  # As long as the fields are auto serializable to JSON
+
+    def get_time(self, obj):
+        return obj.time.strftime("%Y-%m-%d"),  # As long as the fields are auto serializable to JSON
 
     class Meta:
         model = BookHolding
