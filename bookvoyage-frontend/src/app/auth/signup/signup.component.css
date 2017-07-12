@@ -5,7 +5,7 @@
 }
 
 form {
-  padding-top: 20vh;
+  padding-top: 15vh;
 }
 
 form input {
@@ -21,8 +21,20 @@ form input {
   letter-spacing: 0.1em;
   font-family: 'BebasNeue', sans-serif;
 }
+
+.names {
+  text-align: center;
+}
+
+.inlineForm {
+  width: 18.5% !important;
+  display: inline !important;
+  min-width: 125px !important;
+  margin: 10px 0px 0px 3px !important;
+}
+
 .code {
-   width: 20% !important;
+  width: 20% !important;
   text-align: center;
  }
 

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
-
-import { NgSpinKitModule } from 'ng-spin-kit'
 import {AuthService} from "../../auth/auth.service";
 import {Router} from "@angular/router";
 
@@ -109,7 +107,7 @@ export class DetailMapComponent implements OnInit {
   }
 
   continue() {
-    this.authService.holdingLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
+    this.authService.setHoldingLocation(this.mapService.getCustomMarkerCoords(this.mainMap));
     this.locationFinal = true;
 
     // call final animation

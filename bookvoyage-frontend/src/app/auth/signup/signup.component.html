@@ -2,6 +2,25 @@
   <form (ngSubmit)="createAccount(form)" #form="ngForm">
     <input type="text" [value]="secretCode" disabled class="code">
     <p class="menuBig">JOURNEY FOUND</p>
+    <div class="names">
+      <input
+        class="inlineForm"
+        ngModel
+        required
+        id="first_name"
+        name="first_name"
+        placeholder="first name"
+        #first_name="ngModel">
+      <input
+        class="inlineForm"
+        ngModel
+        required
+        id="last_name"
+        name="last_name"
+        placeholder="last name"
+        #last_name="ngModel">
+    </div>
+    <span *ngIf="(!first_name.valid && first_name.touched) || (!last_name.valid && last_name.touched)" class="help-block">Please enter your name</span>
     <input
       ngModel
       required

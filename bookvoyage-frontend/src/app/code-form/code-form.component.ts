@@ -44,7 +44,7 @@ export class CodeFormComponent implements OnInit, OnDestroy {
         if (!validity) {
           alert("The code you entered was incorrect :( ")
         } else{
-          this.authService.accessCode = this.codeForm.value['accessCode'];
+          this.authService.setAccessCode(this.codeForm.value['accessCode']);
           this.router.navigate(['/signup'], {relativeTo: this.state});
         }
       },
