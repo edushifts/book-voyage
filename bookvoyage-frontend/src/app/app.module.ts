@@ -16,8 +16,9 @@ import {HttpModule} from "@angular/http";
 import {HeaderService} from "./header/header.service";
 import {BookService} from "./book/book.service";
 import {MapService} from "./map/map.service";
-import { DetailMapComponent } from './map/detail-map/detail-map.component';
+import { FormMapComponent } from './map/form-map/form-map.component';
 import {NgSpinKitModule} from "ng-spin-kit";
+import { DetailMapComponent } from './map/detail-map/detail-map.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import {NgSpinKitModule} from "ng-spin-kit";
     LoginComponent,
     ManageAccountComponent,
     SignupComponent,
+    FormMapComponent,
     DetailMapComponent
   ],
   imports: [

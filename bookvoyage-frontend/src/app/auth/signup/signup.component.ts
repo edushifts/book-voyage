@@ -31,7 +31,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 
     // check if code is valid
     if (this.secretCode.length != 9) {
-      this.router.navigate([''], {queryParams: {codeError: 1 }});
+      this.router.navigate([''], {queryParams: {error: 1 }});
     }
 
     // remove buttons from header
@@ -80,7 +80,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           }
         );
 
-        this.router.navigate(['continueJourney']);
+        this.router.navigate(['journey/continue']);
         },
       (errorData) => {
         // report on email errors

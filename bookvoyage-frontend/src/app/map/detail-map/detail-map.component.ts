@@ -1,17 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
+import {AddBookInstancesOptions, MapService} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
-import {AuthService} from "../../auth/auth.service";
-import {Router} from "@angular/router";
-
-function getOrdinal(n) {
-  if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
-    var s=["th","st","nd","rd"],
-      v=n%100;
-    return n+(s[(v-20)%10]||s[v]||s[0]);
-  }
-  return n;
-}
+import {ActivatedRoute, Params} from "@angular/router";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-detail-map',
@@ -20,106 +11,33 @@ function getOrdinal(n) {
   providers: [GeoLocationService]
 })
 export class DetailMapComponent implements OnInit {
+  bookId: number;
   mainMap;
-  currentHolder = '';
-  loading = false;
-  webGeoWait = false;
-  formPhase: number = 1;
 
   constructor(private mapService: MapService,
-              private geoLocationService: GeoLocationService,
-              private authService: AuthService,
-              private router: Router) { }
+              private route: ActivatedRoute,
+              private titleService: Title) { }
 
   ngOnInit() {
-    // render basic map
-    this.mainMap = this.mapService.renderMap('mainMap');
+    this.route.params
+      .subscribe(
+        (params: Params) => {
+          this.bookId = +params['id'];
 
-    // create options array
-    let bookInstanceOptions: AddBookInstancesOptions = {
-      addHolders: true,
-      addOwners: true,
-      drawLines: true
-    };
+          // render basic map
+          this.mainMap = this.mapService.renderMap('mainMap');
 
-    // get book instance id from auth service
-    let bookId = this.authService.getBookId();
-    if (bookId == -1) {
-      this.router.navigate([''], {queryParams: {codeError: 2 }});
-    }
-
-    // Loads book instance
-    let bookInstance = this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
-    this.mapService.holdingAmount$.subscribe(
-      (amount: number) => {
-        this.currentHolder = getOrdinal(amount+1);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  markerByAddress() {
-    this.loading = true;
-    let address = window.prompt("Fill in the city you took the book to:","");
-    if (address) {
-      this.geoLocationService.addressToCoord(address).subscribe(
-        (coordinates) => {
-          this.loading = false;
-          this.formPhase= 2;
-          this.mapService.addCustomMarker(this.mainMap, coordinates, true);
-        },
-        (error) => {
-          alert("Geolocation failed - did you type that correctly?");
-          this.loading = false;
-        }
-      )
-    } else {
-      this.loading = false;
-    }
-  }
-
-  markerByGeo() {
-    if(navigator.geolocation){
-      this.loading = true;
-      this.webGeoWait = true;
-      navigator.geolocation.getCurrentPosition(
-        (location) => {
-          let coordinates: Coordinates = {
-            lat: location.coords.latitude,
-            lng: location.coords.longitude
+          // create options array
+          let bookInstanceOptions: AddBookInstancesOptions = {
+            addHolders: true,
+            addOwners: true,
+            drawLines: true
           };
-          this.mapService.addCustomMarker(this.mainMap, coordinates, true);
-          this.loading = false;
-          this.webGeoWait = false;
-          this.formPhase= 2;
-        },
-        (error) => {
-          alert("Geolocation failed - please try again or locate by city.");
-          this.loading = false;
-          this.webGeoWait = false;
+
+          // Loads book instance
+          this.mapService.addBookInstance(this.mainMap, this.bookId, bookInstanceOptions);
         }
       );
-    }
-  }
-
-  reset() {
-    this.loading = false;
-    this.formPhase= 1;
-    this.webGeoWait = false;
-    this.mapService.resetCustomMarker(this.mainMap);
-  }
-
-  continue() {
-    this.authService.setHoldingLocation(this.mapService.getCustomMarkerCoords(this.mainMap));
-    this.formPhase = 3;
-
-    // call final animation
-    this.mapService.bookInstanceAddedAnimation(this.mainMap);
-  }
-
-  complete() {
-    this.router.navigate(['/']);
+    this.titleService.setTitle("EDUshifts Now | Journey " + this.bookId);
   }
 }

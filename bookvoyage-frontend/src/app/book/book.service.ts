@@ -3,6 +3,7 @@ import {Observable} from "rxjs/Observable";
 import {Http, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
 import 'rxjs/add/operator/map';
+import {Router} from "@angular/router";
 
 @Injectable()
 export class BookService {
@@ -10,7 +11,8 @@ export class BookService {
   // bookInstances;
   // bookBatches;
 
-  constructor(private http: Http) {}
+  constructor(private http: Http,
+              private router: Router) {}
 
   getBookInstances() {
     // if (!this.bookInstances) {
@@ -29,7 +31,8 @@ export class BookService {
   }
 
   updateBookInstances() {
-    return this.http.get(environment.apiUrl + "api/bookInstances/")
+    // return this.http.get(environment.apiUrl + "api/bookInstances/") // would return all books
+    return this.http.get(environment.apiUrl + "api/bookInstancesActive/")
       .map(
         (response: Response) => {
           // on success, return all book instances
@@ -52,6 +55,7 @@ export class BookService {
       )
       .catch(
         (error: Response) => {
+          this.router.navigate([''], {queryParams: {error: 3 }});
           return Observable.throw(error);
         });
   }

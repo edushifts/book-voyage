@@ -28,15 +28,16 @@ export class CodeFormComponent implements OnInit, OnDestroy {
   }
 
   displayCodeForm() {
-    return !this.authService.isLoggedIn() || this.authService.getBookId() === -1;
+    return !this.authService.isLoggedIn() || this.authService.getBookId() === -1 || this.authService.getAccessCode() === "wrong";
   }
 
   displayReminder() {
-    return this.authService.getBookId() !== -1 && this.authService.isLoggedIn();
+    return this.authService.getBookId() !== -1 && this.authService.isLoggedIn() && this.authService.getAccessCode() !== "wrong";
   }
 
   onReminderButton() {
-    this.router.navigate(['/continueJourney'], {relativeTo: this.state});
+    let bookId = this.authService.getBookId();
+    this.router.navigate(['journey', bookId, 'continue'], {relativeTo: this.state});
   }
 
   onAccessCode() {
@@ -55,7 +56,8 @@ export class CodeFormComponent implements OnInit, OnDestroy {
           // check if user is logged in already
           // if so, immediately route to journey page
           if (this.authService.isLoggedIn()) {
-            this.router.navigate(['/continueJourney'], {relativeTo: this.state});
+            let bookId = this.authService.getBookId();
+            this.router.navigate(['journey', bookId, 'continue'], {relativeTo: this.state});
           } else {
             this.router.navigate(['/signup'], {relativeTo: this.state});
           }

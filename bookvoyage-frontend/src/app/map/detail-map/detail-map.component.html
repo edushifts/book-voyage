@@ -1,46 +1,4 @@
 <div class="mainContent">
   <div id="mainMap"></div>
-
-  <div *ngIf="webGeoWait" class="secondaryFont bottomPane">
-    <sk-pulse [isRunning]="loading" [color]="'#1d335f'"></sk-pulse>
-    <p class="secondaryFont">Please allow the location request by your browser</p>
-  </div>
-
-  <div *ngIf="formPhase === 1 && !loading" class="secondaryFont bottomPane">
-
-    <p class="topText">Look at you! Congratulations on being the {{ currentHolder }} holder of this book. Will you get it closer to its final destination?</p>
-    <p class="bottomText">Please locate the place where you are reading it.</p>
-
-    <button class="menuButton" (click)="markerByGeo()">
-      <p>Use GPS/IP</p>
-    </button>
-
-    <p class="inline">or</p>
-
-    <button class="menuButton" (click)="markerByAddress()">
-      <p>Enter city name</p>
-    </button>
-  </div>
-
-  <div *ngIf="formPhase === 2" class="secondaryFont bottomPane">
-    <p class="topText">Aha! So that’s where it has gotten itself. Not bad!</p>
-    <p class="bottomText">Does the shown location look about correct?</p>
-
-    <button class="menuButton" (click)="reset()">
-      <p>No (try again)</p>
-    </button>
-
-    <button class="menuButton" (click)="continue()">
-      <p>Yes (continue)</p>
-    </button>
-  </div>
-
-  <div *ngIf="formPhase === 3" class="secondaryFont bottomPane">
-    <p class="topText">Awesome! You are part of the chain now.</p>
-    <p class="bottomText">Time to leave your mark with a message.</p>
-
-    <button class="menuButton" (click)="complete()">
-      <p>Let's go!</p>
-    </button>
-  </div>
 </div>
+<app-footer></app-footer>

@@ -67,11 +67,18 @@ export class AuthService implements OnInit {
   }
 
   setAccessCode(accessCode: string) {
+    localStorage.setItem('accessCode', "" + accessCode);
     this.accessCode = accessCode;
   }
 
-  getAccessCode() {
-    return this.accessCode;
+  getAccessCode<String>() {
+    if (this.accessCode) {
+      return this.accessCode;
+    } else if (localStorage.getItem('accessCode')) {
+      return localStorage.getItem('accessCode');
+    } else {
+      return "wrong";
+    }
   }
 
   constructor(private http: Http) {
@@ -152,7 +159,9 @@ export class AuthService implements OnInit {
   logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("userBookId");
+
     this.clearUserSessionData();
   }
 
@@ -165,7 +174,7 @@ export class AuthService implements OnInit {
     }
   }
 
-  checkCode(accessCode) {
+  checkCode(accessCode: string) {
     let request = {
       accessCode: accessCode.toUpperCase(),
     };
@@ -173,9 +182,11 @@ export class AuthService implements OnInit {
     return this.http.post(environment.apiUrl + "api/codeExists/", request)
       .map(
         (response: Response) => {
-          this.setAccessCode(accessCode);
           let bookCode = response.json();
-          this.setBookId(bookCode.book_id);
+          if(bookCode.valid) {
+            this.setAccessCode(accessCode);
+            this.setBookId(bookCode.book_id);
+          }
           return bookCode.valid;
         }
       )
