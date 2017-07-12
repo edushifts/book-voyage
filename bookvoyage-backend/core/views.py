@@ -5,7 +5,7 @@ from core.serializers import BookInstanceSerializer, BookBatchSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 
 # Create your views here.
 
@@ -48,6 +48,9 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
+    permission_classes = ()
+    authentication_classes = ()
+
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
 
@@ -55,6 +58,9 @@ class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
+    permission_classes = ()
+    authentication_classes = ()
+
     queryset = BookBatch.objects.all()
     serializer_class = BookBatchSerializer
 
@@ -73,6 +79,8 @@ class CodeExists(APIView):
     * Requires token authentication.
     * Only admin users are able to access this view.
     """
+    permission_classes = ()
+    authentication_classes = ()
 
     def post(self, request):
         """
