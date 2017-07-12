@@ -74,7 +74,7 @@ class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = BookInstance
-        fields = ('arrived', 'batch', 'ownings', 'holdings') # 'batch','book','holdings','owner'
+        fields = ('id', 'arrived', 'batch', 'ownings', 'holdings') # 'batch','book','holdings','owner'
                   
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
 #     snippets = serializers.HyperlinkedRelatedField(queryset=Snippet.objects.all(), view_name='snippet-detail', many=True)

@@ -36,11 +36,24 @@ def footer(request):
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
+    Contains all book instances
     """
     permission_classes = ()
     authentication_classes = ()
 
     queryset = BookInstance.objects.all()
+    serializer_class = BookInstanceSerializer
+
+class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.\
+    Contains only book instances with at least one past holding
+    Used to save resources and loading time
+    """
+    permission_classes = ()
+    authentication_classes = ()
+
+    queryset = BookInstance.objects.exclude(holdings__isnull=True)
     serializer_class = BookInstanceSerializer
 
 class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):

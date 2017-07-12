@@ -7,6 +7,7 @@ from django.views.generic.base import TemplateView
 router = DefaultRouter()
 router.register(r'bookInstances', views.BookInstanceViewSet)
 router.register(r'bookBatches', views.BookBatchViewSet)
+router.register(r'bookInstancesActive', views.BookInstanceViewSetMin)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.
