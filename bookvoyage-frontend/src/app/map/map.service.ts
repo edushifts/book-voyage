@@ -165,7 +165,7 @@ export class MapService {
           let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
 
           // add event details
-          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + bookBatch.date);
+          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + '<span class="popup-date">' + bookBatch.date + '</span>');
 
           batchMarkers.push(batchMarker);
         }
@@ -216,7 +216,7 @@ export class MapService {
               // add pop-up message
               if (holdingLocation) {
 
-                holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
+                holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + '<span class="popup-date">' + bookHolding.time + '</span>');
               }
               holdingLocations.push(holdingLocation);
 
@@ -258,7 +258,7 @@ export class MapService {
               // TODO: change requisites
               if (owningLocation) {
                 // TO-DO: check if anonymous
-                owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
+                owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
               }
               bookOwnings.push(owningMarker);
             }
@@ -307,7 +307,7 @@ export class MapService {
           // render book instance batch location
           let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
           let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
-          batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + bookInstance.batch.date);
+          batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + '<span class="popup-date">' + bookInstance.batch.date + '</span>');
           batch = (batchMarker);
 
           // create array to hold marker locations to draw polyline between them
@@ -324,7 +324,7 @@ export class MapService {
             // add pop-up message
             if (holdingLocation) {
 
-              holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + bookHolding.time);
+              holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + '<span class="popup-date">' + bookHolding.time + '</span>');
             }
             holdingLocations.push(holdingLocation);
 
@@ -365,7 +365,7 @@ export class MapService {
             // TODO: change requisites
             if (owningLocation) {
               // TO-DO: check if anonymous
-              owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + currentOwning.time);
+              owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
             }
             bookOwnings.push(owningMarker);
           }
