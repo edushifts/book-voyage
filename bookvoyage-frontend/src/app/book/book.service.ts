@@ -75,7 +75,7 @@ export class BookService {
       mail_updates: mail_updates
     };
 
-    console.log(newBookHolding); // DEBUG
+    //console.log(newBookHolding); // DEBUG
 
     let headers = new Headers();
     this.authService.createAuthorizationHeader(headers);

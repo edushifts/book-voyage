@@ -186,7 +186,7 @@ export class AuthService implements OnInit {
     };
 
     let token = this.getToken();
-    console.log(token);
+    // console.log(token); // DEBUG
 
     let headers = new Headers();
     this.createAuthorizationHeader(headers);
