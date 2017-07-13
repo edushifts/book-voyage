@@ -42,6 +42,7 @@ input.ng-invalid.ng-touched {
 
 input[type="submit"]:disabled {
   background: dimgrey !important;
+  cursor: default;
 }
 
 .help-block {
