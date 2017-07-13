@@ -51,11 +51,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           // login successful if there's a jwt token in the response
           let token = response.json() && response.json().token;
           if (token) {
-            // set token property
-            this.authService.setToken(token);
 
             // store username and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify({username: email, token: token}));
+            this.authService.setCurrentUser(response.json());
 
             // return true to indicate successful login
             // if no access code is known, route to front page

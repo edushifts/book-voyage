@@ -153,7 +153,8 @@ REST_USE_JWT = True
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=900),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=3),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
 # TODO : add e-mail verification
