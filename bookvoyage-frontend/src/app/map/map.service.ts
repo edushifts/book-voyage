@@ -77,7 +77,7 @@ export class MapService {
       //shadowSize:   [50, 64], // size of the shadow
       iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
       //shadowAnchor: [4, 62],  // the same for the shadow
-      //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 2
@@ -89,7 +89,7 @@ export class MapService {
       //shadowSize:   [50, 64], // size of the shadow
       iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
       //shadowAnchor: [4, 62],  // the same for the shadow
-      //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 3
@@ -101,7 +101,7 @@ export class MapService {
       //shadowSize:   [50, 64], // size of the shadow
       iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
       //shadowAnchor: [4, 62],  // the same for the shadow
-      //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 4
