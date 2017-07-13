@@ -19,6 +19,7 @@ import {MapService} from "./map/map.service";
 import { FormMapComponent } from './map/form-map/form-map.component';
 import {NgSpinKitModule} from "ng-spin-kit";
 import { DetailMapComponent } from './map/detail-map/detail-map.component';
+import {AuthGuard} from "./auth/auth-guard.service";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { DetailMapComponent } from './map/detail-map/detail-map.component';
     HttpModule,
     NgSpinKitModule
   ],
-  providers: [AuthService, HeaderService, BookService, MapService],
+  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

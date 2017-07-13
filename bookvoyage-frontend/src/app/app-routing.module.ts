@@ -6,20 +6,23 @@ import {ManageAccountComponent} from "./auth/manage-account/manage-account.compo
 import {SignupComponent} from "./auth/signup/signup.component";
 import {FormMapComponent} from "./map/form-map/form-map.component";
 import {DetailMapComponent} from "./map/detail-map/detail-map.component";
+import {AuthGuard} from "./auth/auth-guard.service";
 
 const appRoutes: Routes = [
-  { path: '', component: OverviewMapComponent, pathMatch: 'full' },
-  { path: 'login', component: LoginComponent},
-  { path: 'account', component: ManageAccountComponent},
-  { path: 'signup', component: SignupComponent},
-  { path: 'signup', component: SignupComponent},
-  { path: 'journey', children: [
-    { path: '', component: OverviewMapComponent, pathMatch: 'full' },
-    { path: ':id', children: [
-      { path: '', component: DetailMapComponent, pathMatch: 'full' },
-      { path: 'continue', component: FormMapComponent},
+  { path: '', children: [
+    { path: '', component: OverviewMapComponent, pathMatch: 'full'},
+    { path: 'login', component: LoginComponent},
+    { path: 'account', component: ManageAccountComponent},
+    { path: 'signup', component: SignupComponent},
+    { path: 'signup', component: SignupComponent},
+    { path: 'journey', children: [
+      { path: '', component: OverviewMapComponent, pathMatch: 'full' },
+      { path: ':id', children: [
+        { path: '', component: DetailMapComponent, pathMatch: 'full' },
+        { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
+      ]},
     ]},
-  ]},
+  ]}
 ];
 
 @NgModule({
