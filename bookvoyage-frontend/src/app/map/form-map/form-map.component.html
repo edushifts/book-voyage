@@ -36,6 +36,38 @@
   </div>
 
   <div *ngIf="formPhase === 3" class="secondaryFont bottomPane">
+    <p class="topText">Now, let's talk communications.</p>
+    <p class="bottomText">You <em>can</em> be anonymous, but the community cannot find you that way.</p>
+
+    <form id="dataPreferences" (ngSubmit)="submitPreferences(preferenceForm)" #preferenceForm="ngForm">
+      <div class="form-group">
+          <label>
+            <input required type="checkbox" name="consent" [(ngModel)]="consentBox">
+            I agree with the use of my provided data*
+          </label>
+      </div>
+
+      <div class="form-group">
+          <label>
+            <input type="checkbox" name="updates" ngModel #updates="ngModel">
+            I want to receive book updates by e-mail
+          </label>
+      </div>
+
+      <div class="form-group">
+          <label>
+            <input type="checkbox" name="anonymous" ngModel #anonymous="ngModel">
+            I want my name censored on the site
+          </label>
+      </div>
+
+      <button [disabled]="!preferenceForm.valid" type="submit" class="menuButton menuButtonBottomMargin">
+        <p>Ready to share!</p>
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="formPhase === 4" class="secondaryFont bottomPane">
     <p class="topText">Time to leave your mark with a message!</p>
     <p class="bottomText">Tell the community a bit about yourself.</p>
 
@@ -46,11 +78,9 @@
         <p>That's it!</p>
       </button>
     </form>
-
-
   </div>
 
-  <div *ngIf="formPhase === 4" class="secondaryFont bottomPane">
+  <div *ngIf="formPhase === 5" class="secondaryFont bottomPane">
     <p class="topText">You have now officially been added to this book’s tale. We are curious to see how you will continue it!</p>
     <p class="bottomText">You will receive an e-mail with a tracking link soon.</p>
 
