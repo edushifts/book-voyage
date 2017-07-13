@@ -35,6 +35,24 @@
   font-weight: 300;
 }
 
+#messageForm {
+
+}
+
+textarea {
+  resize: none;
+  display: block;
+  width: 400px;
+  height: 84px;
+  text-align: center;
+  margin: 20px auto;
+  font-family: inherit;
+  border: none;
+  background: #1d335f;
+  color: white;
+  padding: 10px;
+}
+
 @media screen and (max-width: 550px) {
   #bottomPane p {
     font-size: 1.2em;

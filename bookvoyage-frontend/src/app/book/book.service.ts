@@ -73,7 +73,7 @@ export class BookService {
       book_code: book_code
     };
 
-    console.log(newBookHolding);
+    // console.log(newBookHolding); // DEBUG
 
     let headers = new Headers();
     this.authService.createAuthorizationHeader(headers);

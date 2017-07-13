@@ -44,9 +44,10 @@ export class AuthService implements OnInit {
   constructor(private http: Http) {
   }
 
-  clearUserSessionData() {
+  clearLocalBookData() {
+    localStorage.removeItem("userBookId");
+    localStorage.removeItem("accessCode");
     this.holdingLocation = null;
-    this.bookId = null;
     this.bookId = null;
   }
 
@@ -168,11 +169,9 @@ export class AuthService implements OnInit {
 
   logout(): void {
     // clear token remove user from local storage to log user out
-    this.token = null;
+    this.clearLocalBookData();
     localStorage.removeItem("currentUser");
-    localStorage.removeItem("userBookId");
-    localStorage.removeItem("accessCode");
-    this.clearUserSessionData();
+    window.sessionStorage.clear();
   }
 
   isLoggedIn<Boolean>() {

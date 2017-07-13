@@ -30,17 +30,32 @@
       <p>No (try again)</p>
     </button>
 
-    <button class="menuButton" (click)="continue()">
+    <button class="menuButton" (click)="submitLocation()">
       <p>Yes (continue)</p>
     </button>
   </div>
 
   <div *ngIf="formPhase === 3" class="secondaryFont bottomPane">
-    <p class="topText">Awesome! You are part of the chain now.</p>
-    <p class="bottomText">Time to leave your mark with a message.</p>
+    <p class="topText">Time to leave your mark with a message!</p>
+    <p class="bottomText">Tell the community a bit about yourself.</p>
+
+    <form id="messageForm" (ngSubmit)="submitMessage(messageForm)" #messageForm="ngForm">
+      <textarea rows="1" placeholder="Write your public message here (enters will be removed)" maxlength="140" id="message" required ngModel name="message"
+                class="code"></textarea>
+      <button type="submit" class="menuButton">
+        <p>That's it!</p>
+      </button>
+    </form>
+
+
+  </div>
+
+  <div *ngIf="formPhase === 4" class="secondaryFont bottomPane">
+    <p class="topText">You have now officially been added to this book’s tale. We are curious to see how you will continue it!</p>
+    <p class="bottomText">You will receive an e-mail with a tracking link soon.</p>
 
     <button class="menuButton" (click)="complete()">
-      <p>Let's go!</p>
+      <p>Go to journey page</p>
     </button>
   </div>
 </div>

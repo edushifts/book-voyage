@@ -59,6 +59,10 @@ export class MapService {
     return this.controlGroup;
   }
 
+  clearCustomMarker() {
+    this.customMarker = null;
+  }
+
   constructor(private bookService: BookService) {
     // make holdingAmount observable
     this.holdingAmount$ = this.holdingAmount.asObservable();

@@ -4,6 +4,7 @@ import {GeoLocationService} from "../geo-location.service";
 import {AuthService} from "../../auth/auth.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
+import {NgForm} from "@angular/forms";
 
 function getOrdinal(n) {
   if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
@@ -27,6 +28,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
   webGeoWait = false;
   formPhase: number = 1;
   geoLocateSubscriber;
+  userMessage: string = "";
+  bookId: number;
 
   constructor(private mapService: MapService,
               private geoLocationService: GeoLocationService,
@@ -131,6 +134,28 @@ export class FormMapComponent implements OnInit, OnDestroy {
     }
   }
 
+  submitMessage(form: NgForm) {
+    this.userMessage = form.value['message'];
+
+    let currentMarkerLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
+    this.bookService.postBookHolding(this.userMessage, currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode()).subscribe(
+      (success) => {
+        this.formPhase = 4;
+        // call final animation
+        this.mapService.bookInstanceAddedAnimation(this.mainMap);
+
+        // before removal, save book id for final link
+        this.bookId = this.authService.getBookId();
+        // remove the book session and local data
+        this.authService.clearLocalBookData();
+        this.mapService.clearCustomMarker();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
   reset() {
     this.loading = false;
     this.formPhase= 1;
@@ -138,24 +163,12 @@ export class FormMapComponent implements OnInit, OnDestroy {
     this.mapService.resetCustomMarker(this.mainMap);
   }
 
-  continue() {
+  submitLocation() {
     this.authService.setHoldingLocation(this.mapService.getCustomMarkerCoords(this.mainMap));
     this.formPhase = 3;
-
-    // call final animation
-    this.mapService.bookInstanceAddedAnimation(this.mainMap);
   }
 
   complete() {
-    let currentMarkerLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
-    this.bookService.postBookHolding("this just sent", currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode()).subscribe(
-      (success) => {
-        console.log("Amazing!");
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    // this.router.navigate(['/']);
+    this.router.navigate(['journey', this.bookId]);
   }
 }
