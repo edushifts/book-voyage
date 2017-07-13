@@ -236,7 +236,7 @@ export class MapService {
 
             if (drawLines) {
               // define line color with book instance id and then draw it
-              let lineColor = rainbow((bookId + 1)*10, 1);
+              let lineColor = rainbow(bookId, 1000);
               let bookLine = L.polyline(holdingLocations, {color: lineColor});
 
               // TODO: Fix this; it has an import issue
