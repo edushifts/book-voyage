@@ -13,7 +13,6 @@ import {MapService, AddBookInstancesOptions} from "../map.service";
   styleUrls: ['./overview-map.component.css'],
 })
 export class OverviewMapComponent implements OnInit {
-  wrongCode = false;
 
   constructor(private route: ActivatedRoute,
               private headerService: HeaderService,
@@ -25,26 +24,24 @@ export class OverviewMapComponent implements OnInit {
       .queryParams
       .subscribe(params => {
         if (+params['error'] === 1) {
-          this.wrongCode = true;
-          alert("The code you entered was incorrect. Please check it again.");
+          alert("The code you entered was incorrect. Please double-check it.");
         } else if (+params['error'] === 2) {
-          this.wrongCode = true;
-          alert("Your session has expired. Please enter your code again.");
+          alert("Your session has expired. Please login again.");
         } else if (+params['error'] === 3) {
-          this.wrongCode = true;
-          alert("The journey you specified has not yet begun.");
+          alert("The journey you looked up has not yet begun.");
         } else {
-          this.wrongCode = false;
           // nothing happens
         }
 
-        if (+params['loggedIn'] === 1) {
-          this.wrongCode = true;
-          alert("You are logged in now.");
-        } else {
-          this.wrongCode = false;
-          // nothing happens
-        }
+        // not good for user experience - disabled
+        // if (+params['loggedIn'] === 1) {
+        //   this.wrongCode = true;
+        //   alert("You are logged in now.");
+        //
+        // } else {
+        //   this.wrongCode = false;
+        //   // nothing happens
+        // }
       });
 
     // render basic map
@@ -58,7 +55,8 @@ export class OverviewMapComponent implements OnInit {
       addHolders: true,
       addOwners: false,
       drawLines: true
-    }
+    };
+
     // Loads book instances
     this.mapService.addBookInstances(mainMap, bookInstanceOptions);
   }
