@@ -41,6 +41,9 @@ export class AuthService implements OnInit {
   private bookId: number;
   private holdingLocation: Coordinates;
 
+  constructor(private http: Http) {
+  }
+
   clearUserSessionData() {
     this.holdingLocation = null;
     this.bookId = null;
@@ -79,9 +82,6 @@ export class AuthService implements OnInit {
     } else {
       return "wrong";
     }
-  }
-
-  constructor(private http: Http) {
   }
 
   ngOnInit() {
@@ -159,13 +159,13 @@ export class AuthService implements OnInit {
   logout(): void {
     // clear token remove user from local storage to log user out
     this.token = null;
-    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
     localStorage.removeItem("userBookId");
-
+    localStorage.removeItem("accessCode");
     this.clearUserSessionData();
   }
 
-  isLoggedIn() {
+  isLoggedIn<Boolean>() {
     if (localStorage.getItem('currentUser')) {
       // logged in so return true
       return true;
