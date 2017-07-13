@@ -31,9 +31,16 @@ class Book(models.Model):
     cover - contains cover image of book
     """
     title = models.CharField(max_length=64)
-    authors = models.ManyToManyField(Author)
-    abstract = models.CharField(max_length=512)
-    cover = models.ImageField(upload_to = "bookCovers")
+    authors = models.ManyToManyField(
+        Author,
+        blank=True
+    )
+    abstract = models.CharField(
+        max_length=512,
+        blank=True,
+        default=""
+    )
+    # cover = models.ImageField(upload_to = "bookCovers")
 
     def __str__(self):
         """
@@ -94,6 +101,8 @@ class BookOwning(models.Model):
         BookInstance,
         related_name='ownings',
         on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     time = models.DateTimeField()
     message = models.CharField(
@@ -132,7 +141,11 @@ class BookHolding(models.Model):
         on_delete=models.CASCADE,
     )
     time = models.DateTimeField()
-    message = models.CharField(max_length=512)
+    message = models.CharField(
+        max_length=140,
+        blank=True,
+        default="",
+    )
     location = PointField()
 
     def __str__(self):

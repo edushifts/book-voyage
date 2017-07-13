@@ -2,6 +2,9 @@ from django.conf.urls import url, include
 from core import views
 from rest_framework.routers import DefaultRouter
 from django.views.generic.base import TemplateView
+from rest_framework_jwt.views import refresh_jwt_token
+
+
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
@@ -16,9 +19,10 @@ urlpatterns = [
     #url(r'^$', views.index, name='index'),
     #url(r'^login/$', views.login, name='login'),
     url(r'^api/', include(router.urls)),
+    url(r'^api/codeExists', views.CodeExists.as_view()),
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^api/codeExists', views.CodeExists.as_view())
+    url(r'^api-auth/refresh/', refresh_jwt_token)
 ]
 
 

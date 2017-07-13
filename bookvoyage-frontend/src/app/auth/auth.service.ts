@@ -4,10 +4,16 @@ import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
+import {Router} from "@angular/router";
 
-// Auxiliary function that parses names and capitalises them
-// Not perfect at the moment.
-// Adjusted from here: https://gist.github.com/jeffjohnson9046/9789876
+/**
+ * @function
+ * @description
+ * Auxiliary function that parses names and capitalises them
+ * Not perfect at the moment.
+ * Adjusted from here: https://gist.github.com/jeffjohnson9046/9789876
+ */
+
 function nameCase(input) {
   let smallWords = /^(de|van|der|den|te|ter|ten|a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs?\.?|via)$/i;
 
@@ -32,16 +38,28 @@ function nameCase(input) {
   });
 }
 
+export interface CurrentUser {
+  user: {
+    email: string,
+    first_name: string,
+    last_name: string,
+    pk: number,
+    username: string
+  },
+  token: string
+}
+
 @Injectable()
 export class AuthService implements OnInit {
-  private token: string = '';
+  private currentUser: CurrentUser;
 
   // Sign-up classes
   private accessCode = '';
   private bookId: number;
   private holdingLocation: Coordinates;
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              private router: Router) {
   }
 
   clearLocalBookData() {
@@ -86,21 +104,47 @@ export class AuthService implements OnInit {
   }
 
   getToken() {
-    if (this.token != "") {
-      return this.token
-    } else if (localStorage.getItem('currentUser')) {
-      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.token = currentUser && currentUser.token;
-      return this.token;
+    if (this.getCurrentUser()) {
+      return this.getCurrentUser().token;
     } else {
-      console.log("3");
       return "";
     }
   }
 
-  setToken(token) {
-    this.token = token;
-    localStorage.setItem('currentUser', token);
+  refreshToken() {
+    // refresh token
+    let tokenRequest = {
+      "token": JSON.parse(localStorage.getItem('currentUser'))['token']
+    };
+
+    return this.http.post(environment.apiUrl + "api-auth/refresh/", tokenRequest).subscribe(
+      (response: Response) => {
+        let token = response.json()['token'];
+
+        let currentUser: CurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+        currentUser = {
+          user: currentUser.user,
+          token: token
+        };
+        this.setCurrentUser(currentUser);
+      },
+      (error) => {
+        this.logout(true);
+      }
+    )
+  }
+
+  setCurrentUser(currentUser: CurrentUser)  {
+    // console.log(currentUser); // DEBUG
+    this.currentUser = currentUser;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  }
+  getCurrentUser(): CurrentUser  {
+    if (this.currentUser) {
+      return this.currentUser
+    } else {
+      return JSON.parse(localStorage.getItem('currentUser'));
+    }
   }
 
   ngOnInit() {
@@ -109,8 +153,8 @@ export class AuthService implements OnInit {
   }
 
   createAuthorizationHeader(headers: Headers) {
-    headers.append('Authorization', 'JWT ' +
-      this.getToken());
+    // console.log(this.getToken()); // DEBUG
+    headers.append('Authorization', 'JWT ' + this.getToken());
   }
 
   registerUser(username, password1, password2, email) {
@@ -126,7 +170,7 @@ export class AuthService implements OnInit {
         (response: Response) => {
           // on success, return token
           // console.log(response.json().token);
-          return response.json().token;
+          return response.json();
         }
       )
       .catch(
@@ -140,6 +184,9 @@ export class AuthService implements OnInit {
       first_name: nameCase(first_name),
       last_name: nameCase(last_name),
     };
+
+    let token = this.getToken();
+    // console.log(token); // DEBUG
 
     let headers = new Headers();
     this.createAuthorizationHeader(headers);
@@ -167,14 +214,19 @@ export class AuthService implements OnInit {
     return this.http.post(environment.apiUrl + 'api-auth/login/', user);
   }
 
-  logout(): void {
+  logout(expired?: boolean): void {
     // clear token remove user from local storage to log user out
     this.clearLocalBookData();
     localStorage.removeItem("currentUser");
     window.sessionStorage.clear();
+    if (expired) {
+      this.router.navigate([''], {queryParams: {error: 2 }});
+    } else {
+      this.router.navigate(['']);
+    }
   }
 
-  isLoggedIn<Boolean>() {
+  isLoggedIn(): boolean {
     if (localStorage.getItem('currentUser')) {
       // logged in so return true
       return true;

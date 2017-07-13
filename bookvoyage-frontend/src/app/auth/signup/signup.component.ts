@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {AuthService} from "../auth.service";
+import {AuthService, CurrentUser} from "../auth.service";
 import {NgForm} from "@angular/forms";
 import {Response} from "@angular/http";
 import {HeaderService} from "../../header/header.service";
@@ -66,9 +66,9 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
     // create account at backend
     this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm, email).subscribe(
-      (token) => {
+      (currentUser : CurrentUser) => {
         // login
-        this.authService.setToken(token);
+        this.authService.setCurrentUser(currentUser);
 
         // set name of person too
         this.authService.setUserName(first_name, last_name).subscribe(
@@ -80,7 +80,7 @@ export class SignupComponent implements OnInit, OnDestroy {
           }
         );
 
-        this.router.navigate(['journey/continue']);
+        this.router.navigate(['journey', this.authService.getBookId(), 'continue']);
         },
       (errorData) => {
         // report on email errors

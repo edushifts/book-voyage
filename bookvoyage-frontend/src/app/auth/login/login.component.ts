@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   usernameError = '';
   passwordError = '';
   nonFieldError = '';
+  generalError = false;
 
   constructor(private state: ActivatedRoute,
           private authService: AuthService,
@@ -36,6 +37,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  generalErrorRecovery(form: NgForm) {
+    this.generalError = false;
+  }
+
   loginUser(form: NgForm) {
     const email = form.value.email;
     const password = form.value.password;
@@ -46,11 +51,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           // login successful if there's a jwt token in the response
           let token = response.json() && response.json().token;
           if (token) {
-            // set token property
-            this.authService.setToken(token);
 
             // store username and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify({username: email, token: token}));
+            this.authService.setCurrentUser(response.json());
 
             // return true to indicate successful login
             // if no access code is known, route to front page
@@ -91,8 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           for (let error of errors.non_field_errors) {
             this.nonFieldError += error;
           }
-          form.controls['email'].setErrors({'valid': false});
-          form.controls['password'].setErrors({'valid': false});
+          this.generalError = true;
         }
       }
     );

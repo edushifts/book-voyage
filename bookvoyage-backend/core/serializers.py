@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
+from django.contrib.auth.models import Group
 import datetime
 
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
@@ -83,14 +84,18 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(required=False, read_only=True)
     holder = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     location = serializers.JSONField(required=True)
+    anonymous = serializers.BooleanField(read_only=False, required=False, write_only=True)
+    mail_updates = serializers.BooleanField(read_only=False, required=False, write_only=True)
 
     def create(self, validated_data):
         # if book code does not correspond with book holding id, refuse post
         try:
             book = BookInstance.objects.get(book_code=validated_data['book_code']).id
+            del validated_data["book_code"]
         except BookInstance.DoesNotExist:
             raise ParseError(detail="Book code is faulty", code=400)
         else:
+            # get currently logged-in user and designate as holder
             try:
                 user = None
                 request = self.context.get("request")
@@ -99,9 +104,28 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
             except BookInstance.DoesNotExist:
                 raise ParseError(detail="User name error", code=400)
             else:
+                # add user to user group Anonymous if specified
+                try:
+                    if validated_data['anonymous']:
+                        g_a = Group.objects.get(name='Anonymous')
+                        g_a.user_set.add(user)
+                    del validated_data['anonymous']
+                except Exception:
+                    pass
+
+                # add user to user group MailUpdates if specified
+                try:
+                    if validated_data['mail_updates']:
+                        g_m = Group.objects.get(name='MailUpdates')
+                        g_m.user_set.add(user)
+                    del validated_data['mail_updates']
+                except Exception:
+                    pass
+
+                # add current time
                 validated_data['time'] = datetime.datetime.now()
                 validated_data['holder'] = user
-                del validated_data["book_code"]
+
                 BookHolding(**validated_data).save()
                 return BookHolding(**validated_data)
 

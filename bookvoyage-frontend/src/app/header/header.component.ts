@@ -2,6 +2,7 @@ import {Component, DoCheck, OnInit} from '@angular/core';
 import {AuthService} from "../auth/auth.service";
 import {HeaderService} from "./header.service";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, DoCheck {
-  isLoggedIn;
+  isLoggedIn = false;
   showAccountButtons;
 
   constructor(private authService: AuthService,
@@ -17,8 +18,20 @@ export class HeaderComponent implements OnInit, DoCheck {
               private router: Router) { }
 
   ngOnInit() {
-    //if user is logged in, show account button
-    this.isLoggedIn = this.authService.isLoggedIn();
+    // clear local data if not logged in
+    if (!this.authService.isLoggedIn()) {
+      this.authService.clearLocalBookData();
+    }
+
+    // check over time if user token is still valid
+    let timer = Observable.timer(0,300000); // every 5 minutes, check token
+    timer.subscribe(t => {
+        // console.log(t); // DEBUG
+        if (this.authService.isLoggedIn()) {
+          this.authService.refreshToken();
+        }
+      }
+    );
   }
 
   openProfile() {
@@ -27,7 +40,7 @@ export class HeaderComponent implements OnInit, DoCheck {
 
   ngDoCheck() {
     this.isLoggedIn = this.authService.isLoggedIn();
-    this.showAccountButtons = this.headerService.showAccountButtons
+    this.showAccountButtons = this.headerService.showAccountButtons;
   }
 
   logout() {

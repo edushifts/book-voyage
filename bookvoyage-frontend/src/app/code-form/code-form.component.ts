@@ -15,7 +15,6 @@ export class CodeFormComponent implements OnInit, OnDestroy {
 
 
   constructor(private router: Router,
-              private state: ActivatedRoute,
               private authService: AuthService) { }
 
   ngOnInit() {
@@ -37,13 +36,13 @@ export class CodeFormComponent implements OnInit, OnDestroy {
 
   onReminderButton() {
     let bookId = this.authService.getBookId();
-    this.router.navigate(['journey', bookId, 'continue'], {relativeTo: this.state});
+    this.router.navigate(['journey', bookId, 'continue']);
   }
 
   onAccessCode() {
     // check if code is correct in size
     if (this.codeForm.value['accessCode'].length !== 9) {
-      alert("The code you entered was incorrect :( ")
+      alert("The code you entered was incorrect :( ");
       return;
     }
 
@@ -57,9 +56,9 @@ export class CodeFormComponent implements OnInit, OnDestroy {
           // if so, immediately route to journey page
           if (this.authService.isLoggedIn()) {
             let bookId = this.authService.getBookId();
-            this.router.navigate(['journey', bookId, 'continue'], {relativeTo: this.state});
+            this.router.navigate(['journey', bookId, 'continue']);
           } else {
-            this.router.navigate(['/signup'], {relativeTo: this.state});
+            this.router.navigate(['/signup']);
           }
           // otherwise, route to signup page
 
