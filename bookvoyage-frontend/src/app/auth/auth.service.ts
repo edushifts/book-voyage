@@ -50,11 +50,11 @@ export class AuthService implements OnInit {
     this.bookId = null;
   }
 
-  getBookId() {
+  getBookId<Number>() {
     if (this.bookId) {
       return this.bookId;
     } else if (localStorage.getItem('userBookId')) {
-      return localStorage.getItem('userBookId');
+      return +localStorage.getItem('userBookId');
     } else {
       return -1;
     }
@@ -84,17 +84,32 @@ export class AuthService implements OnInit {
     }
   }
 
-  ngOnInit() {
-    // set token if saved in local storage
-    if (localStorage.getItem('currentUser')) {
+  getToken() {
+    if (this.token != "") {
+      return this.token
+    } else if (localStorage.getItem('currentUser')) {
       let currentUser = JSON.parse(localStorage.getItem('currentUser'));
       this.token = currentUser && currentUser.token;
+      return this.token;
+    } else {
+      console.log("3");
+      return "";
     }
+  }
+
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem('currentUser', token);
+  }
+
+  ngOnInit() {
+    // set token if saved in local storage
+    this.getToken();
   }
 
   createAuthorizationHeader(headers: Headers) {
     headers.append('Authorization', 'JWT ' +
-      this.token);
+      this.getToken());
   }
 
   registerUser(username, password1, password2, email) {
@@ -140,11 +155,6 @@ export class AuthService implements OnInit {
         (error: Response) => {
           return Observable.throw(error);
         });
-  }
-
-  setToken(token) {
-    this.token = token;
-    localStorage.setItem('currentUser', token);
   }
 
   login(username: string, password: string) {
