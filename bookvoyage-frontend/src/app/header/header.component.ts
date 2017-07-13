@@ -1,6 +1,7 @@
 import {Component, DoCheck, OnInit} from '@angular/core';
 import {AuthService} from "../auth/auth.service";
 import {HeaderService} from "./header.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,8 @@ export class HeaderComponent implements OnInit, DoCheck {
   showAccountButtons;
 
   constructor(private authService: AuthService,
-              private headerService: HeaderService) { }
+              private headerService: HeaderService,
+              private router: Router) { }
 
   ngOnInit() {
     //if user is logged in, show account button
@@ -30,7 +32,7 @@ export class HeaderComponent implements OnInit, DoCheck {
 
   logout() {
     this.authService.logout();
-    alert("You are logged out now");
+    this.router.navigate(['/']);
   }
 
 }

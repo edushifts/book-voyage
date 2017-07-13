@@ -33,13 +33,29 @@ html, body {
 }
 
 /* form element */
-#codeFormConAbs, #registerLogin form {
+.codeFormConAbs, #registerLogin form {
   position: absolute;
   bottom: 100px;
   z-index: 6000;
   width: 400px;
   margin-left: -200px;
   left: 50%;
+}
+
+/*Map tweaks*/
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #1d335f !important;
+  color: white !important;
+  font-family: "MontSerrat", sans-serif;
+}
+
+.leaflet-popup-content b {
+  font-size: 1.5em;
+}
+
+.popup-date {
+  font-size: .8em;
+  font-style: italic;
 }
 
 /*::-webkit-input-placeholder { !* Chrome/Opera/Safari *!*/

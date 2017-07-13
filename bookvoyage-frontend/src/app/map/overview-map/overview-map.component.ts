@@ -24,16 +24,23 @@ export class OverviewMapComponent implements OnInit {
     this.route
       .queryParams
       .subscribe(params => {
-        if (+params['codeError'] === 1) {
+        if (+params['error'] === 1) {
           this.wrongCode = true;
-          alert("The code you entered was incorrect :( ")
+          alert("The code you entered was incorrect. Please check it again.");
+        } else if (+params['error'] === 2) {
+          this.wrongCode = true;
+          alert("Your session has expired. Please enter your code again.");
+        } else if (+params['error'] === 3) {
+          this.wrongCode = true;
+          alert("The journey you specified has not yet begun.");
         } else {
           this.wrongCode = false;
           // nothing happens
         }
+
         if (+params['loggedIn'] === 1) {
           this.wrongCode = true;
-          alert("You are logged in now.")
+          alert("You are logged in now.");
         } else {
           this.wrongCode = false;
           // nothing happens

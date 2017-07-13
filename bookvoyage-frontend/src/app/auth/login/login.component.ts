@@ -53,7 +53,13 @@ export class LoginComponent implements OnInit, OnDestroy {
             localStorage.setItem('currentUser', JSON.stringify({username: email, token: token}));
 
             // return true to indicate successful login
-            this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
+            // if no access code is known, route to front page
+            if (this.authService.getAccessCode() === "wrong") {
+              this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
+            } else { // if access code is known, route to book sign-up
+              this.router.navigate(['journey', this.authService.getBookId(), 'continue']);
+            }
+
           } else {
             // return false to indicate failed login
             return false;
@@ -62,7 +68,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       (errorData) => {
         // report on email errors
         let errors = errorData.json();
-        console.log(errors);
+        //console.log(errors);
         this.usernameError = '';
         if (errors.username) {
           for (let error of errors.username) {

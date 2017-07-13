@@ -27,15 +27,15 @@ export class SignupComponent implements OnInit, OnDestroy {
               private headerService: HeaderService) { }
 
   ngOnInit() {
-    this.secretCode = this.authService.accessCode;
+    this.secretCode = this.authService.getAccessCode();
 
     // check if code is valid
     if (this.secretCode.length != 9) {
-      this.router.navigate([''], {queryParams: {codeError: 1 }});
+      this.router.navigate([''], {queryParams: {error: 1 }});
     }
 
     // remove buttons from header
-    this.headerService.showAccountButtons = false;
+    // this.headerService.showAccountButtons = false;
 
     // check if code exists in book database
     // if not, reroute to denial page
@@ -50,6 +50,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   createAccount(form: NgForm) {
+    const first_name = form.value.first_name;
+    const last_name = form.value.last_name;
     const email = form.value.email;
     const password = form.value.password;
     const passwordConfirm = form.value.passwordConfirm;
@@ -67,7 +69,18 @@ export class SignupComponent implements OnInit, OnDestroy {
       (token) => {
         // login
         this.authService.setToken(token);
-        this.router.navigate(['continueJourney']);
+
+        // set name of person too
+        this.authService.setUserName(first_name, last_name).subscribe(
+          (success) => {
+            // console.log("done!");
+        },
+          (error) => {
+            console.log(error);
+          }
+        );
+
+        this.router.navigate(['journey/continue']);
         },
       (errorData) => {
         // report on email errors

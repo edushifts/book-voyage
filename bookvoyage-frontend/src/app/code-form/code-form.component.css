@@ -1,5 +1,5 @@
 /* form element */
-#codeFormCon {
+.codeFormCon {
   position: relative;
   background: #1d335f;
   color: #fff;
@@ -15,7 +15,7 @@
   width: 250px;
   margin-left: 20px;
   font-weight: bold;
-  font-family: 'BebasNeue';
+  font-family: 'BebasNeue', sans-serif;
   font-size: 60px;
 }
 
@@ -23,6 +23,17 @@
   width: 40px;
   padding-left: 30px;
   cursor: pointer;
+}
+
+.reminderButton {
+  cursor: pointer;
+  font-size: 2em;
+  text-align: center;
+}
+
+.reminderButton p {
+  padding: 10px;
+  margin: 0px;
 }
 
 form.hide-submit input[type="submit"] { display: none;}
