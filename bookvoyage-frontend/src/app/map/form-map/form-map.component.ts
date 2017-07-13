@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 import {AuthService} from "../../auth/auth.service";
@@ -19,18 +19,25 @@ function getOrdinal(n) {
   styleUrls: ['./form-map.component.css'],
   providers: [GeoLocationService]
 })
-export class FormMapComponent implements OnInit {
+export class FormMapComponent implements OnInit, OnDestroy {
   mainMap;
   currentHolder = '';
   loading = false;
   webGeoWait = false;
   formPhase: number = 1;
+  geoLocateSubscriber;
 
   constructor(private mapService: MapService,
               private geoLocationService: GeoLocationService,
               private authService: AuthService,
               private router: Router,
               private route: ActivatedRoute) { }
+
+  ngOnDestroy() {
+    if (this.geoLocateSubscriber) {
+      this.geoLocateSubscriber.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     // render basic map
@@ -82,7 +89,7 @@ export class FormMapComponent implements OnInit {
     this.loading = true;
     let address = window.prompt("Fill in the city you took the book to:","");
     if (address) {
-      this.geoLocationService.addressToCoord(address).subscribe(
+      this.geoLocateSubscriber = this.geoLocationService.addressToCoord(address).subscribe(
         (coordinates) => {
           this.loading = false;
           this.formPhase= 2;
