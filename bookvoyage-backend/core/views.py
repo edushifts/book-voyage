@@ -1,37 +1,20 @@
 from django.shortcuts import render
 
-from .models import BookInstance, BookBatch
-from core.serializers import BookInstanceSerializer, BookBatchSerializer
+from .models import BookInstance, BookBatch, BookHolding
+from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, BookHoldingWriteSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from rest_framework import viewsets
 
-# Create your views here.
-
 def index(request):
     """
     View function for home page of site.
     """
-    #getBook1 = getBook("DJK831LOK")
-    #getBook2 = getBook("741KLO012")
-    #getPrevHolderCount1 = getPrevHolderCount(1)
-    #getPrevHolderCount2 = getPrevHolderCount(2)
-    #getPrevHolderCount10 = getPrevHolderCount(10)
-
-    # Render the test HTML template index.html
     return render(
         request,
         'index.html',
-        #context={'getBook1':getBook1,'getBook2':getBook2,'getPrevHolderCount1': getPrevHolderCount1,
-         #'getPrevHolderCount2':getPrevHolderCount2,'getPrevHolderCount10': getPrevHolderCount10}
     )
-
-def login(request):
-    return render(request,'login.html')
-
-def footer(request):
-    return render(request,'footer.html')
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -87,10 +70,7 @@ def get_book(code):
 
 class CodeExists(APIView):
     """
-    View to list all users in the system.
-
-    * Requires token authentication.
-    * Only admin users are able to access this view.
+    takes access code and checks if it corresponds to a book instance
     """
     permission_classes = ()
     authentication_classes = ()
@@ -104,3 +84,7 @@ class CodeExists(APIView):
             return Response(data={'valid': False})  # return false as code is invalid
         else:
             return Response(data={'valid': True, 'book_id': book_id})  # Otherwise, return id
+
+class BookHoldingWriteViewSet(viewsets.ModelViewSet):
+    queryset = BookHolding.objects.all()
+    serializer_class = BookHoldingWriteSerializer

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
 from django.contrib.auth.models import User
@@ -75,7 +76,26 @@ class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = BookInstance
         fields = ('id', 'arrived', 'batch', 'ownings', 'holdings') # 'batch','book','holdings','owner'
-                  
+
+class BookHoldingWriteSerializer(serializers.ModelSerializer):
+    book_code = serializers.CharField(read_only=False, required=True, write_only=True)
+
+    def create(self, validated_data):
+        # if book code does not correspond with book holding id, refuse post
+        try:
+            book = BookInstance.objects.get(book_code=validated_data['book_code']).id
+        except BookInstance.DoesNotExist:
+            raise ParseError(detail="Book code is faulty", code=400)
+        else:
+            return BookHolding(**validated_data)
+
+    class Meta:
+        model = BookHolding
+        fields = '__all__'
+        extra_kwargs = {
+            'book_code': {'write_only': True}
+        }
+
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
 #     snippets = serializers.HyperlinkedRelatedField(queryset=Snippet.objects.all(), view_name='snippet-detail', many=True)
 #
