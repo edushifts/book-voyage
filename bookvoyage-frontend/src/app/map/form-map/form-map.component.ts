@@ -3,6 +3,7 @@ import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 import {AuthService} from "../../auth/auth.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
+import {BookService} from "../../book/book.service";
 
 function getOrdinal(n) {
   if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
@@ -31,7 +32,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
               private geoLocationService: GeoLocationService,
               private authService: AuthService,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private bookService: BookService) { }
 
   ngOnDestroy() {
     if (this.geoLocateSubscriber) {
@@ -145,6 +147,15 @@ export class FormMapComponent implements OnInit, OnDestroy {
   }
 
   complete() {
-    this.router.navigate(['/']);
+    let currentMarkerLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
+    this.bookService.postBookHolding("this just sent", currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode()).subscribe(
+      (success) => {
+        console.log("Amazing!");
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    // this.router.navigate(['/']);
   }
 }

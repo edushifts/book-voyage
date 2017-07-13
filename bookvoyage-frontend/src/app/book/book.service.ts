@@ -1,9 +1,10 @@
 import {environment} from "../../environments/environment";
 import {Observable} from "rxjs/Observable";
-import {Http, Response} from "@angular/http";
+import {Http, Response, Headers} from "@angular/http";
 import {Injectable} from "@angular/core";
 import 'rxjs/add/operator/map';
 import {Router} from "@angular/router";
+import {AuthService} from "app/auth/auth.service";
 
 @Injectable()
 export class BookService {
@@ -12,7 +13,8 @@ export class BookService {
   // bookBatches;
 
   constructor(private http: Http,
-              private router: Router) {}
+              private router: Router,
+              private authService: AuthService) {}
 
   getBookInstances() {
     // if (!this.bookInstances) {
@@ -56,6 +58,35 @@ export class BookService {
       .catch(
         (error: Response) => {
           this.router.navigate([''], {queryParams: {error: 3 }});
+          return Observable.throw(error);
+        });
+  }
+
+  postBookHolding(message: string, location: Coordinates, book_instance: number, book_code: string) {
+    let newBookHolding = {
+      message: message,
+      location: {
+        type: "Point",
+        coordinates: [location['lng'], location['lat']]
+      },
+      book_instance: book_instance,
+      book_code: book_code
+    };
+
+    console.log(newBookHolding);
+
+    let headers = new Headers();
+    this.authService.createAuthorizationHeader(headers);
+
+    return this.http.post(environment.apiUrl + "api/bookHoldings/", newBookHolding, { headers: headers})
+      .map(
+        (response: Response) => {
+          // on success, return specified book instance
+          return true;
+        }
+      )
+      .catch(
+        (error: Response) => {
           return Observable.throw(error);
         });
   }
