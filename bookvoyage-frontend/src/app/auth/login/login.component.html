@@ -1,19 +1,36 @@
 <div class="mainContent">
   <form (ngSubmit)="loginUser(form)" #form="ngForm">
     <p class="menuBig">LOG IN</p>
-    <span *ngIf="!email.valid && email.touched" class="help-block">{{ nonFieldError }}</span>
+
+    <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
+
     <input
-      ngModel
+      ngModel email
+      #email="ngModel"
       required
-      email
       type="email"
       id="email"
       name="email"
       placeholder="e-mail address"
-      #email="ngModel">
+      [ngClass]="{generalError: generalError}"
+      (keypress)="generalErrorRecovery()">
+
     <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
-    <input ngModel #password="ngModel" required type="password" id="password" name="password" placeholder="password">
+
+    <input
+      ngModel
+      #password="ngModel"
+      required
+      type="password"
+      id="password"
+      name="password"
+      placeholder="password"
+      [ngClass]="{generalError: generalError}"
+      (keypress)="generalErrorRecovery()">
+
     <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
+
     <input [disabled]="!form.valid" type="submit" value="Enter">
+
   </form>
 </div>

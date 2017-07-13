@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   usernameError = '';
   passwordError = '';
   nonFieldError = '';
+  generalError = false;
 
   constructor(private state: ActivatedRoute,
           private authService: AuthService,
@@ -34,6 +35,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.subscribeLogin) {
       this.subscribeLogin.unsubscribe();
     }
+  }
+
+  generalErrorRecovery(form: NgForm) {
+    this.generalError = false;
   }
 
   loginUser(form: NgForm) {
@@ -91,8 +96,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           for (let error of errors.non_field_errors) {
             this.nonFieldError += error;
           }
-          form.controls['email'].setErrors({'valid': false});
-          form.controls['password'].setErrors({'valid': false});
+          this.generalError = true;
         }
       }
     );
