@@ -32,7 +32,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
   bookId: number;
   consentBox: boolean;
   anonymous: boolean;
-  bookUpdates: boolean;
+  mailUpdates: boolean;
 
   constructor(private mapService: MapService,
               private geoLocationService: GeoLocationService,
@@ -139,8 +139,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
 
   submitPreferences(form: NgForm) {
     this.anonymous = form.value['anonymous'];
-    this.bookUpdates = form.value['anonymous'];
-    this.bookUpdates = form.value['updates'];
+    this.mailUpdates = form.value['anonymous'];
+    this.mailUpdates = form.value['updates'];
     this.formPhase = 4;
   }
 
@@ -148,7 +148,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
     this.userMessage = form.value['message'];
 
     let currentMarkerLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
-    this.bookService.postBookHolding(this.userMessage, currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode()).subscribe(
+    this.bookService.postBookHolding(this.userMessage, currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode(), this.anonymous, this.mailUpdates).subscribe(
       (success) => {
         this.formPhase = 5;
         // call final animation

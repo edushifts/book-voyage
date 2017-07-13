@@ -62,7 +62,7 @@ export class BookService {
         });
   }
 
-  postBookHolding(message: string, location: Coordinates, book_instance: number, book_code: string) {
+  postBookHolding(message: string, location: Coordinates, book_instance: number, book_code: string, anonymous: boolean, mail_updates: boolean) {
     let newBookHolding = {
       message: message,
       location: {
@@ -70,10 +70,12 @@ export class BookService {
         coordinates: [location['lng'], location['lat']]
       },
       book_instance: book_instance,
-      book_code: book_code
+      book_code: book_code,
+      anonymous: anonymous,
+      mail_updates: mail_updates
     };
 
-    // console.log(newBookHolding); // DEBUG
+    console.log(newBookHolding); // DEBUG
 
     let headers = new Headers();
     this.authService.createAuthorizationHeader(headers);
