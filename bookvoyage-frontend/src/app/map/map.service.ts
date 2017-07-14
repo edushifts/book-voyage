@@ -267,7 +267,6 @@ export class MapService {
               // add pop-up message
               // TODO: change requisites
               if (owningLocation) {
-                // TO-DO: check if anonymous
                 owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
               }
               bookOwnings.push(owningMarker);
@@ -392,7 +391,6 @@ export class MapService {
             // add pop-up message
             // TODO: change requisites
             if (owningLocation) {
-              // TO-DO: check if anonymous
               owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name + "</b><br>" + currentOwning.message + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
             }
             bookOwnings.push(owningMarker);
