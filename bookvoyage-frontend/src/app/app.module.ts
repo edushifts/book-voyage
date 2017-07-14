@@ -20,6 +20,7 @@ import { FormMapComponent } from './map/form-map/form-map.component';
 import {NgSpinKitModule} from "ng-spin-kit";
 import { DetailMapComponent } from './map/detail-map/detail-map.component';
 import {AuthGuard} from "./auth/auth-guard.service";
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {AuthGuard} from "./auth/auth-guard.service";
     ManageAccountComponent,
     SignupComponent,
     FormMapComponent,
-    DetailMapComponent
+    DetailMapComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
