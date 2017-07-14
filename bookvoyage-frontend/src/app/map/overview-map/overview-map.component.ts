@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import {Http, Response} from "@angular/http";
 import {BookService} from "../../book/book.service";
 import {MapService, AddBookInstancesOptions} from "../map.service";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-overview-map',
@@ -16,7 +17,8 @@ export class OverviewMapComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private headerService: HeaderService,
-              private mapService: MapService) { }
+              private mapService: MapService,
+              private titleService: Title) { }
 
   ngOnInit() {
     this.headerService.showAccountButtons = true;
@@ -42,6 +44,8 @@ export class OverviewMapComponent implements OnInit {
         //   this.wrongCode = false;
         //   // nothing happens
         // }
+
+        this.titleService.setTitle("EDUshifts Now | Book Voyage");
       });
 
     // render basic map

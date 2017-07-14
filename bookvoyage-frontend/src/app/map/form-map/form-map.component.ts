@@ -5,6 +5,7 @@ import {AuthService} from "../../auth/auth.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
+import {Title} from "@angular/platform-browser";
 
 function getOrdinal(n) {
   if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
@@ -39,7 +40,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
               private authService: AuthService,
               private router: Router,
               private route: ActivatedRoute,
-              private bookService: BookService) { }
+              private bookService: BookService,
+              private titleService: Title) { }
 
   ngOnDestroy() {
     if (this.geoLocateSubscriber) {
@@ -91,6 +93,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
           );
         }
       )
+    this.titleService.setTitle("EDUshifts Now | Continue Journey " + this.authService.getBookId());
   }
 
   markerByAddress() {
