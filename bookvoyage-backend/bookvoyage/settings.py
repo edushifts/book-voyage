@@ -25,16 +25,26 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 INSTALLED_APPS = [
+    # General django classes
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Convenience additions
+    'django_extensions',
+
+    # Main application
+    'core.apps.CoreConfig',
+
+    # Spatial libraries
     'leaflet',
     'djgeojson',
-    'core.apps.CoreConfig',
-    'django_extensions',
+
+    # REST framework and authentication libraries
+    # Includes dependencies
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -43,7 +53,11 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_auth.registration',
+
+    # Required if back-end and front-end are not at the same domain
     'corsheaders',
+
+    # Makes importing files possible via the admin interface
     'import_export'
 ]
 
