@@ -7,6 +7,7 @@ import {SignupComponent} from "./auth/signup/signup.component";
 import {FormMapComponent} from "./map/form-map/form-map.component";
 import {DetailMapComponent} from "./map/detail-map/detail-map.component";
 import {AuthGuard} from "./auth/auth-guard.service";
+import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 
 const appRoutes: Routes = [
   { path: '', children: [
@@ -22,6 +23,7 @@ const appRoutes: Routes = [
         { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
       ]},
     ]},
+    { path: '**', redirectTo: '' } // TODO: should be a 404 page that redirects
   ]}
 ];
 
