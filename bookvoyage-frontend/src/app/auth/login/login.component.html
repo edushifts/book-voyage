@@ -13,7 +13,7 @@
       name="email"
       placeholder="e-mail address"
       [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery()">
+      (keypress)="generalErrorRecovery(form)">
 
     <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
 
@@ -26,7 +26,7 @@
       name="password"
       placeholder="password"
       [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery()">
+      (keypress)="generalErrorRecovery(form)">
 
     <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
 
