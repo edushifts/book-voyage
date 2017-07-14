@@ -304,7 +304,7 @@ export class MapService {
         let bookHoldings = [];
         let bookLines = [];
         let bookOwnings = [];
-        let batch;
+        let batch = [];
 
         // report the total amount of holders
         let holdingAmount = bookInstance.holdings.length;
