@@ -32,16 +32,6 @@ html, body {
   z-index: 4000;
 }
 
-/* form element */
-.codeFormConAbs, #registerLogin form {
-  position: absolute;
-  bottom: 100px;
-  z-index: 6000;
-  width: 400px;
-  margin-left: -200px;
-  left: 50%;
-}
-
 /*Map tweaks*/
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background: #1d335f !important;
