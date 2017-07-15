@@ -1,20 +1,9 @@
-from django.shortcuts import render
-
 from .models import BookInstance, BookBatch, BookHolding
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, BookHoldingWriteSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from rest_framework import viewsets
-
-def index(request):
-    """
-    View function for home page of site.
-    """
-    return render(
-        request,
-        'index.html',
-    )
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
