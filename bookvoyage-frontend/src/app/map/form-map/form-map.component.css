@@ -84,4 +84,10 @@ textarea {
     font-size: 1em;
     width: 150px;
   }
+  .inline {
+    margin: 0 0 !important;
+  }
+  textarea {
+    width: 300px;
+  }
 }

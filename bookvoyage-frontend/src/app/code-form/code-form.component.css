@@ -11,7 +11,7 @@
 /* form element */
 .codeFormConAbs {
   position: absolute;
-  bottom: 100px;
+  bottom: 10vh;
   z-index: 6000;
   width: 400px;
   margin-left: -200px;
@@ -58,7 +58,7 @@ screen and (max-height: 650px){
     max-width: 200px;
   }
   .codeFormConAbs {
-    bottom: 50px;
+    bottom: 8vh;
     width: 250px;
     margin-left: -125px;
     left: 50%;
@@ -69,6 +69,11 @@ screen and (max-height: 650px){
     font-weight: bold;
     font-family: 'BebasNeue', sans-serif;
     font-size: 36px;
+  }
+  .reminderButton {
+    font-size: 1em;
+    margin: 5px;
+    padding: 5px;
   }
   .arrowImg {
     width: 23px;
