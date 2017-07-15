@@ -90,7 +90,8 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # if book code does not correspond with book holding id, refuse post
         try:
-            book = BookInstance.objects.get(book_code=validated_data['book_code']).id
+            given_code = validated_data['book_code'].upper()
+            book = BookInstance.objects.get(book_code=given_code).id
             del validated_data["book_code"]
         except BookInstance.DoesNotExist:
             raise ParseError(detail="Book code is faulty", code=400)

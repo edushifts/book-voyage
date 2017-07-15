@@ -41,27 +41,27 @@ export class CodeFormComponent implements OnInit, OnDestroy {
 
   onAccessCode() {
     // check if code is correct in size
-    if (this.codeForm.value['accessCode'].length !== 9) {
+    let givenCode = this.codeForm.value['accessCode'].toUpperCase();
+    if (givenCode.length !== 9) {
       alert("The code you entered was incorrect :( ");
       return;
     }
-
+    
     // check if code is valid
-    this.validitySub = this.authService.checkCode(this.codeForm.value['accessCode']).subscribe(
+    this.validitySub = this.authService.checkCode(givenCode).subscribe(
       (validity) => {
         if (!validity) {
           alert("The code you entered was incorrect :( ")
         } else{
           // check if user is logged in already
-          // if so, immediately route to journey page
           if (this.authService.isLoggedIn()) {
+            // if so, immediately route to journey page
             let bookId = this.authService.getBookId();
             this.router.navigate(['journey', bookId, 'continue']);
           } else {
+            // otherwise, route to signup page
             this.router.navigate(['/signup']);
           }
-          // otherwise, route to signup page
-
         }
       },
       (error) => {

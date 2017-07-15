@@ -63,6 +63,7 @@ def get_book(code):
     If the given code has no corresponding book, it returns -1.
     """
     try:
+        code = code.upper()
         book = BookInstance.objects.get(book_code=code).id
     except BookInstance.DoesNotExist:
         book = -1
