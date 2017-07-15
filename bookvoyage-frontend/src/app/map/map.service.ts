@@ -226,7 +226,10 @@ export class MapService {
               // add pop-up message
               if (holdingLocation) {
 
-                holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + '<span class="popup-date">' + bookHolding.time + '</span>');
+                holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
+                  "</b><br>" + bookHolding.message +
+                  "<br>" +
+                  '<span class="popup-date">' + bookHolding.time + ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a></span>');
               }
               holdingLocations.push(holdingLocation);
 
