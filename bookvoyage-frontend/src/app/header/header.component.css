@@ -18,6 +18,7 @@ header img {
   right: 4vw;
   top: 6vh;
   font-size: 5vh;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 700px) {
