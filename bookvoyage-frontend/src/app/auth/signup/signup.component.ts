@@ -4,6 +4,7 @@ import {AuthService, CurrentUser} from "../auth.service";
 import {NgForm} from "@angular/forms";
 import {Response} from "@angular/http";
 import {HeaderService} from "../../header/header.service";
+import {nameCase} from "../../shared/name-case.module";
 
 @Component({
   selector: 'app-signup',
@@ -71,8 +72,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 
         // set name of person too
         let userData = {
-          first_name: first_name,
-          last_name: last_name
+          first_name: nameCase(first_name),
+          last_name: nameCase(last_name)
         }
 
         this.authService.changeUserCredentials(userData).subscribe(
