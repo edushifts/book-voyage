@@ -72,6 +72,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         // report on email errors
         let errors = errorData.json();
         //console.log(errors);
+
         this.usernameError = '';
         if (errors.username) {
           for (let error of errors.username) {
@@ -80,6 +81,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           form.controls['email'].setErrors({'valid': false});
         }
 
+        this.passwordError = '';
         // report on password errors
         if (errors.password1) {
 
@@ -90,6 +92,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           form.controls['password'].setErrors({'valid': false});
         }
 
+        this.nonFieldError = '';
         if (errors.non_field_errors) {
           for (let error of errors.non_field_errors) {
             this.nonFieldError += error;
