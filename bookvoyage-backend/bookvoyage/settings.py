@@ -171,6 +171,11 @@ JWT_AUTH = {
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
+OLD_PASSWORD_FIELD_ENABLED = True
+
+LOGOUT_ON_PASSWORD_CHANGE = False
+
+
 # TODO : add e-mail verification
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
