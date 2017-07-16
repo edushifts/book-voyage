@@ -4,8 +4,18 @@
   background-position: center;
 }
 
-form {
+.mainContainer {
   padding-top: 15vh;
+  display: block;
+  margin: 10px auto;
+  width: 70%;
+  max-width: 600px;
+}
+
+.inFormContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
 }
 
 input[type="email"],
@@ -16,11 +26,9 @@ input[type="text"] {
   border: none;
   font-size: 20px;
   color: white;
-  padding: 10px;
-  display: block;
-  margin: 10px auto;
-  width: 40%;
-  min-width: 250px;
+  padding: 15px 3%;
+  width: 94%;
+  margin-bottom: 10px;
   letter-spacing: 0.1em;
   font-family: 'BebasNeue', sans-serif;
 }
@@ -28,22 +36,47 @@ input[type="text"] {
 input[type="submit"] {
   cursor: pointer;
 }
+input[type="submit"]:disabled {
+  background: dimgrey !important;
+  cursor: default !important;
+}
 
 .names {
+  width: 100%;
+  text-align: center;
+}
+.names {
+  width: 50%;
   text-align: center;
 }
 
 .inlineForm {
-  width: 18.5% !important;
-  display: inline !important;
-  min-width: 125px !important;
-  margin: 10px 0px 0px 3px !important;
+  display: inline-block;
+  width: 42% !important;
+  margin: 0 !important;
+  margin-bottom: 10px !important;
+  padding: 15px 3% !important;
+}
+
+#first_name {
+  margin-right: 2%  !important;
+}
+
+#last_name {
+  margin-left: 2%  !important;
+}
+
+.codeCont {
+  width: 40% !important;
+  margin: 0 auto;
 }
 
 .code {
-  width: 20% !important;
+  width: 100%;
   text-align: center;
- }
+  padding-bottom: 10px !important;
+  padding-top: 10px !important;
+}
 
 .ngValid {
   background-color: green;
@@ -52,20 +85,12 @@ input[type="submit"] {
   font-size: 60px;
   text-align: center;
   margin: 0px;
+  margin-bottom: 10px;
   text-shadow: 2px 2px #fff, -2px -2px #fff, 2px 0px #fff, 0px 2px #fff;
 }
 
 input.ng-invalid.ng-touched {
   background: red;
-}
-
-button[type="submit"] {
-  cursor: pointer;
-}
-
-input[type="submit"]:disabled {
-  background: dimgrey !important;
-  cursor: default !important;
 }
 
 .help-block {
@@ -77,4 +102,16 @@ input[type="submit"]:disabled {
 
 .hidden {
   display: none;
+}
+
+@media screen and (max-height: 780px) {
+  .mainContainer {
+    padding-top: 5vh;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .mainContainer {
+    width: 90%;
+  }
 }
