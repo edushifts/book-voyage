@@ -1,43 +1,50 @@
 <div class="mainContent">
-  <form (ngSubmit)="createAccount(form)" #form="ngForm">
-    <input type="text" [value]="secretCode" disabled class="code">
-    <p class="menuBig">JOURNEY FOUND</p>
-    <div class="names">
+  <div class="mainContainer">
+    <form (ngSubmit)="createAccount(form)" #form="ngForm">
+      <div class="codeCont">
+        <input type="text" [value]="secretCode" disabled class="code">
+      </div>
+      <p class="menuBig">JOURNEY FOUND</p>
+
+      <div class="inFormContainer"><!--
+        --><input
+          type="text"
+          class="inlineForm"
+          ngModel
+          required
+          id="first_name"
+          name="first_name"
+          placeholder="first name"
+          #first_name="ngModel"><!--
+        --><input
+          type="text"
+          class="inlineForm"
+          ngModel
+          required
+          id="last_name"
+          name="last_name"
+          placeholder="last name"
+          #last_name="ngModel"><!--
+   --></div>
+      <span *ngIf="(!first_name.valid && first_name.touched) || (!last_name.valid && last_name.touched)" class="help-block">Please enter your name</span>
+
       <input
-        type="text"
-        class="inlineForm"
         ngModel
         required
-        id="first_name"
-        name="first_name"
-        placeholder="first name"
-        #first_name="ngModel">
-      <input
-        type="text"
-        class="inlineForm"
-        ngModel
-        required
-        id="last_name"
-        name="last_name"
-        placeholder="last name"
-        #last_name="ngModel">
-    </div>
-    <span *ngIf="(!first_name.valid && first_name.touched) || (!last_name.valid && last_name.touched)" class="help-block">Please enter your name</span>
-    <input
-      ngModel
-      required
-      email
-      type="email"
-      id="email"
-      name="email"
-      placeholder="e-mail address"
-      #email="ngModel"
-      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
-    <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
-    <input #password="ngModel" ngModel required type="password" id="password" name="password" placeholder="password">
-    <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
-    <input #passwordConfirm="ngModel" ngModel  required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password">
-    <span *ngIf="passwordMismatch || (!passwordConfirm.valid && passwordConfirm.touched)" class="help-block">{{ passwordConfirmError }}</span>
-    <input [disabled]="!form.valid" type="submit" value="Create Account">
-  </form>
+        type="email"
+        id="email"
+        name="email"
+        placeholder="e-mail address"
+        #email="ngModel">
+      <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
+
+      <input #password="ngModel" ngModel required type="password" id="password" name="password" placeholder="password">
+      <span *ngIf="password.touched && (!password.valid || password.value.length < 8)" class="help-block">{{ passwordError }}</span>
+
+      <input #passwordConfirm="ngModel" ngModel required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password">
+      <span *ngIf="passwordMismatch || (!passwordConfirm.valid && passwordConfirm.touched)" class="help-block">{{ passwordConfirmError }}</span>
+
+      <input class="fixWidth" [disabled]="!form.valid" type="submit" value="Create Account">
+    </form>
+  </div>
 </div>

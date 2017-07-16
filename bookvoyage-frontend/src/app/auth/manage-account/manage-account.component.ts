@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from "@angular/router";
     '../signup/signup.component.css',
     '../../map/form-map/form-map.component.css',
     './manage-account.component.css',
+    '../../shared/checkbox-style.css'
   ]
 })
 export class ManageAccountComponent implements OnInit {

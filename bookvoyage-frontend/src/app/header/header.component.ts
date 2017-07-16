@@ -3,6 +3,7 @@ import {AuthService} from "../auth/auth.service";
 import {HeaderService} from "./header.service";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-header',
@@ -23,8 +24,8 @@ export class HeaderComponent implements OnInit, DoCheck {
       this.authService.clearLocalBookData();
     }
 
-    // check over time if user token is still valid
-    let timer = Observable.timer(0,300000); // every 5 minutes, check token
+    // Every so often, refresh token (time period can be set in the environment file)
+    let timer = Observable.timer(0,environment.tokenRefresh);
     timer.subscribe(t => {
         // console.log(t); // DEBUG
         if (this.authService.isLoggedIn()) {
@@ -34,8 +35,13 @@ export class HeaderComponent implements OnInit, DoCheck {
     );
   }
 
-  openProfile() {
-    alert("Profile will soon be available");
+  onAccountButton() {
+    if (this.isLoggedIn) {
+      this.router.navigate(['account']);
+    } else {
+      this.router.navigate(['login']);
+    }
+
   }
 
   ngDoCheck() {

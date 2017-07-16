@@ -2,10 +2,12 @@
   <form (ngSubmit)="loginUser(form)" #form="ngForm">
     <p class="menuBig">LOG IN</p>
 
+    <p class="menuSmall">(sign-up requires a book)</p>
+
     <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
 
     <input
-      ngModel email
+      ngModel
       #email="ngModel"
       required
       type="email"
@@ -13,10 +15,9 @@
       name="email"
       placeholder="e-mail address"
       [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery(form)"
-      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+      (keypress)="generalErrorRecovery(form)">
 
-    <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
+    <span *ngIf="email.touched && email.value.length < 8" class="help-block">{{ usernameError }}</span>
 
     <input
       ngModel

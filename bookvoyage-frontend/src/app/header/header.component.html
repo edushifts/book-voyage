@@ -1,19 +1,13 @@
 <header>
-  <a routerLink="/"><img style="cursor: pointer" src="assets/img/EDUshifts_now_plain.svg" onerror="this.src='/assets/img/EDUshifts_now_plain.png'"></a>
+  <a routerLink="/"><img class="logo" style="cursor: pointer" src="assets/img/EDUshifts_now_plain.svg" onerror="this.src='/assets/img/EDUshifts_now_plain.png'"></a>
 
-<div *ngIf="showAccountButtons;">
-  <div *ngIf="isLoggedIn; else login">
-    <!--<a style="cursor: pointer" (click)="openProfile()" >-->
-    <!--PROFILE-->
-  <!--</a>-->
-    <a class="rightButton" (click)="logout()" >
-      LOGOUT
-    </a>
+  <div class="dropdown">
+    <img class="dropbtn" src="assets/img/account_v2.svg" onerror="this.src='/assets/img/account_v2.png'" (click)="onAccountButton()">
+    <div *ngIf="isLoggedIn">
+      <div class="dropdown-content">
+        <a routerLink="/account/">Account Page</a>
+        <a (click)="logout()">Logout</a>
+      </div>
+    </div>
   </div>
-  <ng-template #login>
-    <a class="rightButton" routerLink="/login" >
-      LOGIN
-    </a>
-  </ng-template>
-</div>
 </header>

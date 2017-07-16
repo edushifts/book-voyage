@@ -47,7 +47,7 @@ button[type="submit"]:disabled {
 }
 
 .form-group {
-  padding: 10px;
+  padding: 5px;
 }
 
 input {
@@ -82,6 +82,23 @@ textarea {
   background: white;
 }
 
+
+
+.mainContainer {
+  display: block;
+  margin: 10px auto;
+  width: 60%;
+  max-width: 600px;
+}
+
+.control__indicator {
+  left: 85% !important;
+}
+
+.control {
+  padding-right: 18% !important;
+}
+
 @media screen and (max-width: 550px) {
   #bottomPane p {
     font-size: 1.2em;
@@ -90,11 +107,55 @@ textarea {
   .menuButton {
     font-size: 1em;
     width: 150px;
+    margin-bottom: 10px;
+  }
+  .inline {
+    display: none;
+  }
+  textarea {
+    width: 300px;
+  }
+}
+
+
+@media screen and (max-width: 350px) {
+  textarea {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 830px) {
+  .menuButton {
+    font-size: 1.1em;
+    width: 150px;
   }
   .inline {
     margin: 0 0 !important;
   }
-  textarea {
-    width: 300px;
+}
+
+
+@media screen and (max-height: 750px) {
+  .mainContainer {
+    font-size: .7em;
+  }
+  .control {
+    font-size: 1.5em;
+  }
+  .menuButton {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .mainContainer {
+    width: 90%;
+    font-size: .7em;
+  }
+  .control {
+    font-size: 1.5em;
+  }
+  .menuButton {
+    font-size: 1.5em;
   }
 }

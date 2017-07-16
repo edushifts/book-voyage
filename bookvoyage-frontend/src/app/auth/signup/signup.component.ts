@@ -4,6 +4,7 @@ import {AuthService, CurrentUser} from "../auth.service";
 import {NgForm} from "@angular/forms";
 import {Response} from "@angular/http";
 import {HeaderService} from "../../header/header.service";
+import {nameCase} from "../../shared/name-case.module";
 
 @Component({
   selector: 'app-signup',
@@ -15,8 +16,8 @@ export class SignupComponent implements OnInit, OnDestroy {
   // submit click
   passwordMismatch = false;
   subscribeSignUp;
-  usernameError= '';
-  passwordError = '';
+  usernameError = '';
+  passwordError  = 'The password needs to be at least 8 characters long';
   passwordConfirmError = '';
 
   secretCode;
@@ -71,8 +72,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 
         // set name of person too
         let userData = {
-          first_name: first_name,
-          last_name: last_name
+          first_name: nameCase(first_name),
+          last_name: nameCase(last_name)
         }
 
         this.authService.changeUserCredentials(userData).subscribe(
@@ -93,30 +94,35 @@ export class SignupComponent implements OnInit, OnDestroy {
         if (errors.username) {
           for (let error of errors.username) {
             this.usernameError += error;
+            this.usernameError += " ";
           }
           form.controls['email'].setErrors({'valid': false});
         }
         if (errors.email) {
           for (let error of errors.email) {
             this.usernameError += error;
+            this.usernameError += " ";
           }
           form.controls['email'].setErrors({'valid': false});
         }
 
+        this.passwordError = '';
         // report on password errors
         if (errors.password1) {
 
           this.passwordError = '';
           for (let error of errors.password1) {
             this.passwordError += error;
+            this.passwordError += " ";
           }
           form.controls['password'].setErrors({'valid': false});
         }
-
+        this.passwordConfirmError = '';
         if (errors.password2) {
           this.passwordConfirmError = '';
           for (let error of errors.password2) {
             this.passwordConfirmError += error;
+            this.passwordConfirmError += " ";
           }
           form.controls['passwordConfirm'].setErrors({'valid': false});
         }
