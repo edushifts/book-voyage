@@ -19,6 +19,7 @@ header img {
   top: 6vh;
   font-size: 5vh;
   text-decoration: none;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 700px) {

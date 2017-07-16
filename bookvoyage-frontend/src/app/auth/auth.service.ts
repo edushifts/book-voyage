@@ -6,38 +6,6 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import {Router} from "@angular/router";
 
-/**
- * @function
- * @description
- * Auxiliary function that parses names and capitalises them
- * Not perfect at the moment.
- * Adjusted from here: https://gist.github.com/jeffjohnson9046/9789876
- */
-
-function nameCase(input) {
-  let smallWords = /^(de|van|der|den|te|ter|ten|a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs?\.?|via)$/i;
-
-  input = input.toLowerCase();
-
-  // takes whole words divided by whitespace
-  return input.replace(/[A-Za-z0-9\u00C0-\u00FF]+[^\s-]*/g, function(match, index, title) {
-
-    // deal with words that should be lowercase
-    if (index + match.length !== title.length && // index > 0 &&
-      match.search(smallWords) > -1 && title.charAt(index - 2) !== ":" &&
-      (title.charAt(index + match.length) !== '-' || title.charAt(index - 1) === '-') &&
-      title.charAt(index - 1).search(/[^\s-]/) < 0) {
-      return match.toLowerCase();
-    }
-
-    if (match.substr(1).search(/[A-Z]|\../) > -1) {
-      return match;
-    }
-
-    return match.charAt(0).toUpperCase() + match.substr(1);
-  });
-}
-
 export interface CurrentUser {
   user: {
     email: string,
@@ -179,11 +147,9 @@ export class AuthService implements OnInit {
       });
   }
 
-  setUserName(first_name, last_name) {
-    let userChange = {
-      first_name: nameCase(first_name),
-      last_name: nameCase(last_name),
-    };
+  changeUserCredentials(userChange: {}) {
+    // user data may contain one or more of the following:
+    // first_name, last_name, username
 
     let token = this.getToken();
     // console.log(token); // DEBUG
@@ -194,16 +160,47 @@ export class AuthService implements OnInit {
     return this.http.patch(environment.apiUrl + "api-auth/user/", userChange, { headers: headers })
       .map(
         (response: Response) => {
-          // on success, return token
-          // console.log(response.json().token);
+          // console.log(response.json()); // DEBUG
+          let currentUser: CurrentUser = {
+            user: response.json(),
+            token: token
+          };
+          this.setCurrentUser(currentUser);
           return true;
         }
       )
       .catch(
         (error: Response) => {
+          // console.log(error.json()); // DEBUG
+          return Observable.throw(error);
+
+        });
+  }
+
+  changeUserPassword(new_password1: string, new_password2: string, old_password) {
+    let passwordChange = {
+      new_password1: new_password1,
+      new_password2: new_password2,
+      old_password: old_password
+    };
+
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+
+    return this.http.post(environment.apiUrl + "api-auth/password/change/", passwordChange, { headers: headers })
+      .map(
+        (response: Response) => {
+          // console.log(response.json()); // DEBUG
+          return true;
+        }
+      )
+      .catch(
+        (error: Response) => {
+          // console.log(error.json()); // DEBUG
           return Observable.throw(error);
         });
   }
+
 
   login(username: string, password: string) {
     let user = {

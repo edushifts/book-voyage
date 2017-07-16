@@ -8,7 +8,10 @@ form {
   padding-top: 15vh;
 }
 
-form input {
+input[type="email"],
+input[type="password"],
+input[type="submit"],
+input[type="text"] {
   background: #1d335f;
   border: none;
   font-size: 20px;

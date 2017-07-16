@@ -13,7 +13,8 @@
       name="email"
       placeholder="e-mail address"
       [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery(form)">
+      (keypress)="generalErrorRecovery(form)"
+      pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
 
     <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
 

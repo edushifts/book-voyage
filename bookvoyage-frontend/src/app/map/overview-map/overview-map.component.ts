@@ -34,6 +34,9 @@ export class OverviewMapComponent implements OnInit {
         } else {
           // nothing happens
         }
+        if (+params['changedEmail'] === 1) {
+          alert("Your email address has been changed. You can now log in again.");
+        }
 
         // not good for user experience - disabled
         // if (+params['loggedIn'] === 1) {

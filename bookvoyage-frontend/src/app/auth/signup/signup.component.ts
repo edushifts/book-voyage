@@ -15,7 +15,6 @@ export class SignupComponent implements OnInit, OnDestroy {
   // submit click
   passwordMismatch = false;
   subscribeSignUp;
-  error = '';
   usernameError= '';
   passwordError = '';
   passwordConfirmError = '';
@@ -71,7 +70,12 @@ export class SignupComponent implements OnInit, OnDestroy {
         this.authService.setCurrentUser(currentUser);
 
         // set name of person too
-        this.authService.setUserName(first_name, last_name).subscribe(
+        let userData = {
+          first_name: first_name,
+          last_name: last_name
+        }
+
+        this.authService.changeUserCredentials(userData).subscribe(
           (success) => {
             // console.log("done!");
         },
