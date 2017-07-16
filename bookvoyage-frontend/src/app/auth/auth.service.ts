@@ -201,6 +201,49 @@ export class AuthService implements OnInit {
         });
   }
 
+  getUserPreferences() {
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+
+    return this.http.get(environment.apiUrl + "api-auth/preferences/", { headers: headers })
+      .map(
+        (response: Response) => {
+          // console.log(response.json()); // DEBUG
+          return response;
+        }
+      )
+      .catch(
+        (error: Response) => {
+          // console.log(error.json()); // DEBUG
+          return Observable.throw(error);
+        });
+  }
+  updateUserPreferences(anonymous: boolean, mail_updates: boolean, consentbox?: boolean) {
+    let preferences = {
+      anonymous: anonymous,
+      mail_updates: mail_updates
+    };
+    if (consentbox) {
+      preferences['activated'] = consentbox;
+    }
+
+    let headers = new Headers();
+    this.createAuthorizationHeader(headers);
+
+    return this.http.patch(environment.apiUrl + "api-auth/preferences/", preferences, { headers: headers })
+      .map(
+        (response: Response) => {
+          // console.log(response.json()); // DEBUG
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          // console.log(error.json()); // DEBUG
+          return Observable.throw(error);
+        });
+  }
+
 
   login(username: string, password: string) {
     let user = {

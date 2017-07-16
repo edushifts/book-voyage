@@ -1,3 +1,7 @@
+.mainContent {
+  background-image: none;
+}
+
 .bottomPane {
   display: inline;
 }
@@ -12,4 +16,35 @@ label {
   background: white;
   margin-top: 0;
   margin-bottom: 10px;
+}
+
+.menuMiddle {
+  margin-top: 20px !important;
+}
+
+input[type="submit"].success {
+  background-color: green !important;
+  -webkit-transition: background-color 300ms linear !important;
+  -ms-transition: background-color 300ms linear !important;
+  transition: background-color 300ms linear !important;
+}
+
+input[type="submit"].failure {
+  background-color: red !important;
+  -webkit-transition: background-color 300ms linear !important;
+  -ms-transition: background-color 300ms linear !important;
+  transition: background-color 300ms linear !important;
+}
+
+.help-block-success {
+  color: green !important;
+}
+
+.menuButtonPassword {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 1.2em;
+  width: 30%;
+  min-width: 250px;
 }

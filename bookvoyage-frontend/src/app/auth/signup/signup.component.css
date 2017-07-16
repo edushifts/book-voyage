@@ -25,6 +25,10 @@ input[type="text"] {
   font-family: 'BebasNeue', sans-serif;
 }
 
+input[type="submit"] {
+  cursor: pointer;
+}
+
 .names {
   text-align: center;
 }
@@ -55,9 +59,13 @@ input.ng-invalid.ng-touched {
   background: red;
 }
 
+button[type="submit"] {
+  cursor: pointer;
+}
+
 input[type="submit"]:disabled {
   background: dimgrey !important;
-  cursor: default;
+  cursor: default !important;
 }
 
 .help-block {

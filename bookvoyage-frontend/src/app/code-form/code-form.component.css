@@ -46,7 +46,7 @@
   margin: 0px;
 }
 
-form.hide-submit input[type="submit"] { display: none;}
+form.hide-submit input[type="submit"] { display: none; cursor: default}
 
 @media screen and (max-width: 1000px) and (max-height: 800px),
 screen and (max-width: 650px),

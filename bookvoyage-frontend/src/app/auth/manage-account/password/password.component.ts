@@ -21,6 +21,10 @@ export class PasswordComponent{
   constructor(private authService: AuthService,
               private router: Router) { }
 
+  returnToAccount() {
+    this.router.navigate(['account']);
+  }
+
   updatePassword(form: NgForm) {
     // Change password
     const password = form.value.password;

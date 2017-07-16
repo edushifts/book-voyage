@@ -40,7 +40,8 @@
     <p class="bottomText">You <em>can</em> be anonymous, but the community cannot find you that way.</p>
 
     <form id="dataPreferences" (ngSubmit)="submitPreferences(preferenceForm)" #preferenceForm="ngForm">
-      <div class="form-group">
+      <span *ngIf="preferenceError != ''" class="help-block">{{ preferenceError }}</span>
+      <div *ngIf="!alreadyActivated" class="form-group">
           <label>
             <input required type="checkbox" name="consent" [(ngModel)]="consentBox">
             I agree with the use of my provided data*
@@ -49,14 +50,14 @@
 
       <div class="form-group">
           <label>
-            <input type="checkbox" name="updates" ngModel #updates="ngModel">
+            <input type="checkbox" name="updates" [(ngModel)]="mail_updates">
             I want to receive book updates by e-mail
           </label>
       </div>
 
       <div class="form-group">
           <label>
-            <input type="checkbox" name="anonymous" ngModel #anonymous="ngModel">
+            <input type="checkbox" name="anonymous" [(ngModel)]="anonymous">
             I want my name censored on the site
           </label>
       </div>

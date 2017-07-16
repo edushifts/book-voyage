@@ -2,7 +2,7 @@
   <form (ngSubmit)="updateAccount(form)" #form="ngForm">
 
     <p class="menuBig">PROFILE</p>
-    <p class="menuSmall">Change your personal details here</p>
+    <p class="menuSmall" (click)="getUserPreferences()">Change your personal details here</p>
 
     <span *ngIf="(!first_name.valid)" class="help-block">{{ generalError }}</span>
 
@@ -43,14 +43,14 @@
 
         <div class="form-group">
           <label>
-            <input type="checkbox" name="updates" ngModel #updates="ngModel">
+            <input type="checkbox" name="updates" [(ngModel)]="mail_updates" #updates="ngModel">
             I want to receive book updates by e-mail
           </label>
         </div>
 
         <div class="form-group">
           <label>
-            <input type="checkbox" name="anonymous" ngModel #anonymous="ngModel">
+            <input type="checkbox" name="anonymous" [(ngModel)]="anonymous">
             I want my name censored on the site
           </label>
         </div>
@@ -58,7 +58,11 @@
       </div>
     </div>
 
-    <input [disabled]="!form.valid" type="submit" value="Save Changes">
+    <input [disabled]="!form.valid || form.pristine" [ngClass]="{'success': submitSuccess, 'failure': submitFailure}" type="submit" value="Save Changes">
     <span *ngIf="error !== ''" class="help-block">{{ error }}</span>
+    <span *ngIf="submitSuccess" class="help-block help-block-success">Your profile has been updated</span>
   </form>
+  <p class="menuSmall menuMiddle" (click)="getUserPreferences()">Or follow this link to change your password</p>
+  <button class="menuButton menuButtonPassword" (click)="goToPassword()">Change Password</button>
+  <span *ngIf="passwordChanged" class="help-block help-block-success">Your password was changed</span>
 </div>
