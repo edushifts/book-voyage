@@ -2,6 +2,8 @@
   <form (ngSubmit)="loginUser(form)" #form="ngForm">
     <p class="menuBig">LOG IN</p>
 
+    <p class="menuSmall">(sign up is done with a book)</p>
+
     <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
 
     <input

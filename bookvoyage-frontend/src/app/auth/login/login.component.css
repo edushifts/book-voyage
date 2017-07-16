@@ -21,6 +21,15 @@ form input {
   letter-spacing: 0.1em;
   font-family: 'BebasNeue', sans-serif;
 }
+
+.menuSmall {
+  text-align: center;
+  font-size: 1.5em;
+  background: white;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
 .code {
   width: 20% !important;
   text-align: center;

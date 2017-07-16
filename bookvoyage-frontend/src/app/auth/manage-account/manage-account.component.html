@@ -2,7 +2,7 @@
   <form (ngSubmit)="updateAccount(form)" #form="ngForm">
 
     <p class="menuBig">PROFILE</p>
-    <p class="menuSmall" (click)="getUserPreferences()">Change your personal details here</p>
+    <p class="menuSmall">Change your personal details here</p>
 
     <span *ngIf="(!first_name.valid)" class="help-block">{{ generalError }}</span>
 

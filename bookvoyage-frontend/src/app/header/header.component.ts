@@ -35,8 +35,13 @@ export class HeaderComponent implements OnInit, DoCheck {
     );
   }
 
-  openProfile() {
-    alert("Profile will soon be available");
+  onAccountButton() {
+    if (this.isLoggedIn) {
+      this.router.navigate(['account']);
+    } else {
+      this.router.navigate(['login']);
+    }
+
   }
 
   ngDoCheck() {
