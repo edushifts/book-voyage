@@ -67,10 +67,6 @@ class BookHoldingSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('time', 'message', 'location', 'holder')
 
 class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
-    # owner = serializers.ReadOnlyField(source='owner.username')
-    # book = serializers.ReadOnlyField(source='book.title')
-    # batch = serializers.ReadOnlyField(source='batch.event')
-
     holdings = BookHoldingSerializer(many=True, read_only=True)
     batch = BookBatchSerializer(many=False, read_only=True)
     ownings = OwnerGenSerializer(many=True, read_only=True)
@@ -84,8 +80,6 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(required=False, read_only=True)
     holder = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     location = serializers.JSONField(required=True)
-    anonymous = serializers.BooleanField(read_only=False, required=False, write_only=True)
-    mail_updates = serializers.BooleanField(read_only=False, required=False, write_only=True)
 
     def create(self, validated_data):
         # if book code does not correspond with book holding id, refuse post
@@ -102,27 +96,9 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
                 request = self.context.get("request")
                 if request and hasattr(request, "user"):
                     user = request.user
-            except BookInstance.DoesNotExist:
+            except Exception:
                 raise ParseError(detail="User name error", code=400)
             else:
-                # add user to user group Anonymous if specified
-                try:
-                    if validated_data['anonymous']:
-                        g_a = Group.objects.get(name='Anonymous')
-                        g_a.user_set.add(user)
-                    del validated_data['anonymous']
-                except Exception:
-                    pass
-
-                # add user to user group MailUpdates if specified
-                try:
-                    if validated_data['mail_updates']:
-                        g_m = Group.objects.get(name='MailUpdates')
-                        g_m.user_set.add(user)
-                    del validated_data['mail_updates']
-                except Exception:
-                    pass
-
                 # add current time
                 validated_data['time'] = datetime.datetime.now()
                 validated_data['holder'] = user
@@ -134,9 +110,61 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
         model = BookHolding
         fields = '__all__'
 
-# class UserSerializer(serializers.HyperlinkedModelSerializer):
-#     snippets = serializers.HyperlinkedRelatedField(queryset=Snippet.objects.all(), view_name='snippet-detail', many=True)
-#
-#     class Meta:
-#         model = User
-# 		fields = ('url', 'username', 'snippets')
+class Preferences(object):
+    def __init__(self, **kwargs):
+        if kwargs['anonymous']:
+            self.anonymous = kwargs['anonymous']
+        if kwargs['mail_updates']:
+            self.mail_updates = kwargs['mail_updates']
+        if kwargs['activated']:
+            self.activated = kwargs['activated']
+
+class PreferencesSerializer(serializers.Serializer):
+    anonymous = serializers.BooleanField(read_only=False, required=False)
+    mail_updates = serializers.BooleanField(read_only=False, required=False)
+    activated = serializers.BooleanField(read_only=False, required=False)
+
+    def create(self, validated_data):
+        return Preferences(**validated_data)
+
+    # def update(self, instance, validated_data):
+    #     instance.anonymous = validated_data.get('anonymous', instance.anonymous)
+    #     instance.mail_updates = validated_data.get('mail_updates', instance.mail_updates)
+    #     return instance
+
+    def save(self, user):
+        # Add user to user group Anonymous if specified
+        try:
+            if 'anonymous' in self.data and self.data['anonymous']:
+                g_a = Group.objects.get(name='Anonymous')
+                g_a.user_set.add(user)
+            else:
+                g_a = Group.objects.get(name='Anonymous')
+                g_a.user_set.remove(user)
+        except Exception:
+            raise ParseError(detail="Problem with anonymous field", code=400)
+
+        # Add user to user group MailUpdates if specified
+        try:
+            if 'mail_updates' in self.data and self.data['mail_updates']:
+                g_m = Group.objects.get(name='MailUpdates')
+                g_m.user_set.add(user)
+            else:
+                g_a = Group.objects.get(name='MailUpdates')
+                g_a.user_set.remove(user)
+        except Exception:
+            raise ParseError(detail="Problem with mail updates field", code=400)
+
+        # Add user to user group DataAgreement if specified
+
+        if 'activated' in self.data and self.data['activated']:
+            try:
+                g_m = Group.objects.get(name='Activated')
+                g_m.user_set.add(user)
+            except Exception:
+                raise ParseError(detail="Problem with activated field", code=400)
+        elif 'activated' in self.data:
+            # It is not possible to remove oneself from the agreement through the API.
+            raise ParseError(detail="Your account needs to be activated to use it. "
+                                    "Please contact the platform owners if you would "
+                                    "like your account removed.", code=400)
