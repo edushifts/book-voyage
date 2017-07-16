@@ -104,6 +104,10 @@ input.ng-invalid.ng-touched {
   display: none;
 }
 
+.fixWidth {
+  width: 100% !important;
+}
+
 @media screen and (max-height: 780px) {
   .mainContainer {
     padding-top: 5vh;

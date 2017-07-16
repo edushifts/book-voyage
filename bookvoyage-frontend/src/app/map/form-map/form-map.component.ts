@@ -19,7 +19,9 @@ function getOrdinal(n) {
 @Component({
   selector: 'app-detail-map',
   templateUrl: './form-map.component.html',
-  styleUrls: ['./form-map.component.css'],
+  styleUrls: ['../../shared/checkbox-style.css',
+    './form-map.component.css',
+    ],
   providers: [GeoLocationService]
 })
 export class FormMapComponent implements OnInit, OnDestroy {

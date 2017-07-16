@@ -3,7 +3,7 @@
     <form (ngSubmit)="updateAccount(form)" #form="ngForm">
 
       <p class="menuBig">PROFILE</p>
-      <p class="menuSmall">Change your personal details here</p>
+      <!--<p class="menuSmall secondaryFont">Change your data here</p>-->
 
       <span *ngIf="(!first_name.valid)" class="help-block">{{ generalError }}</span>
 
@@ -40,18 +40,17 @@
 
       <div class="secondaryFont bottomPane">
         <div id="dataPreferences">
-
           <div class="form-group">
-            <label>
-              <input type="checkbox" name="updates" [(ngModel)]="mail_updates" #updates="ngModel">
-              I want to receive book updates by e-mail
+            <label class="control control--checkbox">I want to receive book updates by e-mail
+              <input type="checkbox" name="updates" [(ngModel)]="mail_updates">
+              <div class="control__indicator"></div>
             </label>
           </div>
 
           <div class="form-group">
-            <label>
+            <label class="control negative control--checkbox">I want my name censored on the site
               <input type="checkbox" name="anonymous" [(ngModel)]="anonymous">
-              I want my name censored on the site
+              <div class="control__indicator"></div>
             </label>
           </div>
 
@@ -62,7 +61,7 @@
       <span *ngIf="error !== ''" class="help-block">{{ error }}</span>
       <span *ngIf="submitSuccess" class="help-block help-block-success">Your profile has been updated</span>
     </form>
-    <p class="menuSmall menuMiddle" (click)="getUserPreferences()">Or follow this link to change your password</p>
+    <p class="menuSmall menuMiddle secondaryFont" (click)="getUserPreferences()">Or follow this link to change your password</p>
     <button class="menuButton menuButtonPassword" (click)="goToPassword()">Change Password</button>
     <span *ngIf="passwordChanged" class="help-block help-block-success">Your password was changed</span>
   </div>
