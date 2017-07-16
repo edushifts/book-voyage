@@ -8,12 +8,16 @@ import {FormMapComponent} from "./map/form-map/form-map.component";
 import {DetailMapComponent} from "./map/detail-map/detail-map.component";
 import {AuthGuard} from "./auth/auth-guard.service";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
+import {PasswordComponent} from "./auth/manage-account/password/password.component";
 
 const appRoutes: Routes = [
   { path: '', children: [
     { path: '', component: OverviewMapComponent, pathMatch: 'full'},
     { path: 'login', component: LoginComponent},
-    { path: 'account', component: ManageAccountComponent},
+    { path: 'account', canActivate: [AuthGuard], children: [
+      { path: '', component: ManageAccountComponent, pathMatch: 'full' },
+      { path: 'password', component: PasswordComponent },
+      ]},
     { path: 'signup', component: SignupComponent},
     { path: 'signup', component: SignupComponent},
     { path: 'journey', children: [

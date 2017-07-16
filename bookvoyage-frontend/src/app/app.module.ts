@@ -21,6 +21,7 @@ import {NgSpinKitModule} from "ng-spin-kit";
 import { DetailMapComponent } from './map/detail-map/detail-map.component';
 import {AuthGuard} from "./auth/auth-guard.service";
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PasswordComponent } from './auth/manage-account/password/password.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     SignupComponent,
     FormMapComponent,
     DetailMapComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PasswordComponent
   ],
   imports: [
     BrowserModule,
