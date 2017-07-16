@@ -1,0 +1,15 @@
+.bottomPane {
+  display: inline;
+}
+
+label {
+  background: white;
+}
+
+.menuSmall {
+  text-align: center;
+  font-size: 1.5em;
+  background: white;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
