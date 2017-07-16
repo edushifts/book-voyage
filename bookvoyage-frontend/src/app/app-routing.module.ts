@@ -9,17 +9,17 @@ import {DetailMapComponent} from "./map/detail-map/detail-map.component";
 import {AuthGuard} from "./auth/auth-guard.service";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {PasswordComponent} from "./auth/manage-account/password/password.component";
+import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 
 const appRoutes: Routes = [
   { path: '', children: [
     { path: '', component: OverviewMapComponent, pathMatch: 'full'},
-    { path: 'login', component: LoginComponent},
+    { path: 'login', component: LoginComponent, canActivate: [AuthGuardReverse]},
     { path: 'account', canActivate: [AuthGuard], children: [
       { path: '', component: ManageAccountComponent, pathMatch: 'full' },
       { path: 'password', component: PasswordComponent },
       ]},
-    { path: 'signup', component: SignupComponent},
-    { path: 'signup', component: SignupComponent},
+    { path: 'signup', component: SignupComponent, canActivate: [AuthGuardReverse]},
     { path: 'journey', children: [
       { path: '', component: OverviewMapComponent, pathMatch: 'full' },
       { path: ':id', children: [
