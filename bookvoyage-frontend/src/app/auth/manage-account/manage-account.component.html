@@ -34,8 +34,7 @@
       type="email"
       id="email"
       name="email"
-      placeholder="{{ get_email() }}"
-      pattern="^$|^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+      placeholder="{{ get_email() }}">
     <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
 
     <div class="secondaryFont bottomPane">

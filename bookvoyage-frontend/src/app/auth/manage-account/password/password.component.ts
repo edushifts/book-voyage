@@ -15,7 +15,7 @@ import {Router} from "@angular/router";
 export class PasswordComponent{
   passwordConfirmError = '';
   oldPasswordError = '';
-  passwordError = '';
+  passwordError  = 'The password needs to be at least 8 characters long';
   generalError = '';
 
   constructor(private authService: AuthService,
