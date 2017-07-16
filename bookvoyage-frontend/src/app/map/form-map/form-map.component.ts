@@ -32,8 +32,29 @@ export class FormMapComponent implements OnInit, OnDestroy {
   userMessage: string = "";
   bookId: number;
   consentBox: boolean;
-  isAnonymous: boolean = false;
-  mailUpdates: boolean = false;
+  alreadyActivated: boolean;
+  anonymous: boolean;
+  mail_updates: boolean;
+  preferenceError: string = '';
+
+  // TODO: store preferences locally as well, to save calls
+  initiateUserPreferences() {
+    this.authService.getUserPreferences().subscribe(
+      (response: Response) => {
+        let preferences = response.json();
+        this.mail_updates = preferences['mail_updates'];
+        this.anonymous = preferences['anonymous'];
+        if (preferences['activated']) {
+          this.alreadyActivated = true;
+          this.consentBox = true;
+        }
+
+      },
+      (errorData) => {
+        console.log(errorData);
+      }
+    )
+  }
 
   constructor(private mapService: MapService,
               private geoLocationService: GeoLocationService,
@@ -92,7 +113,10 @@ export class FormMapComponent implements OnInit, OnDestroy {
             }
           );
         }
-      )
+      );
+
+    // Load user preferences
+    this.initiateUserPreferences();
     this.titleService.setTitle("EDUshifts Now | Continue Journey " + this.authService.getBookId());
   }
 
@@ -141,15 +165,16 @@ export class FormMapComponent implements OnInit, OnDestroy {
   }
 
   submitPreferences(form: NgForm) {
-    let anonymous: boolean = form.value['anonymous'];
-    let mailUpdates: boolean = form.value['updates'];
-
-    if (anonymous) {
-      this.isAnonymous = anonymous;
-    }
-    if (mailUpdates) {
-      this.mailUpdates = mailUpdates;
-    }
+    this.authService.updateUserPreferences(this.anonymous, this.mail_updates, this.consentBox).subscribe(
+      (preferences: Response) => {
+        this.anonymous = preferences['anonymous'];
+        this.mail_updates = preferences['mail_updates'];
+      },
+      (errorData) => {
+        this.preferenceError = JSON.stringify(errorData);
+        return;
+      }
+    );
     this.formPhase = 4;
   }
 
@@ -157,7 +182,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
     this.userMessage = form.value['message'];
 
     let currentMarkerLocation = this.mapService.getCustomMarkerCoords(this.mainMap);
-    this.bookService.postBookHolding(this.userMessage, currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode(), this.isAnonymous, this.mailUpdates).subscribe(
+    this.bookService.postBookHolding(this.userMessage, currentMarkerLocation, this.authService.getBookId(), this.authService.getAccessCode()).subscribe(
       (success) => {
         this.formPhase = 5;
         // call final animation

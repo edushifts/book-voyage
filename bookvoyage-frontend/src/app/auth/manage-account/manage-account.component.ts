@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService, CurrentUser} from "../auth.service";
 import {nameCase} from "../../shared/name-case.module";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-manage-account',
@@ -20,9 +20,18 @@ export class ManageAccountComponent implements OnInit {
   lastNameError = '';
   generalError = '';
 
+  submitSuccess: boolean = false;
+  submitFailure: boolean = false;
+
+  passwordChanged: boolean = false;
+
   currentUser: CurrentUser;
 
-  constructor(private authService: AuthService,
+  mail_updates: boolean;
+  anonymous: boolean;
+
+  constructor(private route: ActivatedRoute,
+              private authService: AuthService,
               private router: Router) { }
 
   // for some reason, the regular variable did not import
@@ -40,31 +49,75 @@ export class ManageAccountComponent implements OnInit {
   ngOnInit() {
     // First, load profile information from server
     this.currentUser = this.authService.getCurrentUser();
+    this.getUserPreferences();
+
+    this.route
+      .queryParams
+      .subscribe(params => {
+        if (+params['passwordChanged'] === 1) {
+          this.passwordChanged = true;
+        }
+      });
+  }
+
+  goToPassword() {
+    this.router.navigate(['account','password']);
+  }
+
+  getUserPreferences() {
+    this.authService.getUserPreferences().subscribe(
+      (response: Response) => {
+        let preferences = response.json();
+        this.mail_updates = preferences['mail_updates'];
+        this.anonymous = preferences['anonymous'];
+      },
+      (errorData) => {
+        console.log(errorData);
+      }
+    )
+  }
+
+  UpdateUserPreferences() {
+    this.authService.updateUserPreferences(this.anonymous, this.mail_updates).subscribe(
+      (preferences: Response) => {
+        this.anonymous = preferences['anonymous'];
+        this.mail_updates = preferences['mail_updates'];
+      },
+      (errorData) => {
+        console.log(errorData);
+
+        /* Failure animation */
+        this.submitFailure = true;
+        setTimeout(() => {
+          this.submitFailure = false;
+        }, 1500);
+      }
+    )
   }
 
   updateAccount(form: NgForm) {
+    // First, update user preferences
+    this.UpdateUserPreferences();
+
     let first_name = form.value.first_name;
     let last_name = form.value.last_name;
     let username = form.value.email;
-    let anonymous: boolean = form.value['anonymous'];
-    let mailUpdates: boolean = form.value['updates'];
 
     let username_changed: boolean = false;
 
     // Change username and personal names if required
     let userChange = {};
-    if (first_name !== "") {
+    if (first_name !== "" && first_name !== null) {
       userChange['first_name'] = nameCase(first_name);
     }
-    if (last_name !== "") {
+    if (last_name !== "" && last_name !== null) {
       userChange['last_name'] = nameCase(last_name);
     }
-    if (username !== "") {
+    if (username !== "" && username !== null) {
       userChange['username'] = username.toLowerCase();
       username_changed = true;
     }
 
-    console.log(userChange);
     if (Object.keys(userChange).length !== 0 && userChange.constructor === Object) {
       this.authService.changeUserCredentials(userChange).subscribe(
         (success: boolean) => {
@@ -76,10 +129,18 @@ export class ManageAccountComponent implements OnInit {
             this.currentUser = this.authService.getCurrentUser();
 
             // Regular resetForm does not do the trick...
-            form.resetForm();
+            form.reset();
+            // reload preferences
+            this.getUserPreferences();
             form.value.first_name = "";
             form.value.last_name = "";
             form.value.email = "";
+
+            /* Success animation */
+            this.submitSuccess = true;
+            setTimeout(() => {
+              this.submitSuccess = false;
+            }, 1500);
           }
 
         },
@@ -122,8 +183,20 @@ export class ManageAccountComponent implements OnInit {
               this.generalError += " ";
             }
           }
+
+          /* Failure animation */
+          this.submitFailure = true;
+          setTimeout(() => {
+            this.submitFailure = false;
+          }, 1500);
         }
       );
+    } else {
+      /* Success animation */
+      this.submitSuccess = true;
+      setTimeout(() => {
+        this.submitSuccess = false;
+      }, 1500);
     }
 
   }

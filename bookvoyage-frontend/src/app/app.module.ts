@@ -22,6 +22,7 @@ import { DetailMapComponent } from './map/detail-map/detail-map.component';
 import {AuthGuard} from "./auth/auth-guard.service";
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PasswordComponent } from './auth/manage-account/password/password.component';
+import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { PasswordComponent } from './auth/manage-account/password/password.compo
     HttpModule,
     NgSpinKitModule
   ],
-  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard],
+  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

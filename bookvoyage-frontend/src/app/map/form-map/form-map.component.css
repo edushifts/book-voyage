@@ -75,6 +75,13 @@ textarea {
   padding: 10px;
 }
 
+.help-block {
+  text-align: center;
+  color: red;
+  display: block;
+  background: white;
+}
+
 @media screen and (max-width: 550px) {
   #bottomPane p {
     font-size: 1.2em;

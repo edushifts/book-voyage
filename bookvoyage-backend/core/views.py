@@ -1,9 +1,13 @@
+from rest_framework.exceptions import ParseError
+
 from .models import BookInstance, BookBatch, BookHolding
-from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, BookHoldingWriteSerializer
+from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
+    BookHoldingWriteSerializer, PreferencesSerializer, Preferences
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -78,3 +82,61 @@ class CodeExists(APIView):
 class BookHoldingWriteViewSet(viewsets.ModelViewSet):
     queryset = BookHolding.objects.all()
     serializer_class = BookHoldingWriteSerializer
+
+class PreferencesViewSet(APIView):
+    """
+    Retrieve, update or delete a snippet instance.
+    """
+
+    def get(self, request):
+        try:
+            user = None
+            if request and hasattr(request, "user"):
+                user = request.user
+        except Exception:
+            raise ParseError(detail="Authentication error" + request.context, code=400)
+        else:
+            try:
+                if user.groups.filter(name="Anonymous").count():
+                    anonymous = True
+                else:
+                    anonymous = False
+
+                if user.groups.filter(name="MailUpdates").count():
+                    mail_updates = True
+                else:
+                    mail_updates = False
+
+                if user.groups.filter(name="Activated").count():
+                    activated = True
+                else:
+                    activated = False
+            except Exception:
+                raise ParseError(detail="Groups error", code=400)
+            else:
+                try:
+                    serializer = PreferencesSerializer(
+                    data={'anonymous': anonymous, 'mail_updates': mail_updates, 'activated': activated})
+                    serializer.is_valid()
+                except Exception:
+                    raise ParseError(detail="Serializer error", code=400)
+                return Response(serializer.data)
+
+    def patch(self, request):
+        # add user to user group Anonymous if specified
+        try:
+            user = None
+            if request and hasattr(request, "user"):
+                user = request.user
+        except Exception:
+            raise ParseError(detail="Authentication error" + request.context, code=400)
+        else:
+            serializer = PreferencesSerializer(
+                data=request.data)
+
+            if not serializer.is_valid():
+                return Response(serializer.errors, 400)
+
+            serializer.save(user)
+
+            return Response(serializer.data)
