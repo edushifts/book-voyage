@@ -1,3 +1,4 @@
+from allauth.account.views import PasswordResetView
 from django.conf.urls import url, include
 from core import views
 from rest_framework.routers import DefaultRouter
@@ -25,6 +26,7 @@ urlpatterns = [
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^api-auth/refresh/', refresh_jwt_token),
     url(r'^api-auth/preferences', views.PreferencesViewSet.as_view()),
+    url(r'^accounts/', include('allauth.urls'))
 ]
 
 

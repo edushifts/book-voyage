@@ -1,8 +1,12 @@
+from allauth.account.utils import user_pk_to_url_str
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 
+from config import HOST_FRONTEND, PASSWORD_RESET_LINK, SITE_NAME, DEFAULT_FROM_EMAIL, DEBUG_EMAIL
 from .models import BookInstance, BookBatch, BookHolding, BookOwning
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
     BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail
@@ -66,6 +70,9 @@ def get_book(code):
         book = BookInstance.objects.get(book_code=code)
         book_id = book.id
 
+        user = User.objects.get(email__iexact=DEBUG_EMAIL)
+        send_owner_invitation(user)
+
         if not book.ownings.exists():
             # Find ownings without a book instance attached
             owner_query = BookOwning.objects.filter(book_instance__isnull=True)
@@ -79,9 +86,52 @@ def get_book(code):
                 # Add owner to this book instance
                 book.ownings.add(chosen_owning)
 
+                owner = chosen_owning.owner
+                send_owner_invitation(owner)
+
     except BookInstance.DoesNotExist:
         book_id = -1
     return book_id
+
+def send_owner_invitation(user):
+    """
+    Adapted from https://github.com/pennersr/django-allauth/blob/master/allauth/account/forms.py
+    :param user:
+    :return:
+    """
+
+    import logging
+    logger = logging.getLogger("regular")
+
+    # Retrieve user email address
+    user_email = user.email
+
+    token_generator = default_token_generator
+
+    temp_key = token_generator.make_token(user)
+
+    url = HOST_FRONTEND + PASSWORD_RESET_LINK + user_pk_to_url_str(user) + "-" + temp_key
+
+    logger.error(url)
+
+    context = {"current_site": SITE_NAME,
+               "user": user,
+               "password_reset_url": url}
+
+
+
+    # if app_settings.AUTHENTICATION_METHOD \
+    #         != AuthenticationMethod.EMAIL:
+    #     context['username'] = user_username(user)
+    send_mail(
+        'Subject here',
+        'Here is the message with the link: ' + url,
+        DEFAULT_FROM_EMAIL,
+        [user_email],
+        fail_silently=False,
+    )
+    # 'account/email/password_reset_key'
+
 
 class CodeExists(APIView):
     """

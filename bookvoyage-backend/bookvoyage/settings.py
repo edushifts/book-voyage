@@ -177,7 +177,7 @@ LOGOUT_ON_PASSWORD_CHANGE = False
 
 
 # TODO : add e-mail verification
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 from config import *
 
