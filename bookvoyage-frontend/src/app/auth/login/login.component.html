@@ -1,38 +1,40 @@
 <div class="mainContent">
-  <form (ngSubmit)="loginUser(form)" #form="ngForm">
-    <p class="menuBig">LOG IN</p>
+  <div class="mainContainer">
+    <form (ngSubmit)="loginUser(form)" #form="ngForm">
+      <p class="menuBig">LOG IN</p>
 
-    <p class="menuSmall">(sign-up requires a book)</p>
+      <p class="menuSmall">(sign-up requires a book)</p>
 
-    <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
+      <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
 
-    <input
-      ngModel
-      #email="ngModel"
-      required
-      type="email"
-      id="email"
-      name="email"
-      placeholder="e-mail address"
-      [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery(form)">
+      <input
+        ngModel
+        #email="ngModel"
+        required
+        type="email"
+        id="email"
+        name="email"
+        placeholder="e-mail address"
+        [ngClass]="{generalError: generalError}"
+        (keypress)="generalErrorRecovery(form)">
 
-    <span *ngIf="email.touched && email.value.length < 8" class="help-block">{{ usernameError }}</span>
+      <span *ngIf="email.touched && email.value.length < 8" class="help-block">{{ usernameError }}</span>
 
-    <input
-      ngModel
-      #password="ngModel"
-      required
-      type="password"
-      id="password"
-      name="password"
-      placeholder="password"
-      [ngClass]="{generalError: generalError}"
-      (keypress)="generalErrorRecovery(form)">
+      <input
+        ngModel
+        #password="ngModel"
+        required
+        type="password"
+        id="password"
+        name="password"
+        placeholder="password"
+        [ngClass]="{generalError: generalError}"
+        (keypress)="generalErrorRecovery(form)">
 
-    <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
+      <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
 
-    <input [disabled]="!form.valid" type="submit" value="Enter">
+      <input class="fixWidth" [disabled]="!form.valid" type="submit" value="Enter">
 
-  </form>
+    </form>
+  </div>
 </div>
