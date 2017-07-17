@@ -3,6 +3,8 @@ import {AuthService} from "../auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
 import {Response} from "@angular/http";
+import {Observable} from "rxjs/Observable";
+import {Subject} from "rxjs/Subject";
 
 @Component({
   selector: 'app-login',
@@ -10,23 +12,42 @@ import {Response} from "@angular/http";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  secretCode;
   subscribeLogin;
   usernameError = '';
   passwordError = '';
   nonFieldError = '';
   generalError = false;
+  bookOwner = false;
 
-  constructor(private state: ActivatedRoute,
+  extraMessageOutput: string;
+
+  extraMessage$: Observable<string>;
+  private extraMessage = new Subject<string>();
+
+  constructor(private route: ActivatedRoute,
           private authService: AuthService,
           private router: Router) { }
 
   ngOnInit() {
-    this.state.params
+    this.extraMessage$ = this.extraMessage.asObservable();
+
+    this.extraMessage$.subscribe(
+      (message: string) => {
+        this.extraMessageOutput = message;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    this.route.queryParams
       .subscribe(
         (params: Params) => {
-          this.secretCode = params['code'];
-          // console.log(params); // debug
+          if (+params['accountActivated'] === 1) {
+            this.extraMessage.next('Welcome to Book Voyage! After you login, we will take you to your book journey.');
+            this.bookOwner = true;
+          } else {
+            this.extraMessage.next('(sign-up requires a book)');
+          }
         }
       )
   }

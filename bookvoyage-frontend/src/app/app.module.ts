@@ -23,6 +23,7 @@ import {AuthGuard} from "./auth/auth-guard.service";
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PasswordComponent } from './auth/manage-account/password/password.component';
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
+import { PasswordResetComponent } from './auth/manage-account/password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {AuthGuardReverse} from "./auth/auth-guard-reverse";
     FormMapComponent,
     DetailMapComponent,
     PageNotFoundComponent,
-    PasswordComponent
+    PasswordComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,

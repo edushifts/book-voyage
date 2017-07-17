@@ -25,8 +25,7 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^api-auth/refresh/', refresh_jwt_token),
-    url(r'^api-auth/preferences', views.PreferencesViewSet.as_view()),
-    url(r'^accounts/', include('allauth.urls'))
+    url(r'^api-auth/preferences', views.PreferencesViewSet.as_view())
 ]
 
 

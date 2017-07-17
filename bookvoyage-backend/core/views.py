@@ -1,3 +1,12 @@
+import random
+
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import int_to_base36
+from rest_auth.app_settings import create_token
+from rest_auth.utils import jwt_encode
+
+from bookvoyage import settings
+from allauth.account.forms import UserTokenForm
 from allauth.account.utils import user_pk_to_url_str
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -70,24 +79,50 @@ def get_book(code):
         book = BookInstance.objects.get(book_code=code)
         book_id = book.id
 
-        user = User.objects.get(email__iexact=DEBUG_EMAIL)
-        send_owner_invitation(user)
+        # user = User.objects.get(email__iexact=DEBUG_EMAIL)
+        # send_owner_invitation(user)
+        # import logging
+        # logger = logging.getLogger("regular")
 
         if not book.ownings.exists():
             # Find ownings without a book instance attached
             owner_query = BookOwning.objects.filter(book_instance__isnull=True)
-            # owner_secondary_query = User.objects.filter(groups__name='SecondaryOwnerWithoutBook')
-            if owner_query.filter(secondary=False).exists():
-                chosen_owning = owner_query.filter(secondary=False).first()
-                # Add owner to this book instance
-                book.ownings.add(chosen_owning)
-            elif owner_query.filter(secondary=True).exists():
-                chosen_owning = owner_query.filter(secondary=True).first()
-                # Add owner to this book instance
-                book.ownings.add(chosen_owning)
+            if owner_query.count() > 0: # if such ownings exist
+                # First find owners who paid
+                owner_count = owner_query.filter(secondary=False).count()
+                if owner_count > 0:
+                    if owner_count > 1: random_id = random.randint(0, owner_count - 1)
+                    else: random_id = 0
+                    chosen_owning = owner_query.filter(secondary=False)[random_id]
+                    # Add owner to this book instance
+                    book.ownings.add(chosen_owning)
 
-                owner = chosen_owning.owner
-                send_owner_invitation(owner)
+                    # Send e-mail to user
+                    owner = chosen_owning.owner
+                    send_owner_invitation(owner)
+                else:
+                    # Then destinations we picked
+                    owner_count = owner_query.filter(secondary=True).count()
+                    if owner_count > 0:
+                        if owner_count > 1: random_id = random.randint(0, owner_count - 1)
+                        else: random_id = 0
+                        chosen_owning = owner_query.filter(secondary=True)[random_id]
+                        # Add owner to this book instance
+                        book.ownings.add(chosen_owning)
+
+            # Alternative: picks first entry in list rather than a random one
+            #
+            # if owner_query.filter(secondary=False).exists():
+            #     chosen_owning = owner_query.filter(secondary=False).first()
+            #     # Add owner to this book instance
+            #     book.ownings.add(chosen_owning)
+            # elif owner_query.filter(secondary=True).exists():
+            #     chosen_owning = owner_query.filter(secondary=True).first()
+            #     # Add owner to this book instance
+            #     book.ownings.add(chosen_owning)
+            #
+            #     owner = chosen_owning.owner
+            #     send_owner_invitation(owner)
 
     except BookInstance.DoesNotExist:
         book_id = -1
@@ -100,9 +135,6 @@ def send_owner_invitation(user):
     :return:
     """
 
-    import logging
-    logger = logging.getLogger("regular")
-
     # Retrieve user email address
     user_email = user.email
 
@@ -110,9 +142,11 @@ def send_owner_invitation(user):
 
     temp_key = token_generator.make_token(user)
 
-    url = HOST_FRONTEND + PASSWORD_RESET_LINK + user_pk_to_url_str(user) + "-" + temp_key
+    from django.utils.http import urlsafe_base64_encode
+    # url = HOST_FRONTEND + PASSWORD_RESET_LINK + user_pk_to_url_str(user) + "-" + temp_key
+    url = HOST_FRONTEND + PASSWORD_RESET_LINK + force_text(urlsafe_base64_encode((force_bytes(user.id)))) + "-" + temp_key
 
-    logger.error(url)
+    # logger.error(url) # DEBUG
 
     context = {"current_site": SITE_NAME,
                "user": user,
@@ -130,8 +164,6 @@ def send_owner_invitation(user):
         [user_email],
         fail_silently=False,
     )
-    # 'account/email/password_reset_key'
-
 
 class CodeExists(APIView):
     """

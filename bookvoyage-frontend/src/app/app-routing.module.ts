@@ -10,6 +10,7 @@ import {AuthGuard} from "./auth/auth-guard.service";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {PasswordComponent} from "./auth/manage-account/password/password.component";
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
+import {PasswordResetComponent} from "./auth/manage-account/password-reset/password-reset.component";
 
 const appRoutes: Routes = [
   { path: '', children: [
@@ -19,7 +20,10 @@ const appRoutes: Routes = [
       { path: '', component: ManageAccountComponent, pathMatch: 'full' },
       { path: 'password', component: PasswordComponent },
       ]},
-    { path: 'signup', component: SignupComponent, canActivate: [AuthGuardReverse]},
+    { path: 'signup', canActivate: [AuthGuardReverse], children: [
+      { path: '', component: SignupComponent, pathMatch: 'full', canActivate: [AuthGuardReverse]},
+      { path: 'key/:key', component: PasswordResetComponent, canActivate: [AuthGuardReverse]},
+    ]},
     { path: 'journey', children: [
       { path: '', component: OverviewMapComponent, pathMatch: 'full' },
       { path: ':id', children: [

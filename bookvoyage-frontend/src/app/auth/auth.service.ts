@@ -147,6 +147,28 @@ export class AuthService implements OnInit {
       });
   }
 
+  resetPassword(token: string, uid: string, new_password1: string, new_password2: string) {
+    let passwordReset = {
+      token: token,
+      uid: uid,
+      new_password1: new_password1,
+      new_password2: new_password2
+    };
+
+    return this.http.post(environment.apiUrl + "api-auth/password/reset/confirm/", passwordReset)
+      .map(
+        (response: Response) => {
+          // on success, return token
+          // console.log(response.json().token);
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
   changeUserCredentials(userChange: {}) {
     // user data may contain one or more of the following:
     // first_name, last_name, username
