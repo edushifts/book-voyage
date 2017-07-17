@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User, Group
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 
-from .models import BookInstance, BookBatch, BookHolding
+from .models import BookInstance, BookBatch, BookHolding, BookOwning
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
     BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail
 from rest_framework.response import Response
@@ -56,17 +57,35 @@ def get_book(code):
     """
     Takes a secret BookInstance access code and converts it to the public BookInstance id.
     If the given code has no corresponding book, it returns -1.
+
+    If the BookInstance exists, it will check if an owner is already assigned to it.
+    If not, it will assign a currently book-less owner to it.
     """
     try:
         code = code.upper()
-        book = BookInstance.objects.get(book_code=code).id
+        book = BookInstance.objects.get(book_code=code)
+        book_id = book.id
+
+        if not book.ownings.exists():
+            # Find ownings without a book instance attached
+            owner_query = BookOwning.objects.filter(book_instance__isnull=True)
+            # owner_secondary_query = User.objects.filter(groups__name='SecondaryOwnerWithoutBook')
+            if owner_query.filter(secondary=False).exists():
+                chosen_owning = owner_query.filter(secondary=False).first()
+                # Add owner to this book instance
+                book.ownings.add(chosen_owning)
+            elif owner_query.filter(secondary=True).exists():
+                chosen_owning = owner_query.filter(secondary=True).first()
+                # Add owner to this book instance
+                book.ownings.add(chosen_owning)
+
     except BookInstance.DoesNotExist:
-        book = -1
-    return book
+        book_id = -1
+    return book_id
 
 class CodeExists(APIView):
     """
-    takes access code and checks if it corresponds to a book instance
+    Takes access code and checks if it corresponds to a book instance.
     """
     permission_classes = ()
     authentication_classes = ()

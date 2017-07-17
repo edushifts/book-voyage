@@ -97,6 +97,9 @@ class BookOwning(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    secondary = models.BooleanField(
+        default=False
+    )
     book_instance = models.ForeignKey(
         BookInstance,
         related_name='ownings',

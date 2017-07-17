@@ -7,7 +7,7 @@
 
   <div *ngIf="formPhase === 1 && !loading" class="secondaryFont bottomPane mainContainer">
 
-    <p class="topText">Look at you! Congratulations on being the {{ currentHolder }} holder of this book. Will you get it closer to its final destination?</p>
+    <p class="topText">Look at you! Congratulations on being the {{ currentHolder }} holder of this book. <span *ngIf="owningAmount > 0">Will you get it closer to its final destination?</span><span *ngIf="owningAmount < 1">This one has no destination. Will you get it to an exciting location?</span></p>
     <p class="bottomText">Please locate where you're reading it.</p>
 
     <button class="menuButton" (click)="markerByGeo()">

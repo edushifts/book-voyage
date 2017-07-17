@@ -27,6 +27,7 @@ function getOrdinal(n) {
 export class FormMapComponent implements OnInit, OnDestroy {
   mainMap;
   currentHolder = '';
+  owningAmount = -1;
   loading = false;
   webGeoWait = false;
   formPhase: number = 1;
@@ -109,6 +110,14 @@ export class FormMapComponent implements OnInit, OnDestroy {
           this.mapService.holdingAmount$.subscribe(
             (amount: number) => {
               this.currentHolder = getOrdinal(amount+1);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+          this.mapService.owningAmount$.subscribe(
+            (amount: number) => {
+              this.owningAmount = amount;
             },
             (error) => {
               console.log(error);
