@@ -31,10 +31,6 @@ class UserResource(resources.ModelResource):
         import_id_fields = ['username']
         skip_unchanged = True
 
-class UserAdmin(ImportExportModelAdmin):
-    resource_class = UserResource
-    pass
-
 admin.site.register(Author)
 admin.site.register(Book, BookAdmin)
 admin.site.register(BookInstance, BookCodeAdmin)
@@ -42,5 +38,33 @@ admin.site.register(BookHolding, LeafletGeoAdmin)
 admin.site.register(BookOwning, LeafletGeoAdmin)
 admin.site.register(BookBatch, LeafletGeoAdmin)
 
+##############
+
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.models import User
+
+class EmailRequiredMixin(object):
+    def __init__(self, *args, **kwargs):
+        super(EmailRequiredMixin, self).__init__(*args, **kwargs)
+        # make user email field required
+        self.fields['email'].required = True
+
+
+class MyUserCreationForm(EmailRequiredMixin, UserCreationForm):
+    pass
+
+class MyUserChangeForm(EmailRequiredMixin, UserChangeForm):
+    pass
+
+
+class UpgradedUserAdmin(UserAdmin, ImportExportModelAdmin):
+    resource_class = UserResource
+    form = MyUserChangeForm
+    add_form = MyUserCreationForm
+    add_fieldsets = ((None, {'fields': ('username', 'email',
+                                        'password1', 'password2'), 'classes': ('wide',)}),)
+
+
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, UpgradedUserAdmin)
