@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   assetRoot: "/assets/",
   root: "/",
-  apiUrl: "http://api.edushifts.world:8000/",
+  apiUrl: "http://dev.edushifts.world:8000/",
   googleGeoBaseURL: "https://maps.googleapis.com/maps/api/geocode/json?address=",
   googleGeoAPI: "AIzaSyBIlZDx8WDIhKeXZMIN-3wrltWoLmo_VXc",
   tokenRefresh: 300000
