@@ -20,6 +20,7 @@ urlpatterns = [
     #url(r'^login/$', views.login, name='login'),
     url(r'^api/', include(router.urls)),
     url(r'^api/codeExists', views.CodeExists.as_view()),
+    url(r'^api-auth/user/', views.UserDetailsWithEmailView.as_view()), # Overwrite REST auth view
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^api-auth/refresh/', refresh_jwt_token),

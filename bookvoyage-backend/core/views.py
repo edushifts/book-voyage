@@ -1,8 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ParseError
+from rest_framework.permissions import IsAuthenticated
 
 from .models import BookInstance, BookBatch, BookHolding
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
-    BookHoldingWriteSerializer, PreferencesSerializer, Preferences
+    BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -140,3 +142,28 @@ class PreferencesViewSet(APIView):
             serializer.save(user)
 
             return Response(serializer.data)
+
+# OVERWRITE DEFAULT REST_AUTH USER DETAILS VIEW
+from rest_framework.generics import RetrieveUpdateAPIView
+class UserDetailsWithEmailView(RetrieveUpdateAPIView):
+    """
+    Reads and updates UserModel fields
+    Accepts GET, PUT, PATCH methods.
+    Default accepted fields: username, first_name, last_name
+    Default display fields: pk, username, email, first_name, last_name
+    Read-only fields: pk
+    Returns UserModel fields.
+    """
+    serializer_class = UserDetailsSerializerWithEmail
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def get_queryset(self):
+        """
+        Adding this method since it is sometimes called when using
+        django-rest-swagger
+        https://github.com/Tivix/django-rest-auth/issues/275
+        """
+        return get_user_model().objects.none()

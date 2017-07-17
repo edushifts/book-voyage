@@ -116,6 +116,7 @@ export class ManageAccountComponent implements OnInit {
     }
     if (username !== "" && username !== null) {
       userChange['username'] = username.toLowerCase();
+      userChange['email'] = username.toLowerCase();
       username_changed = true;
     }
 
@@ -160,8 +161,8 @@ export class ManageAccountComponent implements OnInit {
           }
 
           this.lastNameError = '';
-          if (errors.new_password2) {
-            for (let error of errors.lastNameError) {
+          if (errors.last_name) {
+            for (let error of errors.last_name) {
               this.lastNameError += error;
               this.lastNameError += " ";
             }
@@ -169,8 +170,15 @@ export class ManageAccountComponent implements OnInit {
           }
 
           this.usernameError = '';
-          if (errors.usernameError) {
-            for (let error of errors.usernameError) {
+          if (errors.username) {
+            for (let error of errors.username) {
+              this.usernameError += error;
+              this.usernameError += " ";
+            }
+            form.controls['email'].setErrors({'valid': false});
+          }
+          if (errors.email) {
+            for (let error of errors.email) {
               this.usernameError += error;
               this.usernameError += " ";
             }

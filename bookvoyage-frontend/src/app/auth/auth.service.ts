@@ -256,13 +256,35 @@ export class AuthService implements OnInit {
 
   logout(expired?: boolean): void {
     // clear token remove user from local storage to log user out
-    this.clearLocalBookData();
-    localStorage.removeItem("currentUser");
-    window.sessionStorage.clear();
+
     if (expired) {
+
+      this.clearLocalBookData();
+      localStorage.removeItem("currentUser");
       this.router.navigate([''], {queryParams: {error: 2 }});
+
     } else {
+
+      let headers = new Headers();
+      this.createAuthorizationHeader(headers);
+
+      let emptyPost = {};
+      this.http.post(environment.apiUrl + "api-auth/logout/", emptyPost, { headers: headers })
+        .map(
+          (response: Response) => {
+            // console.log("logged out via API"); // DEBUG
+            this.clearLocalBookData();
+            localStorage.removeItem("currentUser");
+            }
+        )
+        .catch(
+          (error: Response) => {
+            // console.log("ERROR logging out via API"); // DEBUG
+            return Observable.throw(error);
+
+          }).subscribe();
       this.router.navigate(['']);
+
     }
   }
 
