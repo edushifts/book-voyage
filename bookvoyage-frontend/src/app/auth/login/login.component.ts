@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           let token = response.json() && response.json().token;
           if (token) {
 
-            // store username and jwt token in local storage to keep user logged in between page refreshes
+            // store user object and jwt token in local storage to keep user logged in between page refreshes
             this.authService.setCurrentUser(response.json());
 
             // return true to indicate successful login

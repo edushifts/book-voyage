@@ -65,7 +65,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       return;
     }
     // create account at backend
-    this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm, email).subscribe(
+    this.subscribeSignUp = this.authService.registerUser(email, password, passwordConfirm).subscribe(
       (currentUser : CurrentUser) => {
         // login
         this.authService.setCurrentUser(currentUser);
@@ -74,7 +74,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         let userData = {
           first_name: nameCase(first_name),
           last_name: nameCase(last_name)
-        }
+        };
 
         this.authService.changeUserCredentials(userData).subscribe(
           (success) => {

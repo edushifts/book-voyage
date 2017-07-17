@@ -11,8 +11,7 @@ export interface CurrentUser {
     email: string,
     first_name: string,
     last_name: string,
-    pk: number,
-    username: string
+    pk: number
   },
   token: string
 }
@@ -125,9 +124,8 @@ export class AuthService implements OnInit {
     headers.append('Authorization', 'JWT ' + this.getToken());
   }
 
-  registerUser(username, password1, password2, email) {
+  registerUser(email, password1, password2) {
     let newUser = {
-      username: username.toLowerCase(),
       password1: password1,
       password2: password2,
       email: email.toLowerCase()
@@ -149,7 +147,7 @@ export class AuthService implements OnInit {
 
   changeUserCredentials(userChange: {}) {
     // user data may contain one or more of the following:
-    // first_name, last_name, username
+    // first_name, last_name, email
 
     let token = this.getToken();
     // console.log(token); // DEBUG
@@ -245,9 +243,9 @@ export class AuthService implements OnInit {
   }
 
 
-  login(username: string, password: string) {
+  login(email: string, password: string) {
     let user = {
-      username: username,
+      email: email,
       password: password
     };
 

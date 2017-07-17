@@ -44,7 +44,7 @@ export class ManageAccountComponent implements OnInit {
     return this.currentUser.user.last_name;
   }
   get_email() {
-    return this.currentUser.user.username;
+    return this.currentUser.user.email;
   }
 
   ngOnInit() {
@@ -102,9 +102,9 @@ export class ManageAccountComponent implements OnInit {
 
     let first_name = form.value.first_name;
     let last_name = form.value.last_name;
-    let username = form.value.email;
+    let email = form.value.email;
 
-    let username_changed: boolean = false;
+    let email_changed: boolean = false;
 
     // Change username and personal names if required
     let userChange = {};
@@ -114,17 +114,16 @@ export class ManageAccountComponent implements OnInit {
     if (last_name !== "" && last_name !== null) {
       userChange['last_name'] = nameCase(last_name);
     }
-    if (username !== "" && username !== null) {
-      userChange['username'] = username.toLowerCase();
-      userChange['email'] = username.toLowerCase();
-      username_changed = true;
+    if (email !== "" && email !== null) {
+      userChange['email'] = email.toLowerCase();
+      email_changed = true;
     }
 
     if (Object.keys(userChange).length !== 0 && userChange.constructor === Object) {
       this.authService.changeUserCredentials(userChange).subscribe(
         (success: boolean) => {
           // console.log("Yay"); // DEBUG
-          if (username_changed) {
+          if (email_changed) {
             this.authService.logout();
             this.router.navigate([''], {queryParams: {changedEmail: 1 }});
           } else {
