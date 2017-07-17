@@ -29,32 +29,28 @@ This sparked us to test the theory of *six degrees of separation* that would exi
  
 ## What do we need?
  
-**You!** In specific, we are looking for (Angular) front-end developers who are looking for a Javascript challenge in map APIs, as well as Django/Python developers to contribute to our back-end implementation.
+**You!** In specific, we are looking for (Angular 2+) front-end developers who are looking for a Javascript challenge in map APIs, as well as Django/Python developers to contribute to our back-end implementation.
 
-Please note that the current version is still very much work-in-progress and is not yet suited for a production environment. We are very open to suggestions to extend the platform in interesting directions, so please leave a message if you have a great new feature in mind.
+We are very open to suggestions to extend the platform in interesting directions, so please leave a message if you have a great new feature in mind.
 
 ## How to run it?
 
-### Backend (Django Framework)
+The application has two components: a front-end based on Angular and a back-end based on Django. Interaction happens through an API. Users only use the front-end; administration is performed through Django.
 
-#### Beginner tips
-You can use any major operating system, but a Linux (virtual) machine is recommended. If you don't run Linux already, [this virtual machine](https://box.scotch.io/) is pretty great. Using a [virtual python environment](https://askubuntu.com/a/865644) also comes recommended.
+### For Users
 
-#### From git clone to serving
+You will only need to run the Django server with a compiled website in it. This production version is currently not on GitHub yet. If you require it, please send use a message.
 
-1. You will first need to install Python, if you haven't yet. [Here](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment) is a clear guide for multiple OSs.
-2. You can install all required dependencies by running `pip install -r requirements.txt` in the `bookvoyage-backend` root folder.
-3. We use [PostgreSQL](https://www.postgresql.org/download/) in production, which we highly recommend you also install (in favour of the easier SQLite database option). Once PostgreSQL is running, copy `config.default.py` to `config.py` and change the database variables to suit your needs.
-4. To allow the database to store geo-objects, please run `sudo apt-get install gdal-bin`. Note that we have not tried installing this in [Windows](https://gis.stackexchange.com/questions/2276/installing-gdal-with-python-on-windows).
-5. Run: `python manage.py makemigrations`, then `python manage.py migrate`, and finally `python manage.py runserver 127.0.0.1:8000` (or the `ip:port` of your virtual machine).
+### For Developers
 
-If you go to the given address in your browser and see the current front-end, that means you are in business and ready to contribute!
+#### Backend (Django Framework)
+You will find the instructions for running the back-end [here](https://github.com/edushifts/book-voyage/blob/master/bookvoyage-backend/README.MD).
 
-You can take a look at our [wiki page](https://github.com/edushifts/book-voyage/wiki) for information on implementations.
+#### Frontend (Angular Framework)
+You will find the instructions for running the front-end [here](https://github.com/edushifts/book-voyage/blob/master/bookvoyage-frontend/README.md)
 
-### Frontend (Angular)
-
-*We are currently working on separate instructions for the front-end, which will be written once the front- and backend have been split.*
+#### General tips for unexperienced programmers
+*All these are but humble suggestions from a recent learner.* You can use any major operating system, but a Linux (virtual) machine comes recommended if you want to work on the back-end. If you don't run Linux already, [this virtual machine](https://box.scotch.io/) is pretty great. Using a [virtual python environment](https://askubuntu.com/a/865644) also comes recommended. If you want to focus on Angular development, you may want to work in your native OS rather than a virtual machine to avoid some issues with automatic refreshing.
 
 ## Get involved
 
