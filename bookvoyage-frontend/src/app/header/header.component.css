@@ -25,6 +25,10 @@ header img.logo {
 .rightButtonImg {
 }
 
+.preventSlide {
+  position: relative;
+}
+
 /*
  * DROP DOWN MENU
  * Code adapted from
