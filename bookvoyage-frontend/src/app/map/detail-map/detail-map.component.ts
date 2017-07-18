@@ -3,12 +3,13 @@ import {AddBookInstancesOptions, MapService} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Title} from "@angular/platform-browser";
+import {ShareButtonsService} from "ngx-sharebuttons";
 
 @Component({
   selector: 'app-detail-map',
   templateUrl: './detail-map.component.html',
   styleUrls: ['./detail-map.component.css'],
-  providers: [GeoLocationService]
+  providers: [GeoLocationService, ShareButtonsService]
 })
 export class DetailMapComponent implements OnInit {
   bookId: number;

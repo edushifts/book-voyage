@@ -19,8 +19,9 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css",
-        "../node_modules/leaflet/dist/leaflet.css"
+        "../node_modules/leaflet/dist/leaflet.css",
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "styles.css"
       ],
       "scripts": [
         "../node_modules/leaflet/dist/leaflet.js",

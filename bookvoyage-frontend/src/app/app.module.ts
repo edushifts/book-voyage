@@ -28,6 +28,7 @@ import { BookListComponent } from './book/book-list/book-list.component';
 import { BookListItemComponent } from './book/book-list/book-list-item/book-list-item.component';
 import { FormUserMapComponent } from './map/form-user-map/form-user-map.component';
 import {GeoLocationService} from "./map/geo-location.service";
+import {ShareButtonsModule} from "ngx-sharebuttons";
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {GeoLocationService} from "./map/geo-location.service";
     AppRoutingModule,
     FormsModule,
     HttpModule,
-    NgSpinKitModule
+    NgSpinKitModule,
+    ShareButtonsModule.forRoot()
   ],
   providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService],
   bootstrap: [AppComponent]
