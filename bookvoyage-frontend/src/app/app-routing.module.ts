@@ -11,6 +11,7 @@ import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {PasswordComponent} from "./auth/manage-account/password/password.component";
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import {PasswordResetComponent} from "./auth/manage-account/password-reset/password-reset.component";
+import {BookListComponent} from "./book/book-list/book-list.component";
 
 const appRoutes: Routes = [
   { path: '', children: [
@@ -25,12 +26,13 @@ const appRoutes: Routes = [
       { path: 'key/:key', component: PasswordResetComponent, canActivate: [AuthGuardReverse]},
     ]},
     { path: 'journey', children: [
-      { path: '', component: OverviewMapComponent, pathMatch: 'full' },
+      { path: '', redirectTo: '', pathMatch: 'full' },
       { path: ':id', children: [
         { path: '', component: DetailMapComponent, pathMatch: 'full' },
         { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
       ]},
     ]},
+    { path: 'journeys', component: BookListComponent, pathMatch: 'full', canActivate: [AuthGuard]},
     { path: '**', redirectTo: '' } // TODO: should be a 404 page that redirects
   ]}
 ];

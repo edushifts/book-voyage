@@ -119,4 +119,38 @@ export class BookService {
           return Observable.throw(error);
         });
   }
+
+  getMyBookOwnings() {
+    let headers = new Headers();
+    this.authService.createAuthorizationHeader(headers);
+
+    return this.http.get(environment.apiUrl + "api/myBookOwnings/", { headers: headers })
+      .map(
+        (response: Response) => {
+          // on success, return specified book instance
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
+  getMyBookHoldings() {
+    let headers = new Headers();
+    this.authService.createAuthorizationHeader(headers);
+
+    return this.http.get(environment.apiUrl + "api/myBookHoldings/", { headers: headers })
+      .map(
+        (response: Response) => {
+          // on success, return specified book instance
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
 }

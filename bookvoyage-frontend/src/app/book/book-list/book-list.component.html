@@ -1,0 +1,26 @@
+<div class="mainContent">
+  <div class="mainContainer noselect">
+
+    <div *ngIf="initFinishedOwnerships && bookOwnershipsOutput[0]">
+      <h2>Book Ownership</h2>
+      <div *ngFor="let owning of bookOwnershipsOutput">
+        <app-book-list-item [item]="owning"></app-book-list-item>
+      </div>
+    </div>
+
+    <div *ngIf="initFinishedHoldings && bookHoldingsOutput[0]">
+      <h2>Books Held</h2>
+      <div *ngFor="let holding of bookHoldingsOutput">
+        <app-book-list-item [item]="holding"></app-book-list-item>
+      </div>
+    </div>
+
+    <div *ngIf="initFinishedHoldings && initFinishedOwnerships && !bookHoldingsOutput[0] && !bookOwnershipsOutput[0]">
+      <h2>No books found</h2>
+      <p class="question">Did you finish the book registration?</p>
+      <app-code-form></app-code-form>
+    </div>
+
+
+  </div>
+</div>

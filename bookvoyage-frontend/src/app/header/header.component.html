@@ -5,6 +5,7 @@
     <img class="dropbtn" src="assets/img/account_v2.svg" onerror="this.src='/assets/img/account_v2.png'" (click)="onAccountButton()">
     <div *ngIf="isLoggedIn">
       <div class="dropdown-content">
+        <a routerLink="/journeys/">My Journeys</a>
         <a routerLink="/account/">Account Page</a>
         <a (click)="logout()">Logout</a>
       </div>
