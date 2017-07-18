@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit, DoCheck {
 
   onAccountButton() {
     if (this.isLoggedIn) {
-      this.router.navigate(['account']);
+      // this.router.navigate(['account']);
     } else {
       this.router.navigate(['login']);
     }
