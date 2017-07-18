@@ -41,6 +41,20 @@ class OwnerGenSerializer(serializers.ModelSerializer):
         model = BookOwning
         fields = ('owner', 'time', 'message', 'location')
 
+
+class BasicBookInstanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BookInstance
+        fields = ('id', 'arrived')
+
+class OwnershipSerializer(serializers.ModelSerializer):
+    book_instance = BasicBookInstanceSerializer()
+
+    class Meta:
+        model = BookOwning
+        fields = ('id', 'book_instance',)
+
 class BookBatchSerializer(serializers.HyperlinkedModelSerializer):
     location = serializers.SerializerMethodField()
 
