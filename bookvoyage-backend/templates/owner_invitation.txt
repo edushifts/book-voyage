@@ -1,0 +1,16 @@
+Welcome to EDUshifts Book Voyage!
+
+Your book has started its around-the-world journey to you: someone has entered your book code!
+
+Even though it may take a while before they finish the registration, you can now track your book's movement on the platform and read messages from holders.
+
+In order to do that, please follow the link to confirm your email:
+
+{{ platformUrl }}
+
+Do share your thoughts and ideas with us and get in touch if you have any other enquiries or run into issues on the platform.
+
+Have fun!
+
+EDUshifts Team
+ahoi@edushifts.world

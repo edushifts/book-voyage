@@ -1,0 +1,14 @@
+Welcome to EDUshifts Book Voyage!
+
+Thanks for being a part of a global education transformation, and for bringing the book one degree closer to its destination.
+
+You can now track the journey of your book on the platform and get in touch with its owner or whoever had it previously.
+
+{{ platformUrl }}
+
+Do share your thoughts and ideas with us and get in touch if you have any other enquiries.
+
+Enjoy!
+
+EDUshifts Team
+ahoi@edushifts.world

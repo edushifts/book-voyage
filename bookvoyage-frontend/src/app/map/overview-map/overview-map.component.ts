@@ -17,8 +17,7 @@ export class OverviewMapComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private headerService: HeaderService,
-              private mapService: MapService,
-              private titleService: Title) { }
+              private mapService: MapService) { }
 
   ngOnInit() {
     this.headerService.showAccountButtons = true;
@@ -50,7 +49,6 @@ export class OverviewMapComponent implements OnInit {
         //   // nothing happens
         // }
 
-        this.titleService.setTitle("EDUshifts Now | Book Voyage");
       });
 
     // render basic map

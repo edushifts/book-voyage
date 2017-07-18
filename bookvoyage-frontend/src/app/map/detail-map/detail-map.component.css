@@ -1,3 +1,21 @@
 #mainMap {
   height: 80vh;
 }
+share-buttons {
+  position: absolute;
+  bottom: 7vh;
+  left: 30px;
+  z-index: 20000;
+  margin: auto;
+  width: 100px;
+  max-height: 70vh;
+}
+
+@media screen and (max-height: 500px) {
+  share-buttons {
+    left: 8px !important;
+  }
+  share-button button {
+    width: 30px !important;
+  }
+}

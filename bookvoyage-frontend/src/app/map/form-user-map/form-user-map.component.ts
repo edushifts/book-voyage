@@ -8,29 +8,16 @@ import {NgForm} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
 import {MetaService} from "@ngx-meta/core";
 
-function getOrdinal(n) {
-  if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
-    var s=["th","st","nd","rd"],
-      v=n%100;
-    return n+(s[(v-20)%10]||s[v]||s[0]);
-  }
-  return n;
-}
-
 @Component({
-  selector: 'app-detail-map',
-  templateUrl: './form-map.component.html',
-  styleUrls: ['../../shared/checkbox-style.css',
-    './form-map.component.css',
-    ]
+  selector: 'app-form-user-map',
+  templateUrl: './form-user-map.component.html',
+  styleUrls: ['./form-user-map.component.css']
 })
-export class FormMapComponent implements OnInit, OnDestroy {
+export class FormUserMapComponent implements OnInit, OnDestroy {
   mainMap;
-  currentHolder = '';
-  owningAmount = -1;
   loading = false;
   webGeoWait = false;
-  formPhase: number = 1;
+  formPhase: number = 0;
   geoLocateSubscriber;
   userMessage: string = "";
   bookId: number;
@@ -63,7 +50,6 @@ export class FormMapComponent implements OnInit, OnDestroy {
               private geoLocationService: GeoLocationService,
               private authService: AuthService,
               private router: Router,
-              private route: ActivatedRoute,
               private bookService: BookService,
               private readonly meta: MetaService) { }
 
@@ -73,7 +59,17 @@ export class FormMapComponent implements OnInit, OnDestroy {
     }
   }
 
+  goToGeo() {
+    this.formPhase = 1;
+  }
+
+  skipToPreferences() {
+    this.formPhase = 3;
+  }
+
   ngOnInit() {
+    // TODO: check if user is actually the owner of this book instance
+
     // render basic map
     this.mainMap = this.mapService.renderMap('mainMap');
 
@@ -83,48 +79,6 @@ export class FormMapComponent implements OnInit, OnDestroy {
       addOwners: true,
       drawLines: true
     };
-
-    // get book instance id from auth service
-    //let bookId = this.authService.getBookId();
-    this.route.params
-      .subscribe(
-        (params: Params) => {
-          let bookId = +params['id'];
-
-          // check if bookId fits user access code
-          let accessCode = this.authService.getAccessCode();
-
-          if (accessCode !== "wrong") {
-            let codeValidity = this.authService.checkCode(accessCode);
-            if (!codeValidity) {
-              // wrong code
-              this.router.navigate([''], {queryParams: {error: 1 }});
-            }
-          } else {
-            // no code
-            this.router.navigate([''], {queryParams: {error: 2 }});
-          }
-
-          // Loads book instance
-          let bookInstance = this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
-          this.mapService.holdingAmount$.subscribe(
-            (amount: number) => {
-              this.currentHolder = getOrdinal(amount+1);
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
-          this.mapService.owningAmount$.subscribe(
-            (amount: number) => {
-              this.owningAmount = amount;
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
-        }
-      );
 
     // Load user preferences
     this.initiateUserPreferences();

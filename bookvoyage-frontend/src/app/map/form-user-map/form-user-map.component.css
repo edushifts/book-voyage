@@ -1,0 +1,161 @@
+#mainMap {
+  height: 45vh;
+}
+
+.bottomPane {
+  height: 35vh;
+  text-align: center;
+}
+
+.bottomPane > p {
+  max-width: 600px;
+  margin: 15px auto;
+  font-size: 1.5em;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.menuButton {
+  display: inline-block;
+  width: 200px;
+  background-color: #1d335f;
+  color: white;
+  font-family: 'BebasNeue', sans-serif;
+  font-size: 1.2em;
+  margin: 0px;
+  padding: 0px;
+  cursor: pointer;
+  border: none;
+}
+
+.inline {
+  display: inline-block;
+  margin: 0 10px !important;
+}
+
+.bottomText {
+  font-weight: 300;
+}
+
+input.ng-invalid.ng-touched {
+  background: red;
+}
+
+button[type="submit"]:disabled {
+  background: dimgrey !important;
+  cursor: default;
+}
+
+.form-group {
+  padding: 5px;
+}
+
+input {
+  box-sizing: content-box !important;
+}
+
+
+.menuButtonBottomMargin {
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+textarea {
+  resize: none;
+  display: block;
+  width: 400px;
+  height: 84px;
+  text-align: center;
+  margin: 20px auto;
+  font-family: inherit;
+  border: none;
+  background: #1d335f;
+  color: white;
+  padding: 10px;
+}
+
+.help-block {
+  text-align: center;
+  color: red;
+  display: block;
+  background: white;
+}
+
+
+
+.mainContainer {
+  display: block;
+  margin: 10px auto;
+  width: 60%;
+  max-width: 600px;
+}
+
+.control__indicator {
+  left: 85% !important;
+}
+
+.control {
+  padding-right: 18% !important;
+}
+
+@media screen and (max-width: 550px) {
+  #bottomPane p {
+    font-size: 1.2em;
+    max-width: 400px;
+  }
+  .menuButton {
+    font-size: 1em;
+    width: 150px;
+    margin-bottom: 10px;
+  }
+  .inline {
+    display: none;
+  }
+  textarea {
+    width: 300px;
+  }
+}
+
+
+@media screen and (max-width: 350px) {
+  textarea {
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 830px) {
+  .menuButton {
+    font-size: 1.1em;
+    width: 150px;
+  }
+  .inline {
+    margin: 0 0 !important;
+  }
+}
+
+
+@media screen and (max-height: 750px) {
+  .mainContainer {
+    font-size: .7em;
+  }
+  .control {
+    font-size: 1.5em;
+  }
+  .menuButton {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .mainContainer {
+    width: 90%;
+    font-size: .7em;
+  }
+  .control {
+    font-size: 1.5em;
+  }
+  .menuButton {
+    font-size: 1.5em;
+  }
+}

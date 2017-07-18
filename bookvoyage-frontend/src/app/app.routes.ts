@@ -1,5 +1,3 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
 import {OverviewMapComponent} from "./map/overview-map/overview-map.component";
 import {LoginComponent} from "./auth/login/login.component";
 import {ManageAccountComponent} from "./auth/manage-account/manage-account.component";
@@ -12,35 +10,51 @@ import {PasswordComponent} from "./auth/manage-account/password/password.compone
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import {PasswordResetComponent} from "./auth/manage-account/password-reset/password-reset.component";
 import {BookListComponent} from "./book/book-list/book-list.component";
+import {FormUserMapComponent} from "./map/form-user-map/form-user-map.component";
+import {MetaGuard} from '@ngx-meta/core'
+import {Routes} from "@angular/router";
 
-const appRoutes: Routes = [
-  { path: '', children: [
+export const routes: Routes = [
+  { path: '', canActivateChild: [MetaGuard], children: [
     { path: '', component: OverviewMapComponent, pathMatch: 'full'},
-    { path: 'login', component: LoginComponent, canActivate: [AuthGuardReverse]},
+    { path: 'login', component: LoginComponent, canActivate: [AuthGuardReverse], data: {
+      meta: {
+        title: 'Login',
+      }
+    }},
     { path: 'account', canActivate: [AuthGuard], children: [
-      { path: '', component: ManageAccountComponent, pathMatch: 'full' },
-      { path: 'password', component: PasswordComponent },
+      { path: '', component: ManageAccountComponent, pathMatch: 'full', data: {
+        meta: {
+          title: 'Account Management',
+        }
+      } },
+      { path: 'password', component: PasswordComponent, data: {
+        meta: {
+          title: 'Change Password',
+        }
+      } },
       ]},
     { path: 'signup', canActivate: [AuthGuardReverse], children: [
-      { path: '', component: SignupComponent, pathMatch: 'full', canActivate: [AuthGuardReverse]},
-      { path: 'key/:key', component: PasswordResetComponent, canActivate: [AuthGuardReverse]},
+      { path: '', component: SignupComponent, pathMatch: 'full', canActivate: [AuthGuardReverse], data: {
+        meta: {
+          title: 'Sign up',
+        }
+      }},
+      { path: 'key/:key', component: PasswordResetComponent, canActivate: [AuthGuardReverse], data: {
+        meta: {
+          title: 'Your journey has started',
+        }
+      }},
     ]},
     { path: 'journey', children: [
       { path: '', redirectTo: '', pathMatch: 'full' },
       { path: ':id', children: [
-        { path: '', component: DetailMapComponent, pathMatch: 'full' },
+        { path: '', component: DetailMapComponent, pathMatch: 'full', },
         { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
+        // { path: 'define', component: FormUserMapComponent, canActivate: [AuthGuard]}, # WIP
       ]},
     ]},
     { path: 'journeys', component: BookListComponent, pathMatch: 'full', canActivate: [AuthGuard]},
     { path: '**', redirectTo: '' } // TODO: should be a 404 page that redirects
   ]}
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(appRoutes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
-
-}

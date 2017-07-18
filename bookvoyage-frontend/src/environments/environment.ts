@@ -5,7 +5,9 @@
 
 export const environment = {
   production: false,
+  protocol: 'http://',
   assetRoot: "/assets/",
+  url: '127.0.0.1:4200',
   root: "/",
   apiUrl: "http://dev.edushifts.world:8000/",
   googleGeoBaseURL: "https://maps.googleapis.com/maps/api/geocode/json?address=",

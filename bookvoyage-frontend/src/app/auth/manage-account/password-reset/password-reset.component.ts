@@ -22,8 +22,7 @@ export class PasswordResetComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private route: ActivatedRoute,
-              private titleService: Title) { }
+              private route: ActivatedRoute) { }
 
 
   ngOnInit() {
@@ -38,7 +37,6 @@ export class PasswordResetComponent implements OnInit {
           }
         }
       );
-    this.titleService.setTitle("EDUshifts Now | your journey has started!");
   }
 
   updatePassword(form: NgForm) {
