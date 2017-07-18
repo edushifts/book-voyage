@@ -26,6 +26,7 @@ import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import { PasswordResetComponent } from './auth/manage-account/password-reset/password-reset.component';
 import { BookListComponent } from './book/book-list/book-list.component';
 import { BookListItemComponent } from './book/book-list/book-list-item/book-list-item.component';
+import { FormUserMapComponent } from './map/form-user-map/form-user-map.component';
 import {GeoLocationService} from "./map/geo-location.service";
 
 @NgModule({
@@ -44,7 +45,8 @@ import {GeoLocationService} from "./map/geo-location.service";
     PasswordComponent,
     PasswordResetComponent,
     BookListComponent,
-    BookListItemComponent
+    BookListItemComponent,
+    FormUserMapComponent
   ],
   imports: [
     BrowserModule,

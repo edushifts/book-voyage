@@ -12,6 +12,7 @@ import {PasswordComponent} from "./auth/manage-account/password/password.compone
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import {PasswordResetComponent} from "./auth/manage-account/password-reset/password-reset.component";
 import {BookListComponent} from "./book/book-list/book-list.component";
+import {FormUserMapComponent} from "./map/form-user-map/form-user-map.component";
 
 const appRoutes: Routes = [
   { path: '', children: [
@@ -30,6 +31,7 @@ const appRoutes: Routes = [
       { path: ':id', children: [
         { path: '', component: DetailMapComponent, pathMatch: 'full' },
         { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
+        { path: 'define', component: FormUserMapComponent, canActivate: [AuthGuard]},
       ]},
     ]},
     { path: 'journeys', component: BookListComponent, pathMatch: 'full', canActivate: [AuthGuard]},

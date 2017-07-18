@@ -1,0 +1,106 @@
+<div class="mainContent">
+  <div id="mainMap"></div>
+  <div *ngIf="webGeoWait" class="secondaryFont bottomPane">
+    <sk-pulse [isRunning]="loading" [color]="'#1d335f'"></sk-pulse>
+    <p class="secondaryFont">Please allow the location request by your browser</p>
+  </div>
+
+  <div *ngIf="formPhase === 0" class="secondaryFont bottomPane mainContainer">
+    <p class="topText">All the people on this map are trying to get the book to you. Pretty cool.</p>
+    <p class="bottomText">Does the shown location look about correct?</p>
+
+    <button class="menuButton" (click)="goToGeo()">
+      <p>No (redo it)</p>
+    </button>
+
+    <button class="menuButton" (click)="skipToPreferences()">
+      <p>Yes (continue)</p>
+    </button>
+  </div>
+
+  <div *ngIf="formPhase === 1 && !loading" class="secondaryFont bottomPane mainContainer">
+
+    <p class="topText">Okido, let's make a mark!</p>
+    <p class="bottomText">Do be careful with changing the location, especially once more people have tried to get it in your previous direction.</p>
+
+    <button class="menuButton" (click)="markerByGeo()">
+      <p>Use GPS/IP</p>
+    </button>
+
+    <p class="inline">or</p>
+
+    <button class="menuButton" (click)="markerByAddress()">
+      <p>Enter city name</p>
+    </button>
+  </div>
+
+  <div *ngIf="formPhase === 2" class="secondaryFont bottomPane mainContainer">
+    <p class="topText">Aha! So that’s where it needs to go.</p>
+    <p class="bottomText">Does the shown location look about correct?</p>
+
+    <button class="menuButton" (click)="reset()">
+      <p>No (try again)</p>
+    </button>
+
+    <button class="menuButton" (click)="submitLocation()">
+      <p>Yes (continue)</p>
+    </button>
+  </div>
+
+  <div *ngIf="formPhase === 3" class="secondaryFont bottomPane mainContainer">
+    <p class="topText">Now, let's talk communications.</p>
+    <p class="bottomText">You <em>can</em> be anonymous, but as a book owner you are the one making it personal.</p>
+
+    <form id="dataPreferences" (ngSubmit)="submitPreferences(preferenceForm)" #preferenceForm="ngForm">
+      <span *ngIf="preferenceError != ''" class="help-block">{{ preferenceError }}</span>
+      <div *ngIf="!alreadyActivated" class="form-group">
+        <label class="control control--checkbox">
+          <input required type="checkbox" name="consent" [(ngModel)]="consentBox">
+          I agree with the use of my provided data*
+          <div class="control__indicator"></div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="control control--checkbox">I want to receive book updates by e-mail
+          <input type="checkbox" name="updates" [(ngModel)]="mail_updates">
+          <div class="control__indicator"></div>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="control control--checkbox">
+          <input type="checkbox" name="anonymous" [(ngModel)]="anonymous">
+          I want my name censored on the site
+          <div class="control__indicator"></div>
+        </label>
+      </div>
+
+      <button [disabled]="!preferenceForm.valid" type="submit" class="menuButton menuButtonBottomMargin">
+        <p>Ready to share!</p>
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="formPhase === 4" class="secondaryFont bottomPane mainContainer">
+    <p class="topText">Time to leave your mark with a message!</p>
+    <p class="bottomText">Tell the community a bit about yourself.</p>
+
+    <form id="messageForm" (ngSubmit)="submitMessage(messageForm)" #messageForm="ngForm">
+      <textarea rows="1" placeholder="Write your public message here (enters will be removed)" maxlength="140" id="message" required ngModel name="message"
+                class="code"></textarea>
+      <button type="submit" class="menuButton">
+        <p>That's it!</p>
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="formPhase === 5" class="secondaryFont bottomPane mainContainer">
+    <p class="topText">Your changes have been made and are live now. We are curious to see how the journey will continue!</p>
+    <p class="bottomText">Now you may want to share it. On to your public journey page!</p>
+
+    <button class="menuButton" (click)="complete()">
+      <p>Go to journey page</p>
+    </button>
+  </div>
+</div>
