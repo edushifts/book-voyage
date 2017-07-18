@@ -3,7 +3,7 @@
     <form (ngSubmit)="loginUser(form)" #form="ngForm">
       <p class="menuBig">LOG IN</p>
 
-      <p class="menuSmall">(sign-up requires a book)</p>
+      <p class="menuSmall">{{ extraMessageOutput }}</p>
 
       <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
 

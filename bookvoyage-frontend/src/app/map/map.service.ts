@@ -53,7 +53,9 @@ export class MapService {
   controlGroup;
 
   holdingAmount$: Observable<number>;
+  owningAmount$: Observable<number>;
   private holdingAmount = new Subject<number>();
+  private owningAmount = new Subject<number>();
 
   getControlGroup() {
     return this.controlGroup;
@@ -66,7 +68,7 @@ export class MapService {
   constructor(private bookService: BookService) {
     // make holdingAmount observable
     this.holdingAmount$ = this.holdingAmount.asObservable();
-
+    this.owningAmount$ = this.holdingAmount.asObservable();
 
     // define icon for marker type 1
     this.blueIcon = L.icon({
@@ -311,6 +313,9 @@ export class MapService {
         // report the total amount of holders
         let holdingAmount = bookInstance.holdings.length;
         this.holdingAmount.next(holdingAmount);
+
+        let owningAmount = bookInstance.ownings.length;
+        this.owningAmount.next(owningAmount);
 
         if (addHolders) {
           // create array to hold marker locations to draw polyline between them

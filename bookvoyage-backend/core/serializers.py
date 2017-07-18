@@ -168,3 +168,15 @@ class PreferencesSerializer(serializers.Serializer):
             raise ParseError(detail="Your account needs to be activated to use it. "
                                     "Please contact the platform owners if you would "
                                     "like your account removed.", code=400)
+
+
+# OVERWRITE DEFAULT REST_AUTH USER DETAILS SERIALIZER
+from rest_auth.serializers import UserModel
+class UserDetailsSerializerWithEmail(serializers.ModelSerializer):
+    """
+    User model w/o password
+    """
+    class Meta:
+        model = UserModel
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name')
+        #read_only_fields = ('email', )
