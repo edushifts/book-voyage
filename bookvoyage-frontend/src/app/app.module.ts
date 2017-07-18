@@ -26,6 +26,7 @@ import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import { PasswordResetComponent } from './auth/manage-account/password-reset/password-reset.component';
 import { BookListComponent } from './book/book-list/book-list.component';
 import { BookListItemComponent } from './book/book-list/book-list-item/book-list-item.component';
+import {GeoLocationService} from "./map/geo-location.service";
 
 @NgModule({
   declarations: [
@@ -52,7 +53,7 @@ import { BookListItemComponent } from './book/book-list/book-list-item/book-list
     HttpModule,
     NgSpinKitModule
   ],
-  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse],
+  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
