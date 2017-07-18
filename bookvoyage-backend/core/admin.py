@@ -36,7 +36,7 @@ class BookHoldingAdmin(LeafletGeoAdmin):
     list_display = ('__str__', 'book_instance', 'time',)
     #list_filter = ()
 
-class BookInstanceAdmin(LeafletGeoAdmin):
+class BookInstanceAdmin(ImportExportModelAdmin):
     resource_class = BookCodeResource
     list_display = ('__str__', 'batch', 'arrived',)
     list_filter = ('batch', 'arrived',)
