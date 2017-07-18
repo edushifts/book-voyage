@@ -1,0 +1,9 @@
+Hi, {{ username }}!
+
+Your book has moved one degree closer to its destination.
+
+Check where your book is right now:
+{{ platformUrl }}
+
+EDUshifts Team
+ahoi@edushifts.world

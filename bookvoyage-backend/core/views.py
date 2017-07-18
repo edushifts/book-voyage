@@ -1,5 +1,6 @@
 import random
 
+from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import int_to_base36
 from rest_auth.app_settings import create_token
@@ -15,7 +16,7 @@ from django.core.mail import send_mail
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 
-from config import HOST_FRONTEND, PASSWORD_RESET_LINK, SITE_NAME, DEFAULT_FROM_EMAIL, DEBUG_EMAIL
+from config import HOST_FRONTEND, PASSWORD_RESET_LINK, SITE_NAME, DEFAULT_FROM_EMAIL, DEBUG_EMAIL, JOURNEY_LINK
 from .models import BookInstance, BookBatch, BookHolding, BookOwning
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
     BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail, OwnerGenSerializer, \
@@ -171,24 +172,69 @@ def send_owner_invitation(user):
     # url = HOST_FRONTEND + PASSWORD_RESET_LINK + user_pk_to_url_str(user) + "-" + temp_key
     url = HOST_FRONTEND + PASSWORD_RESET_LINK + force_text(urlsafe_base64_encode((force_bytes(user.id)))) + "-" + temp_key
 
+    # import logging
+    # logger = logging.getLogger("regular")
     # logger.error(url) # DEBUG
 
-    context = {"current_site": SITE_NAME,
-               "user": user,
-               "password_reset_url": url}
+    msg_plain = render_to_string('owner_invitation.txt', {'platformUrl': url})
+    msg_html = render_to_string('owner_invitation.html', {'platformUrl': url})
 
-
-
-    # if app_settings.AUTHENTICATION_METHOD \
-    #         != AuthenticationMethod.EMAIL:
-    #     context['username'] = user_username(user)
     send_mail(
-        'Subject here',
-        'Here is the message with the link: ' + url,
+        'Welcome to EDUshifts Book Voyage!',
+        msg_plain,
         DEFAULT_FROM_EMAIL,
         [user_email],
-        fail_silently=False,
+        html_message=msg_html,
     )
+
+def send_holder_welcome(user, book):
+
+    # Retrieve user email address
+    user_email = user.email
+
+    book_id = book.id
+
+    url = HOST_FRONTEND + JOURNEY_LINK + str(book_id)
+
+    # import logging
+    # logger = logging.getLogger("regular")
+    # logger.error(url) # DEBUG
+
+    msg_plain = render_to_string('holder_welcome.txt', {'platformUrl': url})
+    msg_html = render_to_string('holder_welcome.html', {'platformUrl': url})
+
+    send_mail(
+        'Welcome to EDUshifts Book Voyage!',
+        msg_plain,
+        DEFAULT_FROM_EMAIL,
+        [user_email],
+        html_message=msg_html,
+    )
+
+def send_book_update(user, book, owner):
+    # Retrieve user email address
+    user_email = user.email
+    user_name = user.first_name
+
+    book_id = book.id
+
+    url = HOST_FRONTEND + JOURNEY_LINK + str(book_id)
+
+    # import logging
+    # logger = logging.getLogger("regular")
+    # logger.error(url) # DEBUG
+
+    msg_plain = render_to_string('book_update.txt', {'platformUrl': url, 'username': user_name})
+    msg_html = render_to_string('book_update.html', {'platformUrl': url, 'username': user_name})
+
+    send_mail(
+        'Book Voyage Update',
+        msg_plain,
+        DEFAULT_FROM_EMAIL,
+        [user_email],
+        html_message=msg_html,
+    )
+
 
 class CodeExists(APIView):
     """

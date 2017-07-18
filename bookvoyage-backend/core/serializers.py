@@ -3,8 +3,10 @@ from rest_framework.exceptions import ParseError
 from django.contrib.auth.models import Group
 import datetime
 
+from config import MULTIPLE_REGISTRATIONS
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
 from django.contrib.auth.models import User
+
 
 class UserGenSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
@@ -96,10 +98,41 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
     location = serializers.JSONField(required=True)
 
     def create(self, validated_data):
+
+        import logging
+        logger = logging.getLogger("regular")
+
+        already_received_email = False
+        already_registered_book = False
         # if book code does not correspond with book holding id, refuse post
         try:
             given_code = validated_data['book_code'].upper()
-            book = BookInstance.objects.get(book_code=given_code).id
+            book = BookInstance.objects.get(book_code=given_code)
+            book_id = book.id # trigger exception if it does not exist
+
+            # now send emails
+            # first to holders
+            holders = book.holdings.values('holder_id').order_by('holder_id').distinct('holder_id')
+            length = holders.count()
+            for i in range(0, length):
+                user_id = holders[i]['holder_id']
+                currentUser = User.objects.get(id=user_id)
+
+                if currentUser.groups.filter(name='MailUpdates').exists():
+                    # send an email
+                    from core.views import send_book_update
+                    send_book_update(currentUser, book, False)
+
+            # then to the last owner
+            lastOwner = book.ownings.last().owner
+            if lastOwner.groups.filter(name='MailUpdates').exists():
+                # send an email
+                from core.views import send_book_update
+                send_book_update(lastOwner, book, True)
+
+
+
+
             del validated_data["book_code"]
         except BookInstance.DoesNotExist:
             raise ParseError(detail="Book code is faulty", code=400)
@@ -110,12 +143,32 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
                 request = self.context.get("request")
                 if request and hasattr(request, "user"):
                     user = request.user
+                    # add check on whether owner already owned /a/ book before
+                    userBookHoldings = BookHolding.objects.filter(holder=user)
+                    logger.error("user exists")  # DEBUG
+                    if userBookHoldings.exists():
+                        already_received_email = True
+                        logger.error("already received")  # DEBUG
+                        if userBookHoldings.filter(book_instance=book).exists():
+                            logger.error("already registered")  # DEBUG
+                            already_registered_book = True
+                            if not MULTIPLE_REGISTRATIONS:
+                                raise ParseError(detail="You have already registered this book.", code=400)
+
             except Exception:
                 raise ParseError(detail="User name error", code=400)
             else:
                 # add current time
                 validated_data['time'] = datetime.datetime.now()
                 validated_data['holder'] = user
+
+                # send email to thank the holder
+                from core.views import send_holder_welcome
+                if not already_registered_book: # should be expanded to also include already_received_email
+                    send_holder_welcome(user, book)
+
+                # send email to all holders and owners related to the book entry
+
 
                 BookHolding(**validated_data).save()
                 return BookHolding(**validated_data)
