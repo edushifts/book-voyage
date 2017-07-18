@@ -68,7 +68,7 @@ export class MapService {
   constructor(private bookService: BookService) {
     // make holdingAmount observable
     this.holdingAmount$ = this.holdingAmount.asObservable();
-    this.owningAmount$ = this.holdingAmount.asObservable();
+    this.owningAmount$ = this.owningAmount.asObservable();
 
     // define icon for marker type 1
     this.blueIcon = L.icon({
@@ -316,7 +316,6 @@ export class MapService {
 
         let owningAmount = bookInstance.ownings.length;
         this.owningAmount.next(owningAmount);
-
         if (addHolders) {
           // create array to hold marker locations to draw polyline between them
           let holdingLocations = [];
