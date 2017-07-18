@@ -6,6 +6,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
+import {MetaService} from "@ngx-meta/core";
 
 function getOrdinal(n) {
   if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
@@ -64,7 +65,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
               private router: Router,
               private route: ActivatedRoute,
               private bookService: BookService,
-              private titleService: Title) { }
+              private readonly meta: MetaService) { }
 
   ngOnDestroy() {
     if (this.geoLocateSubscriber) {
@@ -127,7 +128,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
 
     // Load user preferences
     this.initiateUserPreferences();
-    this.titleService.setTitle("EDUshifts Now | Continue Journey " + this.authService.getBookId());
+    this.meta.setTitle("Continue Journey #" + this.authService.getBookId());
   }
 
   markerByAddress() {

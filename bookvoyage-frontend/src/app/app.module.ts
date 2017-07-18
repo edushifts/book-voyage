@@ -7,7 +7,6 @@ import { OverviewMapComponent } from './map/overview-map/overview-map.component'
 import { HeaderComponent } from './header/header.component';
 import { CodeFormComponent } from './code-form/code-form.component';
 import { LoginComponent } from './auth/login/login.component';
-import {AppRoutingModule} from "./app-routing.module";
 import { ManageAccountComponent } from './auth/manage-account/manage-account.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import {FormsModule} from "@angular/forms";
@@ -30,6 +29,26 @@ import { FormUserMapComponent } from './map/form-user-map/form-user-map.componen
 import {GeoLocationService} from "./map/geo-location.service";
 import {ShareButtonsModule} from "ngx-sharebuttons";
 
+import { routes } from './app.routes';
+import {MetaGuard, MetaLoader, MetaModule, MetaStaticLoader, PageTitlePositioning} from "@ngx-meta/core";
+import {RouterModule} from "@angular/router";
+import {environment} from "../environments/environment";
+
+export function metaFactory(): MetaLoader {
+  return new MetaStaticLoader({
+    pageTitlePositioning: PageTitlePositioning.PrependPageTitle,
+    pageTitleSeparator: ' | ',
+    applicationName: 'EDUshifts Now!',
+    defaults: {
+      title: 'EDUshifts Now!',
+      description: 'Follow 1000 books as they ',
+      'og:image': environment.protocol + environment.url + environment.assetRoot + 'img/faces.jpg',
+      'og:type': 'website',
+      'og:locale': 'en_US',
+    }
+  });
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,13 +70,17 @@ import {ShareButtonsModule} from "ngx-sharebuttons";
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     FormsModule,
     HttpModule,
     NgSpinKitModule,
-    ShareButtonsModule.forRoot()
+    ShareButtonsModule.forRoot(),
+    RouterModule.forRoot(routes),
+    MetaModule.forRoot({
+      provide: MetaLoader,
+      useFactory: (metaFactory)
+    })
   ],
-  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService],
+  providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService, MetaGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

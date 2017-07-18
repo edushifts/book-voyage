@@ -6,6 +6,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
 import {Title} from "@angular/platform-browser";
+import {MetaService} from "@ngx-meta/core";
 
 @Component({
   selector: 'app-form-user-map',
@@ -49,9 +50,8 @@ export class FormUserMapComponent implements OnInit, OnDestroy {
               private geoLocationService: GeoLocationService,
               private authService: AuthService,
               private router: Router,
-              private route: ActivatedRoute,
               private bookService: BookService,
-              private titleService: Title) { }
+              private readonly meta: MetaService) { }
 
   ngOnDestroy() {
     if (this.geoLocateSubscriber) {
@@ -79,10 +79,10 @@ export class FormUserMapComponent implements OnInit, OnDestroy {
       addOwners: true,
       drawLines: true
     };
-    
+
     // Load user preferences
     this.initiateUserPreferences();
-    this.titleService.setTitle("EDUshifts Now | Continue Journey " + this.authService.getBookId());
+    this.meta.setTitle("Continue Journey #" + this.authService.getBookId());
   }
 
   markerByAddress() {
