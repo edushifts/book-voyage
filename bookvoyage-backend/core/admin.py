@@ -11,9 +11,6 @@ class BookResource(resources.ModelResource):
     class Meta:
         model = Book
 
-class BookAdmin(ImportExportModelAdmin):
-    resource_class = BookResource
-
 class BookCodeResource(resources.ModelResource):
     class Meta:
         model = BookInstance
@@ -21,21 +18,34 @@ class BookCodeResource(resources.ModelResource):
         import_id_fields = ['book_code']
         skip_unchanged = True
 
-class BookCodeAdmin(ImportExportModelAdmin):
-    resource_class = BookCodeResource
-
 class UserResource(resources.ModelResource):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'groups', 'username')
+        fields = ('first_name', 'last_name', 'email', 'username')
         import_id_fields = ['username']
         skip_unchanged = True
 
+class BookAdmin(ImportExportModelAdmin):
+    resource_class = BookResource
+
+class BookOwningAdmin(LeafletGeoAdmin):
+    list_display = ('__str__', 'book_instance', 'secondary',)
+    list_filter = ('secondary',)
+
+class BookHoldingAdmin(LeafletGeoAdmin):
+    list_display = ('__str__', 'book_instance', 'time',)
+    #list_filter = ()
+
+class BookInstanceAdmin(LeafletGeoAdmin):
+    resource_class = BookCodeResource
+    list_display = ('__str__', 'batch', 'arrived',)
+    list_filter = ('batch', 'arrived',)
+
 admin.site.register(Author)
 admin.site.register(Book, BookAdmin)
-admin.site.register(BookInstance, BookCodeAdmin)
-admin.site.register(BookHolding, LeafletGeoAdmin)
-admin.site.register(BookOwning, LeafletGeoAdmin)
+admin.site.register(BookInstance, BookInstanceAdmin)
+admin.site.register(BookHolding, BookHoldingAdmin)
+admin.site.register(BookOwning, BookOwningAdmin)
 admin.site.register(BookBatch, LeafletGeoAdmin)
 
 ##############
