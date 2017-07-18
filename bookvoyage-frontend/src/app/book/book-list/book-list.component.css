@@ -1,0 +1,66 @@
+.mainContainer {
+  padding-top: 5vh;
+  display: block;
+  margin: 10px auto;
+  width: 70%;
+  max-width: 600px;
+}
+
+p {
+  background: #1d335f;
+  border: none;
+  font-size: 20px;
+  color: white;
+  padding: 15px 3%;
+  width: 94%;
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+  font-family: 'BebasNeue', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 0;
+}
+
+.question {
+  background: transparent;
+  color: #E9005D;
+  text-align: center;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.arrived p {
+  background: #1d335f;
+}
+.travelling p {
+  background: #E9005D;
+}
+.waiting p {
+  background: #F05637;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+@media screen and (max-height: 780px) {
+  .mainContainer {
+    padding-top: 5vh;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .mainContainer {
+    width: 90%;
+  }
+}

@@ -18,7 +18,8 @@ from rest_framework.permissions import IsAuthenticated
 from config import HOST_FRONTEND, PASSWORD_RESET_LINK, SITE_NAME, DEFAULT_FROM_EMAIL, DEBUG_EMAIL
 from .models import BookInstance, BookBatch, BookHolding, BookOwning
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
-    BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail
+    BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail, OwnerGenSerializer, \
+    OwnershipSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,6 +36,30 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
+
+class BookOwningViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    Contains a user's book ownings
+    """
+    serializer_class = OwnershipSerializer
+    def get_queryset(self):
+        request = self.request
+        if request and hasattr(request, "user"):
+            user = request.user
+            return BookOwning.objects.filter(owner=user)
+
+class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    Contains a user's previous book holdings
+    """
+    serializer_class = OwnershipSerializer
+    def get_queryset(self):
+        request = self.request
+        if request and hasattr(request, "user"):
+            user = request.user
+            return BookHolding.objects.filter(holder=user)
 
 class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
     """

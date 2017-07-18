@@ -1,0 +1,13 @@
+<div *ngIf="item['book_instance']; else noIdHolding"
+     [ngClass]="{'travelling': item['status'] === 1, 'arrived': item['status'] === 2}"
+     [routerLink]="['/journey', item['book_instance']['id']]" class="clickable">
+  <p>Book Journey #{{ item['book_instance']['id'] }} |
+    <span *ngIf="item['status'] === 1">Travelling</span>
+    <span *ngIf="item['status'] === 2">Arrived</span>
+  </p>
+</div>
+<ng-template #noIdHolding class="clickable waiting">
+  <p>Book Journey #??? |
+    <span>Waiting</span>
+  </p>
+</ng-template>
