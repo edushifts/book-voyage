@@ -25,7 +25,7 @@ import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import { PasswordResetComponent } from './auth/manage-account/password-reset/password-reset.component';
 import { BookListComponent } from './book/book-list/book-list.component';
 import { BookListItemComponent } from './book/book-list/book-list-item/book-list-item.component';
-import { FormUserMapComponent } from './map/form-user-map/form-user-map.component';
+// import { FormUserMapComponent } from './map/form-user-map/form-user-map.component'; # WIP
 import {GeoLocationService} from "./map/geo-location.service";
 import {ShareButtonsModule} from "ngx-sharebuttons";
 
@@ -66,7 +66,7 @@ export function metaFactory(): MetaLoader {
     PasswordResetComponent,
     BookListComponent,
     BookListItemComponent,
-    FormUserMapComponent
+    // FormUserMapComponent # WIP
   ],
   imports: [
     BrowserModule,

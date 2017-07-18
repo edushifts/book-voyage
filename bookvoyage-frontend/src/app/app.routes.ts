@@ -51,7 +51,7 @@ export const routes: Routes = [
       { path: ':id', children: [
         { path: '', component: DetailMapComponent, pathMatch: 'full', },
         { path: 'continue', component: FormMapComponent, canActivate: [AuthGuard]},
-        { path: 'define', component: FormUserMapComponent, canActivate: [AuthGuard]},
+        // { path: 'define', component: FormUserMapComponent, canActivate: [AuthGuard]}, # WIP
       ]},
     ]},
     { path: 'journeys', component: BookListComponent, pathMatch: 'full', canActivate: [AuthGuard]},
