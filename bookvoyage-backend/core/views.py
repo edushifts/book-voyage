@@ -65,13 +65,13 @@ class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
 class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.\
-    Contains only book instances with at least one past holding
+    Contains only book instances with at least one owning
     Used to save resources and loading time
     """
     permission_classes = ()
     authentication_classes = ()
 
-    queryset = BookInstance.objects.exclude(holdings__isnull=True)
+    queryset = BookInstance.objects.exclude(ownings__isnull=True)
     serializer_class = BookInstanceSerializer
 
 class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
