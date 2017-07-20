@@ -236,7 +236,7 @@ def send_book_update(user, book, owner):
     )
 
 
-class CodeExists(APIView):
+class CodeExistsViewSet(APIView):
     """
     Takes access code and checks if it corresponds to a book instance.
     """
