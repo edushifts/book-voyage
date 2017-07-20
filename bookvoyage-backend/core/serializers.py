@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 from django.contrib.auth.models import Group
-import datetime
+from django.utils import timezone
 
 from config import MULTIPLE_REGISTRATIONS
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
@@ -159,7 +159,7 @@ class BookHoldingWriteSerializer(serializers.ModelSerializer):
                 raise ParseError(detail="User name error", code=400)
             else:
                 # add current time
-                validated_data['time'] = datetime.datetime.now()
+                validated_data['time'] = timezone.now()
                 validated_data['holder'] = user
 
                 # send email to thank the holder
