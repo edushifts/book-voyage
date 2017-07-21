@@ -4,6 +4,9 @@
 
 ![platform preview](https://edushifts.world/docs/BookVoyage_preview.png)
 
+[![Build Status](https://travis-ci.org/edushifts/book-voyage.svg?branch=master)](https://travis-ci.org/edushifts/book-voyage)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Book-Voyage/Lobby)
+
 ## Ready for a new kind of journey?
 
 Awesome! You made it to our GitHub page :orange_book: :rocket:
@@ -54,8 +57,6 @@ You will find the instructions for running the front-end [here](https://github.c
 
 ## Get involved
 
-If you run into any issues or would just like to get in contact with us, then join our Gitter!
-
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Book-Voyage/Lobby)
+If you run into any issues or would just like to get in contact with us, then join [our Gitter](https://gitter.im/Book-Voyage/Lobby)!
  
 [EDUshifts]: https://www.edushifts.world/
