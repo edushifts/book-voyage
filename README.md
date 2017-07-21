@@ -5,6 +5,7 @@
 ![platform preview](https://edushifts.world/docs/BookVoyage_preview.png)
 
 [![Build Status](https://travis-ci.org/edushifts/book-voyage.svg?branch=master)](https://travis-ci.org/edushifts/book-voyage)
+[![Python Style guide](https://img.shields.io/badge/code_style-PEP8-yellowgreen.svg)](https://www.python.org/dev/peps/pep-0008/)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Book-Voyage/Lobby)
 
 ## Ready for a new kind of journey?
