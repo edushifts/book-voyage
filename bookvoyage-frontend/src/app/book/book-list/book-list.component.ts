@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {BookService} from "../book.service";
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
-import {BookListItemComponent} from "./book-list-item/book-list-item.component";
 
 @Component({
   selector: 'app-book-list',
@@ -84,8 +83,5 @@ export class BookListComponent implements OnInit {
         this.bookHoldings.next(responses);
       }
     );
-
-
   }
-
 }

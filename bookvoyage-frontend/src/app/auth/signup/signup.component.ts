@@ -1,10 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {AuthService, CurrentUser} from "../auth.service";
 import {NgForm} from "@angular/forms";
-import {Response} from "@angular/http";
-import {HeaderService} from "../../header/header.service";
-import {nameCase} from "../../shared/name-case.module";
+import {nameCase} from "../../shared/name-case.function";
 
 @Component({
   selector: 'app-signup',
@@ -12,10 +10,9 @@ import {nameCase} from "../../shared/name-case.module";
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit, OnDestroy {
-  // default is false, turns true if password do not match at
-  // submit click
   passwordMismatch = false;
   subscribeSignUp;
+
   usernameError = '';
   passwordError  = 'The password needs to be at least 8 characters long';
   passwordConfirmError = '';
@@ -23,24 +20,15 @@ export class SignupComponent implements OnInit, OnDestroy {
   secretCode;
 
   constructor(private authService: AuthService,
-              private router: Router,
-              private headerService: HeaderService) { }
+              private router: Router) { }
 
   ngOnInit() {
     this.secretCode = this.authService.getAccessCode();
 
-    // check if code is valid
+    // check if code is valid (rough check, strictly performed on submit)
     if (this.secretCode.length != 9) {
       this.router.navigate([''], {queryParams: {error: 1 }});
     }
-
-    // remove buttons from header
-    // this.headerService.showAccountButtons = false;
-
-    // check if code exists in book database
-    // if not, reroute to denial page
-
-    // if exists, put in form and continue rendering
   }
 
   ngOnDestroy() {

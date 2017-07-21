@@ -12,5 +12,4 @@ export class BookListItemComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

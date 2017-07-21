@@ -340,8 +340,4 @@ export class AuthService implements OnInit {
           return Observable.throw(error);
         });
   }
-
 }
-
-
-// { withCredentials: true }

@@ -122,11 +122,5 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       }
     );
-    // create account at backend
-
-    // log user in and save token
-
-    // reroute user to location page
   }
-
 }

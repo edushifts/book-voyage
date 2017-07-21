@@ -1,19 +1,20 @@
+// WORK IN PROGRESS
+
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AddBookInstancesOptions, MapService, Coordinates} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 import {AuthService} from "../../auth/auth.service";
-import {Router, ActivatedRoute, Params} from "@angular/router";
+import {Router} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
-import {Title} from "@angular/platform-browser";
 import {MetaService} from "@ngx-meta/core";
 
 @Component({
-  selector: 'app-form-user-map',
-  templateUrl: './form-user-map.component.html',
-  styleUrls: ['./form-user-map.component.css']
+  selector: 'app-form-map-owner',
+  templateUrl: './form-map-owner.component.html',
+  styleUrls: ['./form-map-owner.component.css']
 })
-export class FormUserMapComponent implements OnInit, OnDestroy {
+export class FormMapOwnerComponent implements OnInit, OnDestroy {
   mainMap;
   loading = false;
   webGeoWait = false;

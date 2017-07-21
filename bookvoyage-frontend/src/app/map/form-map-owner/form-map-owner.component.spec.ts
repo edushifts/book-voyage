@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormUserMapComponent } from './form-user-map.component';
+import { FormMapOwnerComponent } from './form-map-owner.component';
 
-describe('FormUserMapComponent', () => {
-  let component: FormUserMapComponent;
-  let fixture: ComponentFixture<FormUserMapComponent>;
+describe('FormMapOwnerComponent', () => {
+  let component: FormMapOwnerComponent;
+  let fixture: ComponentFixture<FormMapOwnerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormUserMapComponent ]
+      declarations: [ FormMapOwnerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormUserMapComponent);
+    fixture = TestBed.createComponent(FormMapOwnerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

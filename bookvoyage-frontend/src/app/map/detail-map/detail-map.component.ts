@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AddBookInstancesOptions, MapService} from "../map.service";
 import {GeoLocationService} from "../geo-location.service";
 import {ActivatedRoute, Params} from "@angular/router";

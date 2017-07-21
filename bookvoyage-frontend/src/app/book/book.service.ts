@@ -17,6 +17,7 @@ export class BookService {
               private authService: AuthService) {}
 
   getBookInstances() {
+    // Does not use caching at the moment
     // if (!this.bookInstances) {
       return this.updateBookInstances();
     // } else {
@@ -25,6 +26,7 @@ export class BookService {
   }
 
   getBookInstance(id: number) {
+    // Does not use caching at the moment
     // if (!this.bookInstances) {
       return this.updateBookInstance(id);
     // } else {
@@ -47,7 +49,7 @@ export class BookService {
         });
   }
 
-  updateBookInstance(id) {
+  updateBookInstance(id: number) {
     return this.http.get(environment.apiUrl + "api/bookInstances/" + id + "/")
       .map(
         (response: Response) => {
@@ -99,14 +101,6 @@ export class BookService {
     // }
   }
 
-  getBookBatch(id: number) {
-    // if (!this.bookBatches) {
-      return this.updateBookBatches()[id];
-    // } else {
-    //   return this.bookBatches[id];
-    // }
-  }
-
   updateBookBatches() {
     return this.http.get(environment.apiUrl + "api/bookBatches/")
       .map(
@@ -120,6 +114,9 @@ export class BookService {
         });
   }
 
+  /**
+   * Returns the current users' ownings
+   */
   getMyBookOwnings() {
     let headers = new Headers();
     this.authService.createAuthorizationHeader(headers);
@@ -137,6 +134,9 @@ export class BookService {
         });
   }
 
+  /**
+   * Returns the current users' holdings
+   */
   getMyBookHoldings() {
     let headers = new Headers();
     this.authService.createAuthorizationHeader(headers);

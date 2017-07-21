@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
-import {AuthService, CurrentUser} from "../../auth.service";
+import {AuthService} from "../../auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-password-reset',
@@ -95,7 +94,5 @@ export class PasswordResetComponent implements OnInit {
         }
       );
     }
-
   }
-
 }

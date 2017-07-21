@@ -5,17 +5,8 @@ import {AuthService} from "../../auth/auth.service";
 import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
-import {Title} from "@angular/platform-browser";
 import {MetaService} from "@ngx-meta/core";
-
-function getOrdinal(n) {
-  if((parseFloat(n) == parseInt(n)) && !isNaN(n)){
-    var s=["th","st","nd","rd"],
-      v=n%100;
-    return n+(s[(v-20)%10]||s[v]||s[0]);
-  }
-  return n;
-}
+import {getOrdinal} from "../../shared/get-ordinal.function"
 
 @Component({
   selector: 'app-detail-map',
@@ -26,19 +17,28 @@ function getOrdinal(n) {
 })
 export class FormMapComponent implements OnInit, OnDestroy {
   mainMap;
+
+  // Counts
   currentHolder = '';
   owningAmount = -1;
+
+  // Form state
+  formPhase: number = 1;
   loading = false;
   webGeoWait = false;
-  formPhase: number = 1;
+
+  // Preferences
+  alreadyActivated: boolean;
+  anonymous: boolean;
+  mail_updates: boolean;
+
   geoLocateSubscriber;
   userMessage: string = "";
   bookId: number;
   consentBox: boolean;
-  alreadyActivated: boolean;
-  anonymous: boolean;
-  mail_updates: boolean;
   preferenceError: string = '';
+
+
 
   // TODO: store preferences locally as well, to save calls
   initiateUserPreferences() {
@@ -84,8 +84,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
       drawLines: true
     };
 
-    // get book instance id from auth service
-    //let bookId = this.authService.getBookId();
+    // get book instance id from params (not from auth service, to avoid number confusion)
     this.route.params
       .subscribe(
         (params: Params) => {
@@ -106,7 +105,7 @@ export class FormMapComponent implements OnInit, OnDestroy {
           }
 
           // Loads book instance
-          let bookInstance = this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
+          this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
           this.mapService.holdingAmount$.subscribe(
             (amount: number) => {
               this.currentHolder = getOrdinal(amount+1);

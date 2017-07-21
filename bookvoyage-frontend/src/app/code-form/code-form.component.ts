@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import { NgForm } from "@angular/forms";
+import {Router} from "@angular/router";
+import {NgForm} from "@angular/forms";
 import {AuthService} from "../auth/auth.service";
 
 @Component({
@@ -12,7 +12,6 @@ export class CodeFormComponent implements OnInit, OnDestroy {
 
   @ViewChild('codeForm') codeForm: NgForm;
   validitySub;
-
 
   constructor(private router: Router,
               private authService: AuthService) { }
@@ -27,11 +26,13 @@ export class CodeFormComponent implements OnInit, OnDestroy {
   }
 
   displayCodeForm() {
-    return !this.authService.isLoggedIn() || this.authService.getBookId() === -1 || this.authService.getAccessCode() === "wrong";
+    return !this.authService.isLoggedIn()
+      || this.authService.getBookId() === -1 || this.authService.getAccessCode() === "wrong";
   }
 
   displayReminder() {
-    return this.authService.getBookId() !== -1 && this.authService.isLoggedIn() && this.authService.getAccessCode() !== "wrong";
+    return this.authService.getBookId() !== -1
+      && this.authService.isLoggedIn() && this.authService.getAccessCode() !== "wrong";
   }
 
   onReminderButton() {
@@ -46,7 +47,7 @@ export class CodeFormComponent implements OnInit, OnDestroy {
       alert("The code you entered was incorrect :( ");
       return;
     }
-    
+
     // check if code is valid
     this.validitySub = this.authService.checkCode(givenCode).subscribe(
       (validity) => {

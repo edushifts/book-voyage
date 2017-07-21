@@ -1,7 +1,7 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService, CurrentUser} from "../auth.service";
-import {nameCase} from "../../shared/name-case.module";
+import {nameCase} from "../../shared/name-case.function";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({

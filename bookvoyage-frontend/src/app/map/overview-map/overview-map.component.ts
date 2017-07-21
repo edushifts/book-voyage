@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {environment} from "../../../environments/environment";
-import {ActivatedRoute} from "@angular/router";
-import {HeaderService} from "../../header/header.service";
-import { Observable } from 'rxjs';
-import {Http, Response} from "@angular/http";
-import {BookService} from "../../book/book.service";
-import {MapService, AddBookInstancesOptions} from "../map.service";
-import {Title} from "@angular/platform-browser";
+import { ActivatedRoute } from "@angular/router";
+import { HeaderService } from "../../header/header.service";
+import { MapService, AddBookInstancesOptions } from "../map.service";
 
 @Component({
   selector: 'app-overview-map',
@@ -32,23 +27,11 @@ export class OverviewMapComponent implements OnInit {
           alert("The journey you looked up has not yet begun.");
         } else if (+params['error'] === 4) {
           alert("Your provided key was invalid. Please contact the platform owners.");
-        } else {
-          // nothing happens
         }
+
         if (+params['changedEmail'] === 1) {
           alert("Your email address has been changed. You can now log in again.");
         }
-
-        // not good for user experience - disabled
-        // if (+params['loggedIn'] === 1) {
-        //   this.wrongCode = true;
-        //   alert("You are logged in now.");
-        //
-        // } else {
-        //   this.wrongCode = false;
-        //   // nothing happens
-        // }
-
       });
 
     // render basic map
