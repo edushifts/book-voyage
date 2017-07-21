@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
-from djgeojson.fields import PointField
 from django.db import models
+from djgeojson.fields import PointField  # Holds
+
 
 class Author(models.Model):
     """
@@ -24,11 +25,12 @@ class Author(models.Model):
         """
         return self.first_name + " " + self.last_name
 
+
 class Book(models.Model):
     """
-    class of books - unique published work in circulation
+    class of books - unique published works in circulation
     abstract - contains summary of book
-    cover - contains cover image of book
+    # cover - contains cover image of book
     """
     title = models.CharField(max_length=64)
     authors = models.ManyToManyField(
@@ -48,14 +50,15 @@ class Book(models.Model):
         """
         return self.title + " | " + str(self.id)
 
+
 class BookInstance(models.Model):
     """
     class of book instances: physical copies of a book
     id - explicitly made as key attribute
-    access_code - unique, secret identifier
+    book_code - unique, secret identifier to gain access to write ability
     book - refers to unique book object
-    batch - object with when and where it was released
-    arrived - whether the book has arrived at owner already
+    batch - object with when and where the book was released
+    arrived - whether the book arrived at its owner already
     """
 
     id = models.AutoField(
@@ -82,16 +85,23 @@ class BookInstance(models.Model):
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
-        Returns book id, and the owner if they are already assigned.
+        Returns book id, and if already assigned, also the owner.
         """
         if len(BookOwning.objects.filter(book_instance=self.id).values('owner__username')) >= 1:
             return ("Book #" + str(self.id) + " (owned by " + BookOwning.objects.filter(book_instance=self.id).values('owner__username').order_by("time").last()["owner__username"]) + ")"
         else:
             return "Book #" + str(self.id)
-        
+
+
 class BookOwning(models.Model):
     """
-    table that tracks owner and owner location
+    Describes an owning: an owner and owner location
+    owner - user that owns a book
+    secondary - whether this owning should be assigned later than primary ownings
+    book_instance - the assigned book instance; the book this owner owns
+    time - date and time of registering on the platform
+    message - a personal message attached and publicly displayed on the front-end
+    location - geometry object containing a point on the world map
     """
     owner = models.ForeignKey(
         User,
@@ -122,22 +132,23 @@ class BookOwning(models.Model):
         """
         if len(self.owner.first_name) >= 1 and len(self.owner.last_name) >= 1:
             return self.owner.first_name + " " + self.owner.last_name + " at " + str(self.time)
-        else: 
+        else:
             return self.owner.username + " at " + str(self.time)
+
 
 class BookHolding(models.Model):
     """
-    describes action of holding a book instance at a particular moment
-    holder - user that registered the book
-    book_instance - refers to book copy
+    Describes a holding: a holder and holding location
+    holder - user that registered the book and is holding it
+    book_instance - refers to book copy held
     time - time of registration
-    message - personal message posted by user at location
-    location - place of registration
+    message - a personal message attached and publicly displayed on the front-end
+    location - geometry object containing a point on the world map
     """
     holder = models.ForeignKey(
-    	User,
+        User,
         related_name='holdings',
-    	on_delete=models.CASCADE,
+        on_delete=models.CASCADE,
     )
     book_instance = models.ForeignKey(
         BookInstance,
@@ -155,21 +166,20 @@ class BookHolding(models.Model):
     def __str__(self):
         """
         String for representing the MyModelName object (in Admin site etc.)
+        Returns first and last names. If these are missing, the username is displayed instead.
         """
         if len(self.holder.first_name) >= 1 and len(self.holder.last_name) >= 1:
             return self.holder.first_name + " " + self.holder.last_name + " at " + str(self.time)
-        else: 
+        else:
             return self.holder.username + " at " + str(self.time)
-        #If no first name is entered then the username is displayed (otherwise there would be no holder name)
-
 
     class Meta:
-        ordering = ('book_instance','time')
+        ordering = ('book_instance', 'time')
 
 
 class BookBatch(models.Model):
     """
-    describes book release event
+    Describes a book release event
     event - event name
     country - country name
     location - place of distribution
