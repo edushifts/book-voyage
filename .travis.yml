@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3.6.1"
+script:
+  - cd bookvoyage-backend/
+  - pip install flake8
+  - flake8 bookvoyage-backend/

@@ -15,7 +15,7 @@ import datetime
 
 # Import environment variables from config file
 try:
-    from config import *
+    from config import *  # noqa
 except ImportError:
     raise ImportError(
         "Couldn't import the configuration file. Make sure to copy "

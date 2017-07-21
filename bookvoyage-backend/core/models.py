@@ -88,7 +88,9 @@ class BookInstance(models.Model):
         Returns book id, and if already assigned, also the owner.
         """
         if len(BookOwning.objects.filter(book_instance=self.id).values('owner__username')) >= 1:
-            return ("Book #" + str(self.id) + " (owned by " + BookOwning.objects.filter(book_instance=self.id).values('owner__username').order_by("time").last()["owner__username"]) + ")"
+            return ("Book #" + str(self.id) + " (owned by "
+                    + BookOwning.objects.filter(book_instance=self.id).values('owner__username')
+                    .order_by("time").last()["owner__username"]) + ")"
         else:
             return "Book #" + str(self.id)
 
