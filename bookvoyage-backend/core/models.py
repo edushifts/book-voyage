@@ -135,7 +135,8 @@ class BookHolding(models.Model):
     location - place of registration
     """
     holder = models.ForeignKey(
-    	User, 
+    	User,
+        related_name='holdings',
     	on_delete=models.CASCADE,
     )
     book_instance = models.ForeignKey(

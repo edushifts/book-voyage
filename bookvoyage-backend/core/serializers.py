@@ -1,14 +1,28 @@
+# Import utilities
+from django.utils import timezone
+import logging
+
+# Import rest_framework classes
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
-from django.contrib.auth.models import Group
-from django.utils import timezone
 
-from config import MULTIPLE_REGISTRATIONS
+# Import models
+from django.contrib.auth.models import Group
 from core.models import BookInstance, BookHolding, BookBatch, BookOwning
 from django.contrib.auth.models import User
+from rest_auth.serializers import UserModel
+
+# Import mail senders
+from core import mail
+
+# Import environment variables
+from bookvoyage.settings import MULTIPLE_REGISTRATIONS_ALLOWED
 
 
 class UserGenSerializer(serializers.ModelSerializer):
+    """
+    Returns queried users' first and last names.
+    """
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
 
@@ -28,36 +42,21 @@ class UserGenSerializer(serializers.ModelSerializer):
         model = User
         fields = ('first_name', 'last_name')
 
-class OwnerGenSerializer(serializers.ModelSerializer):
-    owner = UserGenSerializer(many=False, read_only=True)
-    location = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
 
-    def get_location(self, obj):
-        return obj.location,  # As long as the fields are auto serializable to JSON
-
-    def get_time(self, obj):
-        return obj.time.strftime("%Y-%m-%d"),  # As long as the fields are auto serializable to JSON
-
-    class Meta:
-        model = BookOwning
-        fields = ('owner', 'time', 'message', 'location')
-
-
-class BasicBookInstanceSerializer(serializers.ModelSerializer):
+class BookInstanceMinSerializer(serializers.ModelSerializer):
+    """
+    Returns queried book instances' details only. The full book instance serializer is below.
+    """
 
     class Meta:
         model = BookInstance
         fields = ('id', 'arrived')
 
-class OwnershipSerializer(serializers.ModelSerializer):
-    book_instance = BasicBookInstanceSerializer()
-
-    class Meta:
-        model = BookOwning
-        fields = ('id', 'book_instance',)
 
 class BookBatchSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Returns queried book batches' details.
+    """
     location = serializers.SerializerMethodField()
 
     def get_location(self, obj):
@@ -67,7 +66,41 @@ class BookBatchSerializer(serializers.HyperlinkedModelSerializer):
         model = BookBatch
         fields = ('event', 'country', 'location', 'date')
 
+
+class BookOwningSerializer(serializers.ModelSerializer):
+    """
+    Returns queried book ownings' details.
+    """
+    owner = UserGenSerializer(many=False, read_only=True)
+    location = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
+    def get_location(self, obj):
+        return obj.location,
+
+    def get_time(self, obj):
+        return obj.time.strftime("%Y-%m-%d"),
+
+    class Meta:
+        model = BookOwning
+        fields = ('owner', 'time', 'message', 'location')
+
+
+class OwnershipSerializer(serializers.ModelSerializer):
+    """
+    Returns queried book holdings' id and its related book instance.
+    """
+    book_instance = BookInstanceMinSerializer()
+
+    class Meta:
+        model = BookOwning
+        fields = ('id', 'book_instance',)
+
+
 class BookHoldingSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Returns queried book holdings' details.
+    """
     holder = UserGenSerializer(many=False, read_only=True)
     location = serializers.SerializerMethodField()
     time = serializers.SerializerMethodField()
@@ -82,102 +115,90 @@ class BookHoldingSerializer(serializers.HyperlinkedModelSerializer):
         model = BookHolding
         fields = ('time', 'message', 'location', 'holder')
 
-class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
-    holdings = BookHoldingSerializer(many=True, read_only=True)
-    batch = BookBatchSerializer(many=False, read_only=True)
-    ownings = OwnerGenSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = BookInstance
-        fields = ('id', 'arrived', 'batch', 'ownings', 'holdings') # 'batch','book','holdings','owner'
 
 class BookHoldingWriteSerializer(serializers.ModelSerializer):
+    """
+    Allows writing new book holding objects.
+    Validates permissions based on provided book code.
+    """
     book_code = serializers.CharField(read_only=False, required=True, write_only=True)
     time = serializers.DateTimeField(required=False, read_only=True)
     holder = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     location = serializers.JSONField(required=True)
 
     def create(self, validated_data):
+        logger = logging.getLogger("UserHoldingWrite")
 
-        import logging
-        logger = logging.getLogger("regular")
-
-        already_received_email = False
+        # Define boolean: did the current holder already register this book earlier?
         already_registered_book = False
-        # if book code does not correspond with book holding id, refuse post
-        try:
+
+        try:  # If book code does not correspond with book holding id, refuse post
             given_code = validated_data['book_code'].upper()
             book = BookInstance.objects.get(book_code=given_code)
-            book_id = book.id # trigger exception if it does not exist
+            book.id  # trigger exception if it does not exist
 
-            # now send emails
-            # first to holders
-            holders = book.holdings.values('holder_id').order_by('holder_id').distinct('holder_id')
-            length = holders.count()
-            for i in range(0, length):
-                user_id = holders[i]['holder_id']
-                currentUser = User.objects.get(id=user_id)
-
-                if currentUser.groups.filter(name='MailUpdates').exists():
-                    # send an email
-                    from core.views import send_book_update
-                    send_book_update(currentUser, book, False)
-
-            # then to the last owner
-            lastOwner = book.ownings.last().owner
-            if lastOwner.groups.filter(name='MailUpdates').exists():
-                # send an email
-                from core.views import send_book_update
-                send_book_update(lastOwner, book, True)
-
-
-
-
+            # At this stage, the book code has been validated and can be removed from the object.
             del validated_data["book_code"]
         except BookInstance.DoesNotExist:
-            raise ParseError(detail="Book code is faulty", code=400)
+            raise ParseError(detail="Book code is faulty", code=401)
         else:
-            # get currently logged-in user and designate as holder
-            try:
-                user = None
-                request = self.context.get("request")
-                if request and hasattr(request, "user"):
-                    user = request.user
-                    # add check on whether owner already owned /a/ book before
-                    userBookHoldings = BookHolding.objects.filter(holder=user)
-                    logger.error("user exists")  # DEBUG
-                    if userBookHoldings.exists():
-                        already_received_email = True
-                        logger.error("already received")  # DEBUG
-                        if userBookHoldings.filter(book_instance=book).exists():
-                            logger.error("already registered")  # DEBUG
-                            already_registered_book = True
-                            if not MULTIPLE_REGISTRATIONS:
-                                raise ParseError(detail="You have already registered this book.", code=400)
+            # Get currently logged-in user and designate as holder
+            user = None
+            request = self.context.get("request")
+            if request and hasattr(request, "user"):  # If user exists
+                user = request.user
+                # Add check on whether holder already registered this book instance before.
 
-            except Exception:
-                raise ParseError(detail="User name error", code=400)
+                try:
+                    book.holdings.filter(holder=user)[0]
+                except (User.DoesNotExist, IndexError):
+                    logger.info("User initiated a book: " + user.email)
+                    pass
+                else:
+                    already_registered_book = True
+                    logger.info("User performed multiple registrations: " + user.email)
+                    if not MULTIPLE_REGISTRATIONS_ALLOWED:
+                        raise ParseError(detail="You have already registered this book.", code=403)
             else:
-                # add current time
-                validated_data['time'] = timezone.now()
-                validated_data['holder'] = user
+                raise ParseError(detail="User name error", code=400)
 
-                # send email to thank the holder
-                from core.views import send_holder_welcome
-                if not already_registered_book: # should be expanded to also include already_received_email
-                    send_holder_welcome(user, book)
+            validated_data['time'] = timezone.now()
+            validated_data['holder'] = user
 
-                # send email to all holders and owners related to the book entry
+            # Query previous holders before the new holder has been added. List forces evaluation.
+            holders = list(User.objects.filter(groups__name='MailUpdates')
+                           .filter(holdings__book_instance=book).distinct('id'))
 
+            # Save new holding to the database
+            BookHolding(**validated_data).save()
 
-                BookHolding(**validated_data).save()
-                return BookHolding(**validated_data)
+            # After success, send emails to parties involved
+            # 1 | Send email to thank the new holder; only if not already thanked for this book instance
+            if not already_registered_book:
+                mail.send_holder_welcome(user, book)
+
+            # 2 | Send email to all holders and owners related to the book entry
+            mail.send_book_update_mass(holders, book)
+
+            # 3 | Send email to last known owner
+            # # TODO: fix this query
+            last_owner = book.ownings.last().owner
+            if last_owner.groups.filter(name='MailUpdates').exists():
+                # send an email
+                mail.send_book_update(last_owner, book)
+
+            # Return api response
+            return BookHolding(**validated_data)
 
     class Meta:
         model = BookHolding
         fields = '__all__'
 
+
 class Preferences(object):
+    """
+    Simple class used by PreferencesSerializer
+    """
     def __init__(self, **kwargs):
         if kwargs['anonymous']:
             self.anonymous = kwargs['anonymous']
@@ -186,18 +207,17 @@ class Preferences(object):
         if kwargs['activated']:
             self.activated = kwargs['activated']
 
+
 class PreferencesSerializer(serializers.Serializer):
+    """
+    Displays and allows modification of user references
+    """
     anonymous = serializers.BooleanField(read_only=False, required=False)
     mail_updates = serializers.BooleanField(read_only=False, required=False)
     activated = serializers.BooleanField(read_only=False, required=False)
 
     def create(self, validated_data):
         return Preferences(**validated_data)
-
-    # def update(self, instance, validated_data):
-    #     instance.anonymous = validated_data.get('anonymous', instance.anonymous)
-    #     instance.mail_updates = validated_data.get('mail_updates', instance.mail_updates)
-    #     return instance
 
     def save(self, user):
         # Add user to user group Anonymous if specified
@@ -223,7 +243,6 @@ class PreferencesSerializer(serializers.Serializer):
             raise ParseError(detail="Problem with mail updates field", code=400)
 
         # Add user to user group DataAgreement if specified
-
         if 'activated' in self.data and self.data['activated']:
             try:
                 g_m = Group.objects.get(name='Activated')
@@ -237,13 +256,25 @@ class PreferencesSerializer(serializers.Serializer):
                                     "like your account removed.", code=400)
 
 
+class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Returns queried book instances' details and its attached holdings and ownings
+    """
+    holdings = BookHoldingSerializer(many=True, read_only=True)
+    batch = BookBatchSerializer(many=False, read_only=True)
+    ownings = BookOwningSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = BookInstance
+        fields = ('id', 'arrived', 'batch', 'ownings', 'holdings')
+
+
 # OVERWRITE DEFAULT REST_AUTH USER DETAILS SERIALIZER
-from rest_auth.serializers import UserModel
 class UserDetailsSerializerWithEmail(serializers.ModelSerializer):
     """
-    User model w/o password
+    User model w/o password, but with email.
     """
     class Meta:
         model = UserModel
         fields = ('pk', 'username', 'email', 'first_name', 'last_name')
-        #read_only_fields = ('email', )
+        # read_only_fields = ('email', )

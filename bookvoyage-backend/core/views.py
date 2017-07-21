@@ -1,36 +1,85 @@
+# Import utilities
 import random
 
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import int_to_base36
-from rest_auth.app_settings import create_token
-from rest_auth.utils import jwt_encode
-
-from bookvoyage import settings
-from allauth.account.forms import UserTokenForm
-from allauth.account.utils import user_pk_to_url_str
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
+# Import rest_framework classes
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
-
-from config import HOST_FRONTEND, PASSWORD_RESET_LINK, SITE_NAME, DEFAULT_FROM_EMAIL, DEBUG_EMAIL, JOURNEY_LINK
-from .models import BookInstance, BookBatch, BookHolding, BookOwning
-from core.serializers import BookInstanceSerializer, BookBatchSerializer, BookHoldingSerializer, \
-    BookHoldingWriteSerializer, PreferencesSerializer, Preferences, UserDetailsSerializerWithEmail, OwnerGenSerializer, \
-    OwnershipSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets
+from rest_framework.generics import RetrieveUpdateAPIView
 
-from rest_framework import viewsets, status
+# Import models
+from .models import BookInstance, BookBatch, BookHolding, BookOwning
+from django.contrib.auth import get_user_model
+
+# Import serializers
+from core.serializers import BookInstanceSerializer, BookBatchSerializer, \
+    BookHoldingWriteSerializer, PreferencesSerializer, UserDetailsSerializerWithEmail, \
+    OwnershipSerializer
+
+# Import mail senders
+from core import mail
+
+
+def get_book(code):
+    """
+    Takes a secret access code and converts it to the book instance id related to it.
+    If the given code has no corresponding book, it returns -1.
+
+    If the book instance exists, it will check if an owner is already assigned to it.
+    If not, it will assign a currently book-less owner to it and send this user an e-mail.
+    """
+    try:
+        code = code.upper()
+        book = BookInstance.objects.get(book_code=code)
+        book_id = book.id
+
+        # Check if this book has an owner already. If not, try to assign one.
+        if not book.ownings.exists():
+            # Find ownings without a book instance attached
+            owner_query = BookOwning.objects.filter(book_instance__isnull=True)
+            if owner_query.count() > 0:  # if such ownings exist
+                # Try to find owners who paid (primary ownings)
+                owner_count = owner_query.filter(secondary=False).count()
+                if owner_count > 0:
+                    # Take a random unassigned owning
+                    if owner_count > 1:
+                        random_id = random.randint(0, owner_count - 1)
+                    else:
+                        random_id = 0
+                    chosen_owning = owner_query.filter(secondary=False)[random_id]
+
+                    # Assign book instance to the owning
+                    book.ownings.add(chosen_owning)
+
+                    # Send e-mail to user with an invitation
+                    # TODO: check whether this user was already mailed before (multi-book owners)
+                    owner = chosen_owning.owner
+                    mail.send_owner_invitation(owner)
+                else:
+                    # Then try to find handpicked destinations (secondary ownings)
+                    owner_count = owner_query.filter(secondary=True).count()
+                    if owner_count > 0:
+                        if owner_count > 1:
+                            random_id = random.randint(0, owner_count - 1)
+                        else:
+                            random_id = 0
+                        chosen_owning = owner_query.filter(secondary=True)[random_id]
+
+                        # Assign book instance to the owning
+                        book.ownings.add(chosen_owning)
+
+    except BookInstance.DoesNotExist:
+        book_id = -1
+    return book_id
 
 
 class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
-    Contains all book instances
+    Contains all book instances.
+    Provides `list` and `detail` views.
+    Read-only and public.
     """
     permission_classes = ()
     authentication_classes = ()
@@ -38,35 +87,13 @@ class BookInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BookInstance.objects.all()
     serializer_class = BookInstanceSerializer
 
-class BookOwningViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    Contains a user's book ownings
-    """
-    serializer_class = OwnershipSerializer
-    def get_queryset(self):
-        request = self.request
-        if request and hasattr(request, "user"):
-            user = request.user
-            return BookOwning.objects.filter(owner=user)
-
-class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    Contains a user's previous book holdings
-    """
-    serializer_class = OwnershipSerializer
-    def get_queryset(self):
-        request = self.request
-        if request and hasattr(request, "user"):
-            user = request.user
-            return BookHolding.objects.filter(holder=user)
 
 class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.\
-    Contains only book instances with at least one owning
-    Used to save resources and loading time
+    Contains only book instances with at least one owning.
+    Used to save resources and loading time compared to regular book instance viewset.
+    Provides `list` and `detail` views.
+    Read-only and public.
     """
     permission_classes = ()
     authentication_classes = ()
@@ -74,9 +101,42 @@ class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
     queryset = BookInstance.objects.exclude(ownings__isnull=True)
     serializer_class = BookInstanceSerializer
 
+
+class BookOwningViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Contains an authorised user's own book ownings.
+    Provides `list` and `detail` views.
+    Read-only and private.
+    """
+    serializer_class = OwnershipSerializer
+
+    def get_queryset(self):
+        request = self.request
+        if request and hasattr(request, "user"):
+            user = request.user
+            return BookOwning.objects.filter(owner=user)
+
+
+class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Contains an authorised user's own book ownings.
+    Provides `list` and `detail` views.
+    Read-only and private.
+    """
+    serializer_class = OwnershipSerializer
+
+    def get_queryset(self):
+        request = self.request
+        if request and hasattr(request, "user"):
+            user = request.user
+            return BookHolding.objects.filter(holder=user)
+
+
 class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    Contains all book batches.
+    Provides `list` and `detail` views.
+    Read-only and public.
     """
     permission_classes = ()
     authentication_classes = ()
@@ -84,185 +144,45 @@ class BookBatchViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BookBatch.objects.all()
     serializer_class = BookBatchSerializer
 
-# UNUSED
-# class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
-#     """
-#     This viewset automatically provides `list` and `detail` actions.
-#     """
-#     queryset = BookHolding.objects.all()
-#     serializer_class = BookHoldingSerializer
-
-def get_book(code):
-    """
-    Takes a secret BookInstance access code and converts it to the public BookInstance id.
-    If the given code has no corresponding book, it returns -1.
-
-    If the BookInstance exists, it will check if an owner is already assigned to it.
-    If not, it will assign a currently book-less owner to it.
-    """
-    try:
-        code = code.upper()
-        book = BookInstance.objects.get(book_code=code)
-        book_id = book.id
-
-        # user = User.objects.get(email__iexact=DEBUG_EMAIL)
-        # send_owner_invitation(user)
-        # import logging
-        # logger = logging.getLogger("regular")
-
-        if not book.ownings.exists():
-            # Find ownings without a book instance attached
-            owner_query = BookOwning.objects.filter(book_instance__isnull=True)
-            if owner_query.count() > 0: # if such ownings exist
-                # First find owners who paid
-                owner_count = owner_query.filter(secondary=False).count()
-                if owner_count > 0:
-                    if owner_count > 1: random_id = random.randint(0, owner_count - 1)
-                    else: random_id = 0
-                    chosen_owning = owner_query.filter(secondary=False)[random_id]
-                    # Add owner to this book instance
-                    book.ownings.add(chosen_owning)
-
-                    # Send e-mail to user
-                    owner = chosen_owning.owner
-                    send_owner_invitation(owner)
-                else:
-                    # Then destinations we picked
-                    owner_count = owner_query.filter(secondary=True).count()
-                    if owner_count > 0:
-                        if owner_count > 1: random_id = random.randint(0, owner_count - 1)
-                        else: random_id = 0
-                        chosen_owning = owner_query.filter(secondary=True)[random_id]
-                        # Add owner to this book instance
-                        book.ownings.add(chosen_owning)
-
-            # Alternative: picks first entry in list rather than a random one
-            #
-            # if owner_query.filter(secondary=False).exists():
-            #     chosen_owning = owner_query.filter(secondary=False).first()
-            #     # Add owner to this book instance
-            #     book.ownings.add(chosen_owning)
-            # elif owner_query.filter(secondary=True).exists():
-            #     chosen_owning = owner_query.filter(secondary=True).first()
-            #     # Add owner to this book instance
-            #     book.ownings.add(chosen_owning)
-            #
-            #     owner = chosen_owning.owner
-            #     send_owner_invitation(owner)
-
-    except BookInstance.DoesNotExist:
-        book_id = -1
-    return book_id
-
-def send_owner_invitation(user):
-    """
-    Adapted from https://github.com/pennersr/django-allauth/blob/master/allauth/account/forms.py
-    :param user:
-    :return:
-    """
-
-    # Retrieve user email address
-    user_email = user.email
-
-    token_generator = default_token_generator
-
-    temp_key = token_generator.make_token(user)
-
-    from django.utils.http import urlsafe_base64_encode
-    # url = HOST_FRONTEND + PASSWORD_RESET_LINK + user_pk_to_url_str(user) + "-" + temp_key
-    url = HOST_FRONTEND + PASSWORD_RESET_LINK + force_text(urlsafe_base64_encode((force_bytes(user.id)))) + "-" + temp_key
-
-    # import logging
-    # logger = logging.getLogger("regular")
-    # logger.error(url) # DEBUG
-
-    msg_plain = render_to_string('owner_invitation.txt', {'platformUrl': url})
-    msg_html = render_to_string('owner_invitation.html', {'platformUrl': url})
-
-    send_mail(
-        'Welcome to EDUshifts Book Voyage!',
-        msg_plain,
-        DEFAULT_FROM_EMAIL,
-        [user_email],
-        html_message=msg_html,
-    )
-
-def send_holder_welcome(user, book):
-
-    # Retrieve user email address
-    user_email = user.email
-
-    book_id = book.id
-
-    url = HOST_FRONTEND + JOURNEY_LINK + str(book_id)
-
-    # import logging
-    # logger = logging.getLogger("regular")
-    # logger.error(url) # DEBUG
-
-    msg_plain = render_to_string('holder_welcome.txt', {'platformUrl': url})
-    msg_html = render_to_string('holder_welcome.html', {'platformUrl': url})
-
-    send_mail(
-        'Welcome to EDUshifts Book Voyage!',
-        msg_plain,
-        DEFAULT_FROM_EMAIL,
-        [user_email],
-        html_message=msg_html,
-    )
-
-def send_book_update(user, book, owner):
-    # Retrieve user email address
-    user_email = user.email
-    user_name = user.first_name
-
-    book_id = book.id
-
-    url = HOST_FRONTEND + JOURNEY_LINK + str(book_id)
-
-    # import logging
-    # logger = logging.getLogger("regular")
-    # logger.error(url) # DEBUG
-
-    msg_plain = render_to_string('book_update.txt', {'platformUrl': url, 'username': user_name})
-    msg_html = render_to_string('book_update.html', {'platformUrl': url, 'username': user_name})
-
-    send_mail(
-        'Book Voyage Update',
-        msg_plain,
-        DEFAULT_FROM_EMAIL,
-        [user_email],
-        html_message=msg_html,
-    )
-
 
 class CodeExistsViewSet(APIView):
     """
-    Takes access code and checks if it corresponds to a book instance.
+    Takes access code and checks if it corresponds to a book instance. Returns true with an id or false.
+    Potentially causes a mail to be sent to an unassigned user (see get_book function).
+    Requires input which potentially impacts the database, and is public.
+    Write-only and public.
     """
     permission_classes = ()
     authentication_classes = ()
 
     def post(self, request):
-        """
-        Return a list of all users.
-        """
-        book_id = get_book(request.data["accessCode"]) # retrieve the book instance id using accessCode
+        book_id = get_book(request.data["accessCode"])  # retrieve the book instance id using accessCode
         if book_id == -1:
             return Response(data={'valid': False})  # return false as code is invalid
         else:
             return Response(data={'valid': True, 'book_id': book_id})  # Otherwise, return id
 
+
 class BookHoldingWriteViewSet(viewsets.ModelViewSet):
+    """
+    Takes book_code, location (in lat/lng), message, and book_instance id.
+    Checks if book_instance id and book_code correspond. If not, refuse.
+    Adds a book holding entry to the database and causes update mails
+        to be sent to all previous holders and the last owner.
+    Requires input which potentially impacts the database, and is public.
+    """
     queryset = BookHolding.objects.all()
     serializer_class = BookHoldingWriteSerializer
 
+
 class PreferencesViewSet(APIView):
     """
-    Retrieve, update or delete a snippet instance.
+    Returns and allows writing to the user preferences model.
+    Read-and-write, and private.
     """
 
     def get(self, request):
+        # First, retrieve user currently logged in.
         try:
             user = None
             if request and hasattr(request, "user"):
@@ -271,6 +191,7 @@ class PreferencesViewSet(APIView):
             raise ParseError(detail="Authentication error" + request.context, code=400)
         else:
             try:
+                # Then return group membership statuses
                 if user.groups.filter(name="Anonymous").count():
                     anonymous = True
                 else:
@@ -288,16 +209,20 @@ class PreferencesViewSet(APIView):
             except Exception:
                 raise ParseError(detail="Groups error", code=400)
             else:
+                # Then return these statuses
                 try:
                     serializer = PreferencesSerializer(
-                    data={'anonymous': anonymous, 'mail_updates': mail_updates, 'activated': activated})
+                        data={'anonymous': anonymous, 'mail_updates': mail_updates, 'activated': activated})
                     serializer.is_valid()
                 except Exception:
                     raise ParseError(detail="Serializer error", code=400)
                 return Response(serializer.data)
 
     def patch(self, request):
-        # add user to user group Anonymous if specified
+        """
+        Add/remove user to specified groups.
+        """
+        # First, retrieve user currently logged in.
         try:
             user = None
             if request and hasattr(request, "user"):
@@ -305,6 +230,7 @@ class PreferencesViewSet(APIView):
         except Exception:
             raise ParseError(detail="Authentication error" + request.context, code=400)
         else:
+            # Write preferences to database
             serializer = PreferencesSerializer(
                 data=request.data)
 
@@ -312,16 +238,18 @@ class PreferencesViewSet(APIView):
                 return Response(serializer.errors, 400)
 
             serializer.save(user)
-
             return Response(serializer.data)
 
+
 # OVERWRITE DEFAULT REST_AUTH USER DETAILS VIEW
-from rest_framework.generics import RetrieveUpdateAPIView
+# Addition is ability to write to e-mail
+# Currently makes e-mail verification incompatible.
+# TODO: enforce e-mail verification if this option is turned on
 class UserDetailsWithEmailView(RetrieveUpdateAPIView):
     """
     Reads and updates UserModel fields
     Accepts GET, PUT, PATCH methods.
-    Default accepted fields: username, first_name, last_name
+    Default accepted fields: username, email, first_name, last_name
     Default display fields: pk, username, email, first_name, last_name
     Read-only fields: pk
     Returns UserModel fields.
