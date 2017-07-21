@@ -98,7 +98,10 @@ ROOT_URLCONF = 'bookvoyage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "core/mail") # Contains mail templates for users
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
