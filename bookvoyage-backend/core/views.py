@@ -50,13 +50,17 @@ def get_book(code):
                         random_id = 0
                     chosen_owning = owner_query.filter(secondary=False)[random_id]
 
+                    # Check whether this user was already mailed before (multi-book owners) and force evaluation
+                    ownerInitiated = bool(chosen_owning.owner.bookowning_set
+                                          .filter(book_instance__isnull=False).exists())
+
                     # Assign book instance to the owning
                     book.ownings.add(chosen_owning)
 
                     # Send e-mail to user with an invitation
-                    # TODO: check whether this user was already mailed before (multi-book owners)
-                    owner = chosen_owning.owner
-                    mail.send_owner_invitation(owner)
+                    if not ownerInitiated:
+                        owner = chosen_owning.owner
+                        mail.send_owner_invitation(owner)
                 else:
                     # Then try to find handpicked destinations (secondary ownings)
                     owner_count = owner_query.filter(secondary=True).count()
