@@ -44,16 +44,17 @@ export class OverviewMapComponent implements OnInit {
     // create options array
     let bookInstanceOptions: AddBookInstancesOptions = {
       addHolders: true,
-      addOwners: environment.showHoldersFrontpage,
+      addOwners: environment.showOwningsFrontpage,
       drawLines: true,
       addBatch: true
     };
 
     // Loads book instances
     this.mapService.addBookInstances(mainMap, bookInstanceOptions);
-  }
 
-  linkClick() {
-    alert("Jup!");
+    // Load additional ownings
+    if (environment.showUnassignedOwnings){
+      this.mapService.retrieveUnassignedOwningMarkers(mainMap);
+    }
   }
 }

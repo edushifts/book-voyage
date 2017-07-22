@@ -9,10 +9,11 @@ router = DefaultRouter()
 router.register(r'bookInstances', views.BookInstanceViewSet)
 router.register(r'bookInstancesActive', views.BookInstanceViewSetMin)
 router.register(r'bookBatches', views.BookBatchViewSet)
+router.register(r'unassignedOwnings', views.UnassignedBookOwningsViewSet)
 
 # These (POST) viewsets are personalised for the user currently logged in
-router.register(r'myBookOwnings', views.BookOwningViewSet, base_name="MyBookOwning")
-router.register(r'myBookHoldings', views.BookHoldingViewSet, base_name="MyBookHolding")
+router.register(r'myBookOwnings', views.MyBookOwningsViewSet, base_name="MyBookOwning")
+router.register(r'myBookHoldings', views.MyBookHoldingsViewSet, base_name="MyBookHolding")
 
 # This (POST) viewset is used to write a new book holding to the database
 router.register(r'bookHoldings', views.BookHoldingWriteViewSet)

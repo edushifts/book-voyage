@@ -25,16 +25,7 @@ export class BookService {
     // }
   }
 
-  getBookInstance(id: number) {
-    // Does not use caching at the moment
-    // if (!this.bookInstances) {
-      return this.updateBookInstance(id);
-    // } else {
-    //   return this.bookInstances[id];
-    // }
-  }
-
-  updateBookInstances() {
+  private updateBookInstances() {
     // return this.http.get(environment.apiUrl + "api/bookInstances/") // would return all books
     return this.http.get(environment.apiUrl + "api/bookInstancesActive/")
       .map(
@@ -49,7 +40,16 @@ export class BookService {
         });
   }
 
-  updateBookInstance(id: number) {
+  getBookInstance(id: number) {
+    // Does not use caching at the moment
+    // if (!this.bookInstances) {
+    return this.updateBookInstance(id);
+    // } else {
+    //   return this.bookInstances[id];
+    // }
+  }
+
+  private updateBookInstance(id: number) {
     return this.http.get(environment.apiUrl + "api/bookInstances/" + id + "/")
       .map(
         (response: Response) => {
@@ -101,8 +101,26 @@ export class BookService {
     // }
   }
 
-  updateBookBatches() {
+  private updateBookBatches() {
     return this.http.get(environment.apiUrl + "api/bookBatches/")
+      .map(
+        (response: Response) => {
+          return response.json();
+        }
+      )
+      .catch(
+        (error: Response) => {
+          return Observable.throw(error);
+        });
+  }
+
+
+  getUnassignedBookOwnings() {
+    return this.updateUnassignedBookOwnings();
+  }
+
+  private updateUnassignedBookOwnings() {
+    return this.http.get(environment.apiUrl + "api/unassignedOwnings/")
       .map(
         (response: Response) => {
           return response.json();

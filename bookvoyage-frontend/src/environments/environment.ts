@@ -13,5 +13,6 @@ export const environment = {
   googleGeoBaseURL: "https://maps.googleapis.com/maps/api/geocode/json?address=",
   googleGeoAPI: "AIzaSyBIlZDx8WDIhKeXZMIN-3wrltWoLmo_VXc",
   tokenRefresh: 300000,
-  showHoldersFrontpage: true
+  showOwningsFrontpage: true,
+  showUnassignedOwnings: true
 };

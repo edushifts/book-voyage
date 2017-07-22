@@ -137,7 +137,7 @@ export class MapService {
     return this.customMarker._latlng;
   }
 
-  addBookBatchMarkers(mainMap) {
+  addBookBatchMarkers(map) {
     this.bookService.getBookBatches().subscribe(
       (bookBatches) => {
 
@@ -158,7 +158,40 @@ export class MapService {
 
           batchMarkers.push(batchMarker);
         }
-        L.layerGroup(batchMarkers).addTo(mainMap);
+        L.layerGroup(batchMarkers).addTo(map);
+      },
+      (errorData) => {
+        console.log("Error loading book locations: " + errorData);
+      });
+  }
+
+  retrieveUnassignedOwningMarkers(map) {
+    this.bookService.getUnassignedBookOwnings().subscribe(
+      (ownings) => {
+
+        let unassignedOwnings = [];
+
+        for (let owning of ownings) {
+
+          let owningLocation: Coordinates = {
+            lng: owning.location[0].coordinates[0],
+            lat: owning.location[0].coordinates[1]
+          };
+
+          // render marker
+          let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
+
+          // add pop-up message
+          let journeyLink = '';
+          journeyLink = ' / waiting ';
+
+          owningMarker.bindPopup("<b>" + owning.owner.first_name + " "
+            + owning.owner.last_name + "</b><br>" + owning.message
+            + "<br>" + '<span class="popup-date">' + owning.time + journeyLink + '</span>');
+
+          unassignedOwnings.push(owningMarker);
+        }
+        L.layerGroup(unassignedOwnings).addTo(map);
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
@@ -200,7 +233,7 @@ export class MapService {
 
           // place the (last) owner on the map of this instance
           if (addOwners) {
-            let owningMarker = this.addLastOwnerMarkers(bookInstance);
+            let owningMarker = this.addLastOwnerMarkers(bookInstance, true);
             bookOwnings.push(owningMarker);
           }
 
@@ -272,7 +305,7 @@ export class MapService {
 
         // place the (last) owner on the map of this instance
         if (addOwners) {
-          let owningMarker = this.addLastOwnerMarkers(bookInstance);
+          let owningMarker = this.addLastOwnerMarkers(bookInstance, false);
           bookOwnings.push(owningMarker);
         }
 
@@ -301,7 +334,7 @@ export class MapService {
   addHolderMarkers(bookInstance, addLink) {
     let journeyLink = '';
     if (addLink) {
-      journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a></span>'
+      journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a>'
     }
     let bookHoldings = [];
     for (let bookHolding of bookInstance.holdings) {
@@ -315,14 +348,14 @@ export class MapService {
       holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
         "</b><br>" + bookHolding.message +
         "<br>" +
-        '<span class="popup-date">' + bookHolding.time + journeyLink);
+        '<span class="popup-date">' + bookHolding.time + journeyLink + '</span>');
 
       bookHoldings.push(holdingMarker);
     }
     return bookHoldings;
   }
 
-  addLastOwnerMarkers(bookInstance) {
+  addLastOwnerMarkers(bookInstance, addLink) {
     // get amount of owners
     let bookOwningAmount = bookInstance.ownings.length;
     if (bookOwningAmount !== 0) {
@@ -334,10 +367,14 @@ export class MapService {
       let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
 
       // add pop-up message
-      // TODO: change requisites
+      let journeyLink = '';
+      if (addLink && bookInstance.holdings) {
+        journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a>'
+      }
+
       owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " "
         + currentOwning.owner.last_name + "</b><br>" + currentOwning.message
-        + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
+        + "<br>" + '<span class="popup-date">' + currentOwning.time + journeyLink + '</span>');
       return owningMarker;
     }
   }

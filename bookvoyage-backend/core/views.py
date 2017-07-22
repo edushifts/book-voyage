@@ -16,7 +16,7 @@ from django.contrib.auth import get_user_model
 # Import serializers
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, \
     BookHoldingWriteSerializer, PreferencesSerializer, UserDetailsSerializerWithEmail, \
-    OwnershipSerializer
+    OwnershipSerializer, BookOwningSerializer
 
 # Import mail senders
 from core import mail
@@ -102,7 +102,20 @@ class BookInstanceViewSetMin(viewsets.ReadOnlyModelViewSet):
     serializer_class = BookInstanceSerializer
 
 
-class BookOwningViewSet(viewsets.ReadOnlyModelViewSet):
+class UnassignedBookOwningsViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Contains all currently unassigned book ownings.
+    Provides `list` and `detail` views.
+    Read-only and public.
+    """
+    permission_classes = ()
+    authentication_classes = ()
+
+    serializer_class = BookOwningSerializer
+    queryset = BookOwning.objects.exclude(book_instance_id__isnull=False)
+
+
+class MyBookOwningsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Contains an authorised user's own book ownings.
     Provides `list` and `detail` views.
@@ -117,7 +130,7 @@ class BookOwningViewSet(viewsets.ReadOnlyModelViewSet):
             return BookOwning.objects.filter(owner=user)
 
 
-class BookHoldingViewSet(viewsets.ReadOnlyModelViewSet):
+class MyBookHoldingsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Contains an authorised user's own book ownings.
     Provides `list` and `detail` views.
