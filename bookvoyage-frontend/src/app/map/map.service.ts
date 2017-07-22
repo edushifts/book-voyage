@@ -19,7 +19,15 @@ export interface Coordinates {
   lng: number;
   lat: number;
 }
-
+/**
+ * NOTE: order of map markers is determined by z-indices
+ *
+ * Z-INDICES IN USE:
+ * Book ownings waiting: 5000
+ * Holdings+ownings+polylines: 6000
+ * Batches: 7000
+ *
+ */
 @Injectable()
 export class MapService {
   blueIcon;
@@ -112,7 +120,7 @@ export class MapService {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
       minZoom: 2,
-      maxZoom: 12,
+      maxZoom: 14,
       ext: 'png',
     }).addTo(map);
 
@@ -158,7 +166,7 @@ export class MapService {
 
           batchMarkers.push(batchMarker);
         }
-        L.layerGroup(batchMarkers).addTo(map);
+        L.layerGroup(batchMarkers).setZIndex(7000).addTo(map);
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
@@ -179,7 +187,7 @@ export class MapService {
           };
 
           // render marker
-          let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
+          let owningMarker = L.marker(owningLocation, {icon: this.greenIcon, zIndexOffset: -1000});
 
           // add pop-up message
           let journeyLink = '';
@@ -239,7 +247,7 @@ export class MapService {
 
           // create layer group for current book and add to map
           let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines);
-          let bookLayerGroup = L.layerGroup(bookLayer);
+          let bookLayerGroup = L.layerGroup(bookLayer).setZIndex(6000);
           bookLayerGroup.addTo(map);
           overlayMaps["book #" + bookInstance.id] = bookLayerGroup;
         }
