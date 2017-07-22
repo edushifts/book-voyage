@@ -2,7 +2,7 @@
  
 ***Empowering books to travel***
 
-![platform preview](https://edushifts.world/docs/BookVoyage_preview.png)
+![platform preview](https://edushifts.world/docs/BookVoyage_preview_20170722.png)
 
 [![Build Status](https://travis-ci.org/edushifts/book-voyage.svg?branch=master)](https://travis-ci.org/edushifts/book-voyage)
 [![Python Style guide](https://img.shields.io/badge/code_style-PEP8-yellowgreen.svg)](https://www.python.org/dev/peps/pep-0008/)
