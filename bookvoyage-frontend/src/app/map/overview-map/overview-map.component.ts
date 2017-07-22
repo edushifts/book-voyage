@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { HeaderService } from "../../header/header.service";
 import { MapService, AddBookInstancesOptions } from "../map.service";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-overview-map',
@@ -43,11 +44,16 @@ export class OverviewMapComponent implements OnInit {
     // create options array
     let bookInstanceOptions: AddBookInstancesOptions = {
       addHolders: true,
-      addOwners: false,
-      drawLines: true
+      addOwners: environment.showHoldersFrontpage,
+      drawLines: true,
+      addBatch: true
     };
 
     // Loads book instances
     this.mapService.addBookInstances(mainMap, bookInstanceOptions);
+  }
+
+  linkClick() {
+    alert("Jup!");
   }
 }

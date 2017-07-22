@@ -81,7 +81,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
     let bookInstanceOptions: AddBookInstancesOptions = {
       addHolders: true,
       addOwners: true,
-      drawLines: true
+      drawLines: true,
+      addBatch: true
     };
 
     // get book instance id from params (not from auth service, to avoid number confusion)

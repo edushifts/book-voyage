@@ -78,7 +78,8 @@ export class FormMapOwnerComponent implements OnInit, OnDestroy {
     let bookInstanceOptions: AddBookInstancesOptions = {
       addHolders: true,
       addOwners: true,
-      drawLines: true
+      drawLines: true,
+      addBatch: true
     };
 
     // Load user preferences

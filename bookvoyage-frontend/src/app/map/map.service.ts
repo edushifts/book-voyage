@@ -12,6 +12,7 @@ export interface AddBookInstancesOptions {
   addHolders: boolean;
   addOwners: boolean;
   drawLines: boolean;
+  addBatch: boolean;
 }
 
 export interface Coordinates {
@@ -28,7 +29,7 @@ export class MapService {
 
   customMarker;
   bookBounds;
-  previousHolderCoords;
+  previousHolderCoords: Coordinates;
 
   holdingAmount$: Observable<number>;
   owningAmount$: Observable<number>;
@@ -111,7 +112,7 @@ export class MapService {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
       minZoom: 2,
-      maxZoom: 9,
+      maxZoom: 12,
       ext: 'png',
     }).addTo(map);
 
@@ -123,7 +124,7 @@ export class MapService {
 
     this.customMarker .bindPopup("This is you!");
     if (zoom) {
-      map.flyTo(this.customMarker.getLatLng(), 9);
+      map.flyTo(this.customMarker.getLatLng(), 12);
     }
   }
 
@@ -144,7 +145,10 @@ export class MapService {
 
         for (let bookBatch of bookBatches) {
 
-          let batchLocation = bookBatch.location.map(a => a.coordinates)[0].reverse();
+          let batchLocation: Coordinates = {
+            lng: bookBatch.location[0].coordinates[0],
+            lat: bookBatch.location[0].coordinates[1]
+          };
 
           // render marker
           let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
@@ -161,101 +165,50 @@ export class MapService {
       });
   }
 
-  addBookInstances(mainMap, options?: AddBookInstancesOptions) {
+  addBookInstances(map, options?: AddBookInstancesOptions) {
     // read optional options array and pass default values if lacking
     let addHolders = options && options.addHolders !== null ? options.addHolders : true;
     let addOwners = options && options.addOwners !== null ? options.addOwners : true;
     let drawLines = options && options.drawLines !== null ? options.drawLines : true;
+    let addBatch = options && options.addBatch !== null ? options.addBatch : true;
 
     let overlayMaps = {};
+
+    if (addBatch) {
+      this.addBookBatchMarkers(map);
+    }
 
     this.bookService.getBookInstances().subscribe(
       (bookInstances) => {
 
-        let bookId = 0;
-
-        // look at each book location provided by the api
+        // Look at each book location provided by the api
         for (let bookInstance of bookInstances) {
 
-          // create variables to store book instance features
+          // Define variables to store book instance features
           let bookHoldings = [];
           let bookLines = [];
           let bookOwnings = [];
 
-          if (addHolders) {
-            // store book instance batch location to draw lines later on
-            // create array to hold marker locations to draw polyline between them
-            let holdingLocations = [];
-
-            if (bookInstance.batch) {
-              let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
-
-              // initiate holdingLocations with batch location
-              holdingLocations.push(batchLocation);
-            }
-
+          if (addHolders && bookInstance.holdings) {
             // place all holder data on map of this instance
-            for (let bookHolding of bookInstance.holdings) {
-              let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
-              let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
-
-              // add pop-up message
-              holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
-                "</b><br>" + bookHolding.message +
-                "<br>" +
-                '<span class="popup-date">' + bookHolding.time + ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a></span>');
-
-              holdingLocations.push(holdingLocation);
-
-              bookHoldings.push(holdingMarker);
-            }
+            bookHoldings = this.addHolderMarkers(bookInstance, true);
 
             if (drawLines) {
-              // define line color with book instance id and then draw it
-              let lineColor = rainbow(bookId, 1000);
-              let bookLine = L.polyline(holdingLocations, {color: lineColor});
-
-              // TODO: Fix this; it has an import issue
-              // // add directional arrow to polyline
-              // L.polylineDecorator(polyline, {
-              //   patterns: [
-              //     {
-              //       offset: '50%',
-              //       repeat: 0,
-              //       symbol: L.Symbol.arrowHead({pixelSize: 15, polygon: false, pathOptions: {stroke: true, color: lineColor}})
-              //     }
-              //   ]
-              // }).addTo(mainMap);
-              bookLines.push(bookLine);
+              bookLines = this.drawHolderLines(bookInstance, bookHoldings);
             }
           }
 
           // place the (last) owner on the map of this instance
-          // get amount of owners
           if (addOwners) {
-            let bookOwningAmount = bookInstance.ownings.length;
-            if (bookOwningAmount !== 0) {
-              let currentOwning = bookInstance.ownings[bookOwningAmount - 1];
-              // console.log(currentOwning);
-              let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
-              let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
-
-              // add pop-up message
-              // TODO: change requisites
-              owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " "
-                + currentOwning.owner.last_name + "</b><br>" + currentOwning.message
-                + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
-              bookOwnings.push(owningMarker);
-            }
+            let owningMarker = this.addLastOwnerMarkers(bookInstance);
+            bookOwnings.push(owningMarker);
           }
 
           // create layer group for current book and add to map
           let bookLayer = bookHoldings.concat(bookOwnings).concat(bookLines);
           let bookLayerGroup = L.layerGroup(bookLayer);
-          bookLayerGroup.addTo(mainMap);
+          bookLayerGroup.addTo(map);
           overlayMaps["book #" + bookInstance.id] = bookLayerGroup;
-
-          bookId++;
         }
         // create layer controls for all books and add to the map
         // turned off for now
@@ -271,6 +224,7 @@ export class MapService {
     let addHolders = options && options.addHolders !== null ? options.addHolders : true;
     let addOwners = options && options.addOwners !== null ? options.addOwners : true;
     let drawLines = options && options.drawLines !== null ? options.drawLines : true;
+    let addBatch = options && options.addBatch !== null ? options.addBatch : true;
 
     this.bookService.getBookInstance(id).subscribe(
       (bookInstance) => {
@@ -281,99 +235,45 @@ export class MapService {
         let bookOwnings = [];
         let batch = [];
 
-        // report the total amount of holders
+        // report the total amount of holders and owners
         let holdingAmount = bookInstance.holdings.length;
         this.holdingAmount.next(holdingAmount);
-
         let owningAmount = bookInstance.ownings.length;
         this.owningAmount.next(owningAmount);
-        if (addHolders) {
-          // create array to hold marker locations to draw polyline between them
-          let holdingLocations = [];
 
-          // render book instance batch location if available
-          if (bookInstance.batch) {
-            let batchLocation = bookInstance.batch.location.map(a => a.coordinates)[0].reverse();
-            let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon}).addTo(map);
-            batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + '<span class="popup-date">' + bookInstance.batch.date + '</span>');
-            batch = (batchMarker);
+        // render book instance batch location if available/desired
+        if (addBatch && bookInstance.batch) {
+          let batchLocation: Coordinates = {
+            lng: bookInstance.batch.location[0].coordinates[0],
+            lat: bookInstance.batch.location[0].coordinates[1],
+          };
+          let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
+          batch = batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + '<span class="popup-date">' + bookInstance.batch.date + '</span>');
+        }
 
-            // initiate holdingLocations with batch location
-            holdingLocations.push(batchLocation);
+        // place all holder data on map of this instance if available/desired
+        if (addHolders && bookInstance.holdings) {
 
-            if (holdingAmount === 0) {
-              // store the batch coordinates for the final animation
-              let previousHolder = batchMarker;
-              this.previousHolderCoords = {
-                lat: previousHolder._latlng.lat,
-                lng: previousHolder._latlng.lng
-              };
-            }
-          }
+          bookHoldings = this.addHolderMarkers(bookInstance, false);
 
-          // check if user is first holder. If so, skip loading them
           if (holdingAmount !== 0) {
             // store the final holder coordinates for the final animation
             let previousHolder = bookInstance.holdings[holdingAmount - 1];
             this.previousHolderCoords = {
-              lat: previousHolder.location[0].coordinates[1],
-              lng: previousHolder.location[0].coordinates[0]
+              lng: previousHolder.location[0].coordinates[0],
+              lat: previousHolder.location[0].coordinates[1]
             };
+          }
 
-            // place all holder data on map of this instance
-            for (let bookHolding of bookInstance.holdings) {
-              let holdingLocation = bookHolding.location.map(a => a.coordinates)[0].reverse();
-              let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon}).addTo(map);
-
-              // add pop-up message
-              if (holdingLocation) {
-
-                holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name + "</b><br>" + bookHolding.message + "<br>" + '<span class="popup-date">' + bookHolding.time + '</span>');
-              }
-              holdingLocations.push(holdingLocation);
-
-              bookHoldings.push(holdingMarker);
-            }
-
-            if (drawLines) {
-              // define line color with book instance id and then draw it
-              let lineColor = rainbow((id + 1) * 10, 1);
-              let bookLine = L.polyline(holdingLocations, {color: lineColor}).addTo(map);
-
-              // TODO: Fix this; it has an import issue
-              // // add directional arrow to polyline
-              // L.polylineDecorator(polyline, {
-              //   patterns: [
-              //     {
-              //       offset: '50%',
-              //       repeat: 0,
-              //       symbol: L.Symbol.arrowHead({pixelSize: 15, polygon: false, pathOptions: {stroke: true, color: lineColor}})
-              //     }
-              //   ]
-              // }).addTo(mainMap);
-              bookLines.push(bookLine);
-            }
+          if (drawLines) {
+            bookLines = this.drawHolderLines(bookInstance, bookHoldings);
           }
         }
 
         // place the (last) owner on the map of this instance
-        // get amount of owners
         if (addOwners) {
-          let bookOwningAmount = bookInstance.ownings.length;
-          if (bookOwningAmount !== 0) {
-            let currentOwning = bookInstance.ownings[bookOwningAmount - 1];
-            // console.log(currentOwning);
-            let owningLocation = currentOwning.location.map(a => a.coordinates)[0].reverse();
-            let owningMarker = L.marker(owningLocation, {icon: this.greenIcon}).addTo(map);
-
-            // add pop-up message
-            // TODO: change requisites
-            owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " " + currentOwning.owner.last_name
-              + "</b><br>" + currentOwning.message + "<br>" + '<span class="popup-date">'
-              + currentOwning.time + '</span>');
-
-            bookOwnings.push(owningMarker);
-          }
+          let owningMarker = this.addLastOwnerMarkers(bookInstance);
+          bookOwnings.push(owningMarker);
         }
 
         // create layer group for current book and add to map
@@ -396,5 +296,66 @@ export class MapService {
       L.polyline([this.previousHolderCoords, this.customMarker._latlng], {color: "black"}).addTo(map);
       map.flyTo([20, 0], 2);
     }
+  }
+
+  addHolderMarkers(bookInstance, addLink) {
+    let journeyLink = '';
+    if (addLink) {
+      journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a></span>'
+    }
+    let bookHoldings = [];
+    for (let bookHolding of bookInstance.holdings) {
+      let holdingLocation: Coordinates = {
+        lng: bookHolding.location[0].coordinates[0],
+        lat: bookHolding.location[0].coordinates[1]
+      };
+      let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
+
+      // add pop-up message
+      holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
+        "</b><br>" + bookHolding.message +
+        "<br>" +
+        '<span class="popup-date">' + bookHolding.time + journeyLink);
+
+      bookHoldings.push(holdingMarker);
+    }
+    return bookHoldings;
+  }
+
+  addLastOwnerMarkers(bookInstance) {
+    // get amount of owners
+    let bookOwningAmount = bookInstance.ownings.length;
+    if (bookOwningAmount !== 0) {
+      let currentOwning = bookInstance.ownings[bookOwningAmount - 1];
+      let owningLocation: Coordinates = {
+        lng: currentOwning.location[0].coordinates[0],
+        lat: currentOwning.location[0].coordinates[1]
+      };
+      let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
+
+      // add pop-up message
+      // TODO: change requisites
+      owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " "
+        + currentOwning.owner.last_name + "</b><br>" + currentOwning.message
+        + "<br>" + '<span class="popup-date">' + currentOwning.time + '</span>');
+      return owningMarker;
+    }
+  }
+
+  drawHolderLines(bookInstance, holdingMarkers) {
+    let batchLocation: Coordinates[] = [];
+    if (bookInstance.batch) {
+      // console.log(bookInstance.batch); // DEBUG
+      batchLocation = [{
+        lng: bookInstance.batch.location[0].coordinates[0],
+        lat: bookInstance.batch.location[0].coordinates[1]
+      }]
+    }
+
+    let holdingLocations = batchLocation.concat(holdingMarkers.map(function(a) {return a._latlng;}));
+
+    // define line color with book instance id and then draw it
+    let lineColor = rainbow((bookInstance.id + 1) * 10, 1);
+    return L.polyline(holdingLocations, {color: lineColor});
   }
 }
