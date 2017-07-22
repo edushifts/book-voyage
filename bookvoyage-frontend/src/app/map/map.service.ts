@@ -19,13 +19,22 @@ export interface Coordinates {
   lng: number;
   lat: number;
 }
-
+/**
+ * NOTE: order of map markers is determined by z-indices
+ *
+ * Z-INDICES IN USE:
+ * Book ownings waiting: 5000
+ * Holdings+ownings+polylines: 6000
+ * Batches: 7000
+ *
+ */
 @Injectable()
 export class MapService {
   blueIcon;
   greenIcon;
   orangeIcon;
-  PurpleIcon;
+  purpleIcon;
+  darkGreenIcon;
 
   customMarker;
   bookBounds;
@@ -45,44 +54,48 @@ export class MapService {
     this.holdingAmount$ = this.holdingAmount.asObservable();
     this.owningAmount$ = this.owningAmount.asObservable();
 
+    let roundAchorSize = [21, 21];
+    let roundIconAnchor = [10, 10];
+    let roundPopupAnchor = [0, -14];
+
     // define icon for marker type 1
     this.blueIcon = L.icon({
-      iconUrl:  environment.assetRoot +  'img/icons/marker-icon.png',
-      shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_round.png',
+      // shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
 
-      //iconSize:     [38, 95], // size of the icon
+      iconSize:     roundAchorSize, // size of the icon
       //shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
-      //shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
+      iconAnchor:   roundIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [0, 0],  // the same for the shadow
+      popupAnchor:  roundPopupAnchor // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 2
     this.greenIcon = L.icon({
-      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_green.png',
-      shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_green_round.png',
+      // shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
 
-      //iconSize:     [38, 95], // size of the icon
+      iconSize:     roundAchorSize, // size of the icon
       //shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
-      //shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
+      iconAnchor:   roundIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [0, 0],  // the same for the shadow
+      popupAnchor:  roundPopupAnchor // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 3
     this.orangeIcon = L.icon({
-      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange.png',
-      shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_orange_round.png',
+      // shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
 
-      //iconSize:     [38, 95], // size of the icon
+      iconSize:     roundAchorSize, // size of the icon
       //shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
-      //shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  [-2, -27] // point from which the popup should open relative to the iconAnchor
+      iconAnchor:   roundIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [0, 0],  // the same for the shadow
+      popupAnchor:  roundPopupAnchor // point from which the popup should open relative to the iconAnchor
     });
 
     // define icon for marker type 4
-    this.PurpleIcon = L.icon({
+    this.purpleIcon = L.icon({
       iconUrl:  environment.assetRoot +  'img/icons/marker-icon_purple.png',
       shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
 
@@ -91,6 +104,18 @@ export class MapService {
       iconAnchor:   [14, 40], // point of the icon which will correspond to marker's location
       //shadowAnchor: [4, 62],  // the same for the shadow
       //popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
+
+    // define icon for marker type 5
+    this.darkGreenIcon = L.icon({
+      iconUrl:  environment.assetRoot +  'img/icons/marker-icon_darkgreen_round.png',
+      // shadowUrl: environment.assetRoot +  'img/icons/marker-shadow.png',
+
+      iconSize:     roundAchorSize, // size of the icon
+      //shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   roundIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [0, 0],  // the same for the shadow
+      popupAnchor:  roundPopupAnchor // point from which the popup should open relative to the iconAnchor
     });
   }
 
@@ -104,7 +129,7 @@ export class MapService {
       worldCopyJump: true,
       maxBounds: bounds,
       maxBoundsViscosity: 1.0
-    }).setView([30, 0], 2);
+    }).setView([30, 0], 3);
 
     // Connect to the map tile provider and add tiles to the map
     // To save resources, only on tileLayer is instantiated in one session
@@ -112,7 +137,7 @@ export class MapService {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
       minZoom: 2,
-      maxZoom: 12,
+      maxZoom: 14,
       ext: 'png',
     }).addTo(map);
 
@@ -120,7 +145,7 @@ export class MapService {
   }
 
   addCustomMarker(map, coords: Coordinates, zoom: boolean) {
-    this.customMarker = L.marker(coords, {icon: this.PurpleIcon}).addTo(map);
+    this.customMarker = L.marker(coords, {icon: this.purpleIcon}).addTo(map);
 
     this.customMarker .bindPopup("This is you!");
     if (zoom) {
@@ -179,7 +204,7 @@ export class MapService {
           };
 
           // render marker
-          let owningMarker = L.marker(owningLocation, {icon: this.greenIcon});
+          let owningMarker = L.marker(owningLocation, {icon: this.darkGreenIcon, zIndexOffset: -1000});
 
           // add pop-up message
           let journeyLink = '';
