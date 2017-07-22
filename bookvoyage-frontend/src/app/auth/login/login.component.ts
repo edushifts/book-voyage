@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(
         (params: Params) => {
           if (+params['accountActivated'] === 1) {
-            this.extraMessage.next('Welcome to Book Voyage! After you login, we will take you to your book journey.');
+            this.extraMessage.next('Welcome to Book Voyage! After you login, we will take you to your book journeys.');
             this.bookOwner = true;
           } else {
             this.extraMessage.next('(sign-up requires a book)');
@@ -78,7 +78,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
             // return true to indicate successful login
             // if no access code is known, route to front page
-            if (this.authService.getAccessCode() === "wrong") {
+            if (this.bookOwner) {
+              this.router.navigate(['journeys']);
+            } else if (this.authService.getAccessCode() === "wrong") {
               this.router.navigate(['/'], {queryParams: {loggedIn: 1 }});
             } else { // if access code is known, route to book sign-up
               this.router.navigate(['journey', this.authService.getBookId(), 'continue']);
