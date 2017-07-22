@@ -56,7 +56,7 @@ export class MapService {
 
     let roundAchorSize = [21, 21];
     let roundIconAnchor = [10, 10];
-    let roundPopupAnchor = [-5, -17];
+    let roundPopupAnchor = [0, -14];
 
     // define icon for marker type 1
     this.blueIcon = L.icon({
