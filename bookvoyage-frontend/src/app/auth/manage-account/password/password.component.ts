@@ -7,9 +7,7 @@ import {Router} from "@angular/router";
   selector: 'app-password',
   templateUrl: './password.component.html',
   styleUrls: [
-    '/../../signup/signup.component.css',
-    '../../../map/form-map/form-map.component.css',
-    '../manage-account.component.css',
+    './password.component.css'
   ]
 })
 export class PasswordComponent{
