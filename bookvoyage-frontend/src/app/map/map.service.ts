@@ -417,7 +417,7 @@ export class MapService {
     let holdingLocations = batchLocation.concat(holdingMarkers.map(function(a) {return a._latlng;}));
 
     // define line color with book instance id and then draw it
-    let lineColor = rainbow((bookInstance.id + 1) * 10, 1);
+    let lineColor = rainbow(bookInstance.id%200, 200);
     return L.polyline(holdingLocations, {color: lineColor});
   }
 }
