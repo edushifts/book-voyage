@@ -7,10 +7,7 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
   styleUrls: [
-    '/../../signup/signup.component.css',
-    '../../../map/form-map/form-map.component.css',
-    '../manage-account.component.css',
-    './password-reset.component.css',
+    './password-reset.component.css'
   ]
 })
 export class PasswordResetComponent implements OnInit {
