@@ -131,14 +131,25 @@ export class MapService {
       maxBoundsViscosity: 1.0
     }).setView([30, 0], 3);
 
+    // Set zoom levels
+    let minZoom = 2;
+    let maxZoom = 14;
+
     // Connect to the map tile provider and add tiles to the map
     // To save resources, only on tileLayer is instantiated in one session
     L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
       attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       subdomains: 'abcd',
-      minZoom: 2,
-      maxZoom: 14,
+      minZoom: minZoom,
+      maxZoom: maxZoom,
       ext: 'png',
+    }).addTo(map);
+
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://carto.com/attribution">CARTO</a>',
+      // Also made possible by openstreetmap.org
+      minZoom: minZoom,
+      maxZoom: maxZoom
     }).addTo(map);
 
     return map;
