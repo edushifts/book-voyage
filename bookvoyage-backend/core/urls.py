@@ -28,6 +28,7 @@ urlpatterns = [
     # Overwrite rest-auth user viewset, add custom preferences viewset, then import libraries
     url(r'^api-auth/user/', views.UserDetailsWithEmailView.as_view()),
     url(r'^api-auth/preferences', views.PreferencesViewSet.as_view()),
+    url(r'^api-auth/resetPassword/', views.ResetUserPassword.as_view()),
     url(r'^api-auth/', include('rest_auth.urls')),
     url(r'^api-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^api-auth/refresh/', refresh_jwt_token)

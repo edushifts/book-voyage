@@ -5,14 +5,17 @@
 }
 
 .mainContainer {
-  padding-top: 20vh;
+  padding-top: 15vh;
   display: block;
   margin: 10px auto;
   width: 70%;
   max-width: 600px;
 }
 
-form input {
+input[type="email"],
+input[type="password"],
+input[type="submit"],
+input[type="text"] {
   background: #1d335f;
   border: none;
   font-size: 20px;
@@ -24,36 +27,32 @@ form input {
   font-family: 'BebasNeue', sans-serif;
 }
 
+input[type="submit"] {
+  cursor: pointer;
+}
+input[type="submit"]:disabled {
+  background: dimgrey !important;
+  cursor: default !important;
+}
+
+.menuBig {
+  font-size: 60px;
+  text-align: center;
+  margin: 0px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px #fff, -2px -2px #fff, 2px 0px #fff, 0px 2px #fff;
+}
+
 .menuSmall {
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.3em;
   background: white;
   margin-top: 0;
   margin-bottom: 10px;
 }
 
-.code {
-  width: 20% !important;
-  text-align: center;
-}
-
-.ngValid {
-  background-color: green;
-}
-.menuBig {
-  font-size: 60px;
-  text-align: center;
-  margin: 0px;
-  text-shadow: 2px 2px #fff, -2px -2px #fff, 2px 0px #fff, 0px 2px #fff;
-}
-
 input.ng-invalid.ng-touched {
   background: red;
-}
-
-input[type="submit"]:disabled {
-  background: dimgrey !important;
-  cursor: default;
 }
 
 .help-block {
@@ -63,30 +62,13 @@ input[type="submit"]:disabled {
   background: white;
 }
 
-.hidden {
-  display: none;
-}
-
-.fixWidth {
-  width: 100% !important;
-}
-
-.generalError {
-  background: red !important;
-}
-
-.resetPassword {
-  text-align: center;
-  background: #ffffff;
-  font-size: 14px;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 10px;
+input {
+  box-sizing: content-box !important;
 }
 
 @media screen and (max-height: 780px) {
   .mainContainer {
-    padding-top: 10vh;
+    padding-top: 5vh;
   }
 }
 

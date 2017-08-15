@@ -26,8 +26,10 @@ export class OverviewMapComponent implements OnInit {
           alert("Your session has expired. Please login again.");
         } else if (+params['error'] === 3) {
           alert("The journey you looked up has not yet begun.");
-        } else if (+params['error'] === 4) {
-          alert("Your provided key was invalid. Please contact the platform owners.");
+        }
+
+        if (+params['passwordReset'] === 1) {
+          alert("Please check your inbox for your reset link.");
         }
 
         if (+params['changedEmail'] === 1) {

@@ -11,12 +11,13 @@ from rest_framework.generics import RetrieveUpdateAPIView
 
 # Import models
 from .models import BookInstance, BookBatch, BookHolding, BookOwning
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
 # Import serializers
 from core.serializers import BookInstanceSerializer, BookBatchSerializer, \
     BookHoldingWriteSerializer, PreferencesSerializer, UserDetailsSerializerWithEmail, \
-    OwnershipSerializer, BookOwningSerializer
+    OwnershipSerializer, BookOwningSerializer, UserEmail
 
 # Import mail senders
 from core import mail
@@ -256,6 +257,29 @@ class PreferencesViewSet(APIView):
 
             serializer.save(user)
             return Response(serializer.data)
+
+
+class ResetUserPassword(APIView):
+    """
+    Takes email address and sends it a reset link.
+    Note: always indicates success, for privacy purposes.
+    Write-only and public.
+    """
+    serializer_class = UserEmail
+    permission_classes = ()
+    authentication_classes = ()
+
+    def post(self, request):
+        email = request.data["email"]  # retrieve the book instance id using accessCode
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # raise ParseError(detail="Invalid e-mail address", code=400)
+            return Response(data={'message': "Reset e-mail was sent"})  # Safer option
+
+        mail.send_password_reset(user)
+        return Response(data={'message': "Reset e-mail was sent"})  # Otherwise, return id
 
 
 # OVERWRITE DEFAULT REST_AUTH USER DETAILS VIEW

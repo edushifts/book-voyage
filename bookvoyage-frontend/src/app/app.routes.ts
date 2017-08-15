@@ -8,6 +8,7 @@ import {DetailMapComponent} from "./map/detail-map/detail-map.component";
 import {PasswordComponent} from "./auth/manage-account/password/password.component";
 import {PasswordResetComponent} from "./auth/manage-account/password-reset/password-reset.component";
 import {BookListComponent} from "./book/book-list/book-list.component";
+import {RequestResetComponent} from "./auth/login/request-reset/request-reset.component";
 // import {FormMapOwnerComponent} from "./map/form-map-owner/form-map-owner.component"; // WIP
 
 // Import auth guards and router
@@ -16,14 +17,22 @@ import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import {MetaGuard} from '@ngx-meta/core'
 import {Routes} from "@angular/router";
 
+
 export const routes: Routes = [
   { path: '', canActivateChild: [MetaGuard], children: [
     { path: '', component: OverviewMapComponent, pathMatch: 'full'},
-    { path: 'login', component: LoginComponent, canActivate: [AuthGuardReverse], data: {
-      meta: {
-        title: 'Login',
-      }
-    }},
+    { path: 'login', canActivate: [AuthGuardReverse], children: [
+      { path: '', component: LoginComponent, pathMatch: 'full', data: {
+        meta: {
+          title: 'Login',
+        }
+      } },
+      { path: 'reset', component: RequestResetComponent, data: {
+        meta: {
+          title: 'Reset Password',
+        }
+      }},
+    ]},
     { path: 'account', canActivate: [AuthGuard], children: [
       { path: '', component: ManageAccountComponent, pathMatch: 'full', data: {
         meta: {
@@ -35,7 +44,7 @@ export const routes: Routes = [
           title: 'Change Password',
         }
       } },
-      ]},
+    ]},
     { path: 'signup', canActivate: [AuthGuardReverse], children: [
       { path: '', component: SignupComponent, pathMatch: 'full', canActivate: [AuthGuardReverse], data: {
         meta: {

@@ -50,13 +50,13 @@ export class PasswordResetComponent implements OnInit {
         (success: boolean) => {
           // console.log("Yay"); // DEBUG
           form.reset();
-          this.router.navigate(['login'], {queryParams: {accountActivated: 1 }});
+          this.router.navigate(['login'], {queryParams: { accountActivated: 1 }});
         },
         (errorData) => {
           let errors = errorData.json();
 
           if (errors.token || errors.uid) {
-            this.router.navigate([''], {queryParams: {error: 4 }});
+            this.router.navigate(['login', 'reset'], {queryParams: { error: 1 }});
           }
 
           this.passwordError = '';

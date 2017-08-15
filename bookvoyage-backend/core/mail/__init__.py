@@ -43,6 +43,33 @@ def send_owner_invitation(user):
     logger.info("Owner Invitation sent to: " + user_email)
 
 
+def send_password_reset(user):
+    """
+    Sends user an invitation e-mail that includes a password reset link.
+    Adapted from https://github.com/pennersr/django-allauth/blob/master/allauth/account/forms.py
+    """
+    user_email = user.email
+
+    # Generate password reset token
+    token_generator = default_token_generator
+    temp_key = token_generator.make_token(user)
+
+    url = HOST_FRONTEND + PASSWORD_RESET_LINK\
+        + force_text(urlsafe_base64_encode((force_bytes(user.id)))) + "-" + temp_key
+
+    msg_plain = render_to_string('password-reset.txt', {'platformUrl': url})
+    msg_html = render_to_string('password_reset.html', {'platformUrl': url})
+
+    send_mail(
+        'EDUshifts Book Voyage password reset',
+        msg_plain,
+        DEFAULT_FROM_EMAIL,
+        [user_email],
+        html_message=msg_html,
+    )
+    logger.info("Password reset sent to: " + user_email)
+
+
 def send_holder_welcome(user, book):
     """
     Sends holder a thank-you e-mail for having registered a book, and send them a link to the public journey.

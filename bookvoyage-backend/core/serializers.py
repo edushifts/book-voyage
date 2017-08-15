@@ -269,6 +269,10 @@ class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'arrived', 'batch', 'ownings', 'holdings')
 
 
+class UserEmail(serializers.Serializer):
+    email = serializers.CharField(read_only=False, required=True)
+
+
 # OVERWRITE DEFAULT REST_AUTH USER DETAILS SERIALIZER
 class UserDetailsSerializerWithEmail(serializers.ModelSerializer):
     """

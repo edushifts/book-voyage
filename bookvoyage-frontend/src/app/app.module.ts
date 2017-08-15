@@ -40,6 +40,7 @@ import { PasswordComponent } from './auth/manage-account/password/password.compo
 
 // Import environment
 import { environment } from "../environments/environment";
+import {RequestResetComponent} from "./auth/login/request-reset/request-reset.component";
 
 
 // Define default meta descriptions
@@ -75,6 +76,7 @@ export function metaFactory(): MetaLoader {
     PasswordResetComponent,
     BookListComponent,
     BookListItemComponent,
+    RequestResetComponent
     // FormMapOwnerComponent # WIP
   ],
   imports: [

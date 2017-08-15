@@ -118,6 +118,7 @@ LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = "none"  # TODO : add e-mail verification
+PASSWORD_RESET_TIMEOUT_DAYS = 14  # Allow 14 days to register
 
 # Book Voyage is implemented using a JWT approach through an API
 REST_FRAMEWORK = {
