@@ -63,6 +63,7 @@ class BookInstanceAdmin(ImportExportModelAdmin):
     resource_class = BookCodeResource
     list_display = ('__str__', 'batch', 'arrived',)
     list_filter = ('batch', 'arrived',)
+    list_editable = ('batch',)
 
 
 """
