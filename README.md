@@ -1,6 +1,6 @@
 # Book Voyage
  
-***Empowering books to travel***
+***Empowering books to travel*** *| [Visit our live instance here](https://now.edushifts.world/)*
 
 ![platform preview](https://edushifts.world/docs/BookVoyage_preview_20170722.png)
 
