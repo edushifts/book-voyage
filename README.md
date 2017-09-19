@@ -43,7 +43,7 @@ The application has two components: a front-end based on Angular and a back-end 
 
 ### For Users
 
-You will only need to run the Django server with a compiled website in it. This production version is currently not on GitHub yet. If you require it, please send use a message.
+You will only need to run the Django server with a compiled website in it. This production version is currently not on GitHub yet. If you require it, please leave us a message in the issues.
 
 ### For Developers
 
