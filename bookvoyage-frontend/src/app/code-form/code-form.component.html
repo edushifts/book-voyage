@@ -1,7 +1,7 @@
 <div class="codeFormConAbs" *ngIf="displayCodeForm()">
   <div class="codeFormCon">
     <form (ngSubmit)="onAccessCode()" class="codeForm hide-submit" #codeForm="ngForm">
-      <input id="accessCode" type="text" placeholder="access code" name="accessCode" maxlength="9" ngModel>
+      <input id="accessCode" type="text" [placeholder]="'ACCESS_CODE' | translate" name="accessCode" maxlength="9" ngModel>
       <label>
         <input type="submit">
         <img class="arrowImg" src="assets/img/arrow.svg" onerror="this.src='assets/img/arrow.png'">

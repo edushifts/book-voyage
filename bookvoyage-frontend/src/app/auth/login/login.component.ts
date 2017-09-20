@@ -43,10 +43,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(
         (params: Params) => {
           if (+params['accountActivated'] === 1) {
-            this.extraMessage.next('Welcome to Book Voyage! After you login, we will take you to your book journeys.');
+            this.extraMessage.next('LOGIN_SUB_OWNER');
             this.bookOwner = true;
           } else {
-            this.extraMessage.next('(sign-up requires a book)');
+            this.extraMessage.next('LOGIN_SUB_DEFAULT');
           }
         }
       )

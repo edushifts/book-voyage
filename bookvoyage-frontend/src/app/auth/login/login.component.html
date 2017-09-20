@@ -1,9 +1,9 @@
 <div class="mainContent">
   <div class="mainContainer">
     <form (ngSubmit)="loginUser(form)" #form="ngForm">
-      <p class="menuBig">LOG IN</p>
+      <p class="menuBig">{{ "LOGIN" | translate }}</p>
 
-      <p class="menuSmall">{{ extraMessageOutput }}</p>
+      <p class="menuSmall">{{ extraMessageOutput | translate }}</p>
 
       <span *ngIf="generalError" class="help-block">{{ nonFieldError }}</span>
 
@@ -14,7 +14,7 @@
         type="email"
         id="email"
         name="email"
-        placeholder="e-mail address"
+        [placeholder]="'EMAIL_ADDRESS' | translate"
         [ngClass]="{generalError: generalError}"
         (keypress)="generalErrorRecovery(form)">
 
@@ -27,15 +27,15 @@
         type="password"
         id="password"
         name="password"
-        placeholder="password"
+        [placeholder]="'PASSWORD' | translate"
         [ngClass]="{generalError: generalError}"
         (keypress)="generalErrorRecovery(form)">
 
       <span *ngIf="!password.valid && password.touched" class="help-block">{{ passwordError }}</span>
 
-      <input class="fixWidth" [disabled]="!form.valid" type="submit" value="Enter">
+      <input class="fixWidth" [disabled]="!form.valid" type="submit" [value]="'ENTER' | translate">
 
-      <p routerLink="/login/reset/" class="resetPassword">Or reset your password here</p>
+      <p routerLink="/login/reset/" class="resetPassword">{{ "RESET_BUTTON" | translate }}</p>
 
     </form>
   </div>
