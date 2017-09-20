@@ -1,11 +1,14 @@
 // Import modules
 import { FormsModule } from "@angular/forms";
-import { HttpModule } from "@angular/http";
+import { HttpClient } from "@angular/common/http"; // DEPRECATED
 import { NgSpinKitModule } from "ng-spin-kit";
 import { ShareButtonsModule } from "ngx-sharebuttons";
 import { RouterModule } from "@angular/router";
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // Import services
 import { HeaderService } from "./header/header.service";
@@ -40,7 +43,9 @@ import { PasswordComponent } from './auth/manage-account/password/password.compo
 
 // Import environment
 import { environment } from "../environments/environment";
-import {RequestResetComponent} from "./auth/login/request-reset/request-reset.component";
+import { RequestResetComponent } from "./auth/login/request-reset/request-reset.component";
+import { HttpModule } from "@angular/http";
+
 
 
 // Define default meta descriptions
@@ -57,6 +62,12 @@ export function metaFactory(): MetaLoader {
       'og:locale': 'en_US',
     }
   });
+}
+
+// Translate plugin
+// AoT requires an exported function for factories
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -82,13 +93,21 @@ export function metaFactory(): MetaLoader {
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpModule, // DEPRECATED
+    HttpClientModule,
     NgSpinKitModule,
     ShareButtonsModule.forRoot(),
     RouterModule.forRoot(routes),
     MetaModule.forRoot({
       provide: MetaLoader,
       useFactory: (metaFactory)
+    }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
     })
   ],
   providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService, MetaGuard],
