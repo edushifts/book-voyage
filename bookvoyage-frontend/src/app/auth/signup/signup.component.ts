@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {AuthService, CurrentUser} from "../auth.service";
 import {NgForm} from "@angular/forms";
 import {nameCase} from "../../shared/name-case.function";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-signup',
@@ -20,7 +21,14 @@ export class SignupComponent implements OnInit, OnDestroy {
   secretCode;
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router,
+              private translate: TranslateService) {
+    this.translate.get("ERROR_PASSWORD_LENGTH").subscribe(
+      (message: string) => {
+        this.passwordError = message;
+      }
+    )
+  }
 
   ngOnInit() {
     this.secretCode = this.authService.getAccessCode();
@@ -62,7 +70,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         let userData = {
           first_name: nameCase(first_name),
           last_name: nameCase(last_name)
-        }
+        };
 
         this.authService.changeUserCredentials(userData).subscribe(
           (success) => {

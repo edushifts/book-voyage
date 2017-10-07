@@ -4,7 +4,7 @@
       <div class="codeCont">
         <input type="text" [value]="secretCode" disabled class="code">
       </div>
-      <p class="menuBig">JOURNEY FOUND</p>
+      <p class="menuBig">{{ 'JOURNEY_FOUND' | translate }}</p>
 
       <div class="inFormContainer"><!--
         --><input
@@ -14,7 +14,7 @@
           required
           id="first_name"
           name="first_name"
-          placeholder="first name"
+          placeholder="{{ 'FIRST_NAME' | translate }}"
           #first_name="ngModel"><!--
         --><input
           type="text"
@@ -23,7 +23,7 @@
           required
           id="last_name"
           name="last_name"
-          placeholder="last name"
+          placeholder="{{ 'LAST_NAME' | translate }}"
           #last_name="ngModel"><!--
    --></div>
       <span *ngIf="(!first_name.valid && first_name.touched) || (!last_name.valid && last_name.touched)" class="help-block">Please enter your name</span>
@@ -34,17 +34,25 @@
         type="email"
         id="email"
         name="email"
-        placeholder="e-mail address"
+        placeholder="{{ 'EMAIL_ADDRESS' | translate }}"
         #email="ngModel">
       <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
 
-      <input #password="ngModel" ngModel required type="password" id="password" name="password" placeholder="password">
+      <input
+        #password="ngModel"
+        ngModel
+        required
+        type="password"
+        id="password"
+        name="password"
+        placeholder="{{ 'PASSWORD' | translate }}">
+
       <span *ngIf="password.touched && (!password.valid || password.value.length < 8)" class="help-block">{{ passwordError }}</span>
 
-      <input #passwordConfirm="ngModel" ngModel required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="confirm password">
+      <input #passwordConfirm="ngModel" ngModel required type="password" name="passwordConfirm" id="passwordConfirm" placeholder="{{ 'CONFIRM_PASSWORD' | translate }}">
       <span *ngIf="passwordMismatch || (!passwordConfirm.valid && passwordConfirm.touched)" class="help-block">{{ passwordConfirmError }}</span>
 
-      <input class="fixWidth" [disabled]="!form.valid" type="submit" value="Create Account">
+      <input class="fixWidth" [disabled]="!form.valid" type="submit" value="{{ 'CREATE_ACCOUNT' | translate }}">
     </form>
   </div>
 </div>

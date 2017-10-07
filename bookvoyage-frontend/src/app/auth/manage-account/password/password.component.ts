@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService} from "../../auth.service";
 import {Router} from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-password',
@@ -17,7 +18,13 @@ export class PasswordComponent{
   generalError = '';
 
   constructor(private authService: AuthService,
-              private router: Router) { }
+              private router: Router, private translate: TranslateService) {
+    this.translate.get("ERROR_PASSWORD_LENGTH").subscribe(
+      (message: string) => {
+        this.passwordError = message;
+      }
+    )
+  }
 
   returnToAccount() {
     this.router.navigate(['account']);

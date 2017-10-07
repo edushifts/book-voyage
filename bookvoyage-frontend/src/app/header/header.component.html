@@ -5,9 +5,9 @@
     <img class="dropbtn" src="assets/img/account_v2.svg" onerror="this.src='/assets/img/account_v2.png'" (click)="onAccountButton()">
     <div *ngIf="isLoggedIn">
       <div class="dropdown-content">
-        <a routerLink="/journeys/">My Journeys</a>
-        <a routerLink="/account/">Account Page</a>
-        <a (click)="logout()">Logout</a>
+        <a routerLink="/journeys/">{{ 'MY_JOURNEYS' | translate }}</a>
+        <a routerLink="/account/">{{ 'ACCOUNT_PAGE' | translate }}</a>
+        <a (click)="logout()">{{ 'LOGOUT' | translate }}</a>
       </div>
     </div>
   </div>

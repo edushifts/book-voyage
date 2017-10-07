@@ -2,54 +2,55 @@
   <div id="mainMap"></div>
   <div *ngIf="webGeoWait" class="secondaryFont bottomPane">
     <sk-pulse [isRunning]="loading" [color]="'#1d335f'"></sk-pulse>
-    <p class="secondaryFont">Please allow the location request by your browser</p>
+    <p class="secondaryFont">{{ "ALLOW_LOCATION_REQUEST" | translate }}</p>
   </div>
 
   <div *ngIf="formPhase === 1 && !loading" class="secondaryFont bottomPane mainContainer">
 
-    <p class="topText">Look at you! Congratulations on being the {{ currentHolder }} holder of this book. <span *ngIf="owningAmount > 0">Will you get it closer to its final destination?</span><span *ngIf="owningAmount < 1">This one has no destination. Will you get it to an exciting location?</span></p>
-    <p class="bottomText">Please locate where you're reading it.</p>
+    <p><span>{{ 'FORM_MAP_WELCOME' | translate:{currentHolder: currentHolder} }}</span>
+    <span *ngIf="owningAmount > 0">{{ "FORM_MAP_WELCOME_2" | translate }}</span><span *ngIf="owningAmount < 1">{{ "FORM_MAP_WELCOME_2_OWNERLESS" | translate }}</span></p>
+    <p class="bottomText">{{ "PLEASE_LOCATE" | translate }}</p>
 
     <button class="menuButton" (click)="markerByGeo()">
-      <p>Use GPS/IP</p>
+      <p>{{ "GPS" | translate }}</p>
     </button>
 
-    <p class="inline">or</p>
+    <p class="inline">{{ "OR" | translate }}</p>
 
     <button class="menuButton" (click)="markerByAddress()">
-      <p>Enter city name</p>
+      <p>{{ "ENTER_CITY_NAME" | translate }}</p>
     </button>
   </div>
 
   <div *ngIf="formPhase === 2" class="secondaryFont bottomPane mainContainer">
-    <p class="topText">Aha! So that’s where it has gotten itself. Not bad!</p>
-    <p class="bottomText">Does the shown location look about correct?</p>
+    <p class="topText">{{ "FORM_MAP_P2_H" | translate }}</p>
+    <p class="bottomText">{{ "FORM_MAP_P2_SH" | translate }}</p>
 
     <button class="menuButton" (click)="reset()">
-      <p>No (try again)</p>
+      <p>{{ 'NO_VERBOSE' | translate }}</p>
     </button>
 
     <button class="menuButton" (click)="submitLocation()">
-      <p>Yes (continue)</p>
+      <p>{{ 'YES_VERBOSE' | translate }}</p>
     </button>
   </div>
 
   <div *ngIf="formPhase === 3" class="secondaryFont bottomPane mainContainer">
-    <p class="topText">Now, let's talk communications.</p>
-    <p class="bottomText">You <em>can</em> be anonymous, but the community cannot find you that way.</p>
+    <p class="topText">{{ "FORM_MAP_P3_H" | translate }}</p>
+    <p class="bottomText">{{ "FORM_MAP_P3_SH" | translate }}</p>
 
     <form id="dataPreferences" (ngSubmit)="submitPreferences(preferenceForm)" #preferenceForm="ngForm">
       <span *ngIf="preferenceError != ''" class="help-block">{{ preferenceError }}</span>
       <div *ngIf="!alreadyActivated" class="form-group">
           <label class="control control--checkbox">
             <input required type="checkbox" name="consent" [(ngModel)]="consentBox">
-            I agree with the use of my provided data*
+            {{ "OPT_DATA" | translate }}
             <div class="control__indicator"></div>
           </label>
       </div>
 
       <div class="form-group">
-        <label class="control control--checkbox">I want to receive book updates by e-mail
+        <label class="control control--checkbox">{{ "OPT_RECEIVE_UPDATES" | translate }}
           <input type="checkbox" name="updates" [(ngModel)]="mail_updates">
           <div class="control__indicator"></div>
         </label>
@@ -58,36 +59,36 @@
       <div class="form-group">
           <label class="control control--checkbox">
             <input type="checkbox" name="anonymous" [(ngModel)]="anonymous">
-            I want my name censored on the site
+            {{ "OPT_ANONYMOUS" | translate }}
             <div class="control__indicator"></div>
           </label>
       </div>
 
       <button [disabled]="!preferenceForm.valid" type="submit" class="menuButton menuButtonBottomMargin">
-        <p>Ready to share!</p>
+        <p>{{ "READY_TO_SHARE" | translate }}</p>
       </button>
     </form>
   </div>
 
   <div *ngIf="formPhase === 4" class="secondaryFont bottomPane mainContainer">
-    <p class="topText">Time to leave your mark with a message!</p>
-    <p class="bottomText">Tell the community a bit about yourself.</p>
+    <p class="topText">{{ "FORM_MAP_P4_H" | translate }}</p>
+    <p class="bottomText">{{ "FORM_MAP_P4_SH" | translate }}</p>
 
     <form id="messageForm" (ngSubmit)="submitMessage(messageForm)" #messageForm="ngForm">
-      <textarea rows="1" placeholder="Write your public message here (enters will be removed)" maxlength="140" id="message" required ngModel name="message"
+      <textarea rows="1" placeholder="{{ 'WRITE_MESSAGE' | translate }}" maxlength="140" id="message" required ngModel name="message"
                 class="code"></textarea>
       <button type="submit" class="menuButton">
-        <p>That's it!</p>
+        <p>{{ 'SEND_MESSAGE' | translate }}</p>
       </button>
     </form>
   </div>
 
   <div *ngIf="formPhase === 5" class="secondaryFont bottomPane mainContainer">
-    <p class="topText">You have now officially been added to this book’s tale. We are curious to see how you will continue it!</p>
-    <p class="bottomText">You will receive an e-mail with a tracking link soon.</p>
+    <p class="topText">{{ "FORM_MAP_P5_H" | translate }}</p>
+    <p class="bottomText">{{ "FORM_MAP_P5_SH" | translate }}</p>
 
     <button class="menuButton" (click)="complete()">
-      <p>Go to journey page</p>
+      <p>{{ "GO_TO_JOURNEY_PAGE" | translate }}</p>
     </button>
   </div>
 </div>
