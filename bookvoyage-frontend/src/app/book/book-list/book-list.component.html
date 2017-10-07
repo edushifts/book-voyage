@@ -2,23 +2,23 @@
   <div class="mainContainer noselect">
 
     <div *ngIf="initFinishedOwnerships && bookOwnershipsOutput[0]">
-      <h2>Book Ownership</h2>
+      <h2>{{ "BOOK_OWNERSHIP" | translate }}</h2>
       <div *ngFor="let owning of bookOwnershipsOutput">
         <app-book-list-item [item]="owning"></app-book-list-item>
       </div>
-      <p class="question">As an owner, you will soon be able to add a message and change your location. Contact us if you need this earlier.</p>
+      <p class="question">{{ "OWNER_BOOK_TEMP" | translate }}</p>
     </div>
 
     <div *ngIf="initFinishedHoldings && bookHoldingsOutput[0]">
-      <h2>Books Held</h2>
+      <h2>{{ 'BOOKS_HELD' | translate }}</h2>
       <div *ngFor="let holding of bookHoldingsOutput">
         <app-book-list-item [item]="holding"></app-book-list-item>
       </div>
     </div>
 
     <div *ngIf="initFinishedHoldings && initFinishedOwnerships && !bookHoldingsOutput[0] && !bookOwnershipsOutput[0]">
-      <h2>No books found</h2>
-      <p class="question">Did you finish the book registration?</p>
+      <h2>{{ "NO_BOOKS_FOUND" | translate }}</h2>
+      <p class="question">{{ "NO_BOOKS_FOUND_DESC" | translate }}</p>
       <app-code-form></app-code-form>
     </div>
 

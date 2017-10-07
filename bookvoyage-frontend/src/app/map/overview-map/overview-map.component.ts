@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { HeaderService } from "../../header/header.service";
 import { MapService, AddBookInstancesOptions } from "../map.service";
 import { environment } from "../../../environments/environment";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-overview-map',
@@ -13,7 +14,8 @@ export class OverviewMapComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private headerService: HeaderService,
-              private mapService: MapService) { }
+              private mapService: MapService,
+              private translate: TranslateService) { }
 
   ngOnInit() {
     this.headerService.showAccountButtons = true;
@@ -21,19 +23,34 @@ export class OverviewMapComponent implements OnInit {
       .queryParams
       .subscribe(params => {
         if (+params['error'] === 1) {
-          alert("The code you entered was incorrect. Please double-check it.");
+          this.translate.get('ERROR_WRONG_CODE').subscribe(
+            (message: string) => {
+              alert(message);
+            });
         } else if (+params['error'] === 2) {
-          alert("Your session has expired. Please login again.");
+          this.translate.get('ERROR_SESSION_EXPIRED').subscribe(
+            (message: string) => {
+              alert(message);
+            });
         } else if (+params['error'] === 3) {
-          alert("The journey you looked up has not yet begun.");
+          this.translate.get('ERROR_JOURNEY_NOT_BEGUN').subscribe(
+            (message: string) => {
+              alert(message);
+            });
         }
 
         if (+params['passwordReset'] === 1) {
-          alert("Please check your inbox for your reset link.");
+          this.translate.get('CHECK_INBOX_RESET').subscribe(
+            (message: string) => {
+              alert(message);
+            });
         }
 
         if (+params['changedEmail'] === 1) {
-          alert("Your email address has been changed. You can now log in again.");
+          this.translate.get('EMAIL_CHANGED').subscribe(
+            (message: string) => {
+              alert(message);
+            });
         }
       });
 

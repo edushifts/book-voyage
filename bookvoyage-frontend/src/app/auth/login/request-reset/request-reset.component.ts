@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService} from "../../auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-password-reset',
@@ -14,7 +15,8 @@ export class RequestResetComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private translate: TranslateService) { }
 
 
   ngOnInit() {
@@ -22,7 +24,12 @@ export class RequestResetComponent implements OnInit {
       .queryParams
       .subscribe(params => {
         if (+params['error'] === 1) {
-          alert("Sorry! Your previous token expired. Please request a new link here and try again.");
+          this.translate.get("ERROR_TOKEN_EXPIRED").subscribe(
+            (message: string) => {
+              alert(message);
+            }
+          );
+
         }
       });
   }
@@ -39,8 +46,12 @@ export class RequestResetComponent implements OnInit {
           this.router.navigate([''], {queryParams: {passwordReset: 1 }});
         },
         (errors) => {
-          alert("Sorry, an error occurred! Please contact ahoi@edushifts.world.");
-          return;
+          this.translate.get("ERROR_GENERIC").subscribe(
+            (message: string) => {
+              alert(message);
+              return;
+            }
+          );
         }
       );
     }

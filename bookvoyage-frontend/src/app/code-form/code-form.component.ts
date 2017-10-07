@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
 import {AuthService} from "../auth/auth.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-code-form',
@@ -14,7 +15,8 @@ export class CodeFormComponent implements OnInit, OnDestroy {
   validitySub;
 
   constructor(private router: Router,
-              private authService: AuthService) { }
+              private authService: AuthService,
+              private translate: TranslateService) { }
 
   ngOnInit() {
   }
@@ -44,7 +46,11 @@ export class CodeFormComponent implements OnInit, OnDestroy {
     // check if code is correct in size
     let givenCode = this.codeForm.value['accessCode'].toUpperCase();
     if (givenCode.length !== 9) {
-      alert("The code you entered was incorrect :( ");
+      this.translate.get("ERROR_WRONG_CODE").subscribe(
+        (message: string) => {
+          alert(message);
+        }
+      );
       return;
     }
 
@@ -52,7 +58,11 @@ export class CodeFormComponent implements OnInit, OnDestroy {
     this.validitySub = this.authService.checkCode(givenCode).subscribe(
       (validity) => {
         if (!validity) {
-          alert("The code you entered was incorrect :( ")
+          this.translate.get("ERROR_WRONG_CODE").subscribe(
+            (message: string) => {
+              alert(message);
+            }
+          );
         } else{
           // check if user is logged in already
           if (this.authService.isLoggedIn()) {

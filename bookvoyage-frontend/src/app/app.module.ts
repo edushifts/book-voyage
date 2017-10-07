@@ -56,7 +56,7 @@ export function metaFactory(): MetaLoader {
     applicationName: 'EDUshifts Now!',
     defaults: {
       title: 'EDUshifts Now!',
-      description: 'Follow 1000 books as they ',
+      description: 'Follow 1000 books as they travel across the globe and connect innovators of education.',
       'og:image': environment.protocol + environment.url + environment.assetRoot + 'img/faces.jpg',
       'og:type': 'website',
       'og:locale': 'en_US',

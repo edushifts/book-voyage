@@ -2,8 +2,8 @@
   <div class="mainContainer">
     <form (ngSubmit)="resetAccount(form)" #form="ngForm">
 
-      <p class="menuBig">RESET PASSWORD</p>
-      <p class="menuSmall">Oops! Enter your e-mail address here and we will send you a reset link. Make sure to double-check for typos.</p>
+      <p class="menuBig">{{ "RESET_PASSWORD" | translate }}</p>
+      <p class="menuSmall">{{ "RESET_PASSWORD_DESC" | translate }}</p>
 
       <input
         ngModel
@@ -12,10 +12,10 @@
         type="email"
         id="email"
         name="email"
-        placeholder="E-mail address">
-      <span *ngIf="!email.valid && email.touched" class="help-block">Ensure you enter a valid e-mail address</span>
+        placeholder="{{ 'EMAIL_ADDRESS' | translate }}">
+      <span *ngIf="!email.valid && email.touched" class="help-block">{{ "INVALID_EMAIL" | translate }}</span>
 
-      <input [disabled]="!form.valid" type="submit" value="Request password reset link">
+      <input [disabled]="!form.valid" type="submit" value="{{ 'REQUEST_PASSWORD_RESET' | translate}}">
 
     </form>
   </div>

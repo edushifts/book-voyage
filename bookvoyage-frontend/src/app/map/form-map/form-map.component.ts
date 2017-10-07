@@ -6,7 +6,8 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
 import {MetaService} from "@ngx-meta/core";
-import {getOrdinal} from "../../shared/get-ordinal.function"
+import { getOrdinal, getOrdinalNL } from "../../shared/get-ordinal.function"
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-detail-map',
@@ -65,7 +66,8 @@ export class FormMapComponent implements OnInit, OnDestroy {
               private router: Router,
               private route: ActivatedRoute,
               private bookService: BookService,
-              private readonly meta: MetaService) { }
+              private readonly meta: MetaService,
+              private translate: TranslateService) { }
 
   ngOnDestroy() {
     if (this.geoLocateSubscriber) {
@@ -109,7 +111,11 @@ export class FormMapComponent implements OnInit, OnDestroy {
           this.mapService.addBookInstance(this.mainMap, bookId, bookInstanceOptions);
           this.mapService.holdingAmount$.subscribe(
             (amount: number) => {
-              this.currentHolder = getOrdinal(amount+1);
+              if(this.translate.currentLang == "nl") {
+                this.currentHolder = getOrdinalNL(amount+1);
+              } else {
+                this.currentHolder = getOrdinal(amount+1);
+              }
             },
             (error) => {
               console.log(error);
@@ -128,27 +134,42 @@ export class FormMapComponent implements OnInit, OnDestroy {
 
     // Load user preferences
     this.initiateUserPreferences();
-    this.meta.setTitle("Continue Journey #" + this.authService.getBookId());
+    this.translate.get('CONTINUE_JOURNEY').subscribe(
+      (message: string) => {
+        this.meta.setTitle(message + this.authService.getBookId());
+      }
+    );
+
   }
 
   markerByAddress() {
     this.loading = true;
-    let address = window.prompt("Fill in the city you took the book to:","");
-    if (address) {
-      this.geoLocateSubscriber = this.geoLocationService.addressToCoord(address).subscribe(
-        (coordinates) => {
-          this.loading = false;
-          this.formPhase= 2;
-          this.mapService.addCustomMarker(this.mainMap, coordinates, true);
-        },
-        (error) => {
-          alert("Geolocation failed - did you type that correctly?");
+    this.translate.get("FILL_IN_CITY").subscribe(
+      (message: string) => {
+        let address = window.prompt(message,"");
+        if (address) {
+          this.geoLocateSubscriber = this.geoLocationService.addressToCoord(address).subscribe(
+            (coordinates) => {
+              this.loading = false;
+              this.formPhase= 2;
+              this.mapService.addCustomMarker(this.mainMap, coordinates, true);
+            },
+            (error) => {
+              this.translate.get("ADDRESS_FAIL").subscribe(
+                (message: string) => {
+                  alert(message);
+                }
+              );
+
+              this.loading = false;
+            }
+          )
+        } else {
           this.loading = false;
         }
-      )
-    } else {
-      this.loading = false;
-    }
+      }
+    );
+
   }
 
   markerByGeo() {
@@ -167,7 +188,11 @@ export class FormMapComponent implements OnInit, OnDestroy {
           this.formPhase= 2;
         },
         (error) => {
-          alert("Geolocation failed - please try again or locate by city.");
+          this.translate.get("GPS_FAIL").subscribe(
+            (message: string) => {
+              alert(message);
+            }
+          );
           this.loading = false;
           this.webGeoWait = false;
         }
