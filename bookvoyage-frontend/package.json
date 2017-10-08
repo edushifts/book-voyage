@@ -27,6 +27,7 @@
     "@ngx-translate/http-loader": "^2.0.0",
     "@types/leaflet": "^1.2.0",
     "@types/leaflet-polylinedecorator": "^1.1.2",
+    "angular-font-awesome": "^2.0.3",
     "core-js": "^2.5.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",

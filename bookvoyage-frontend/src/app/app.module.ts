@@ -9,6 +9,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from '@angular/core';
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 // Import services
 import { HeaderService } from "./header/header.service";
@@ -108,7 +109,8 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    })
+    }),
+    AngularFontAwesomeModule
   ],
   providers: [AuthService, HeaderService, BookService, MapService, AuthGuard, AuthGuardReverse, GeoLocationService, MetaGuard],
   bootstrap: [AppComponent]

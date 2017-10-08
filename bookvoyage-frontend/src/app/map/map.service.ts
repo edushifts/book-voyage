@@ -380,8 +380,16 @@ export class MapService {
       };
       let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
 
+      let socialButton;
+      if (5 == 5) {
+        socialButton = '<a title="https://google.com/" href="https://google.com/"><i class="socialButton fa fa-external-link" aria-hidden="true"></i></a>';
+      } else {
+        socialButton = "";
+      }
+
       // add pop-up message
       holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
+        socialButton +
         "</b><br>" + bookHolding.message +
         "<br>" +
         '<span class="popup-date">' + bookHolding.time + journeyLink + '</span>');
