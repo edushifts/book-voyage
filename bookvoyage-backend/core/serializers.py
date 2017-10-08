@@ -8,7 +8,7 @@ from rest_framework.exceptions import ParseError
 
 # Import models
 from django.contrib.auth.models import Group
-from core.models import BookInstance, BookHolding, BookBatch, BookOwning
+from core.models import BookInstance, BookHolding, BookBatch, BookOwning, UserProfile
 from django.contrib.auth.models import User
 from rest_auth.serializers import UserModel
 
@@ -206,6 +206,8 @@ class Preferences(object):
             self.mail_updates = kwargs['mail_updates']
         if kwargs['activated']:
             self.activated = kwargs['activated']
+        if kwargs['url']:
+            self.url = kwargs['url']
 
 
 class PreferencesSerializer(serializers.Serializer):
@@ -215,6 +217,7 @@ class PreferencesSerializer(serializers.Serializer):
     anonymous = serializers.BooleanField(read_only=False, required=False)
     mail_updates = serializers.BooleanField(read_only=False, required=False)
     activated = serializers.BooleanField(read_only=False, required=False)
+    url = serializers.URLField(read_only=False, required=False)
 
     def create(self, validated_data):
         return Preferences(**validated_data)
@@ -254,6 +257,28 @@ class PreferencesSerializer(serializers.Serializer):
             raise ParseError(detail="Your account needs to be activated to use it. "
                                     "Please contact the platform owners if you would "
                                     "like your account removed.", code=400)
+
+        # Add url to user profile if specified
+        try:
+            if 'url' in self.data and self.data['url']:  # If user profile exists
+                if UserProfile.objects.filter(user=user).count():
+                    instance = UserProfile.objects.get(user=user)
+                    instance.url = self.data['url']
+                    instance.save()
+                else:  # If user profile does not exist yet
+                    url = self.data['url']
+                    instance = UserProfileSerializer(data={'user': user.pk, 'url': url})
+                    instance.is_valid()
+                    instance.save()
+        except Exception:
+            raise ParseError(detail="Problem with adding url", code=400)
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserProfile
+        fields = ('user', 'url')
 
 
 class BookInstanceSerializer(serializers.HyperlinkedModelSerializer):
