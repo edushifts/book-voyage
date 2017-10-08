@@ -38,6 +38,15 @@
         placeholder="{{ get_email() }}">
       <span *ngIf="!email.valid && email.touched" class="help-block">{{ usernameError }}</span>
 
+      <input
+        [(ngModel)]="social_url_data_live"
+        #social_url="ngModel"
+        type="url"
+        id="social_url"
+        name="social_url"
+        [placeholder]="get_social_url_data() || 'https://your.url.here/'">
+      <span *ngIf="!social_url.valid && social_url.touched" class="help-block">{{ socialUrlError }}</span>
+
       <div class="secondaryFont bottomPane">
         <div id="dataPreferences">
           <div class="form-group">

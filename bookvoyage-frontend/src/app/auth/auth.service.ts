@@ -259,13 +259,17 @@ export class AuthService implements OnInit {
           return Observable.throw(error);
         });
   }
-  updateUserPreferences(anonymous: boolean, mail_updates: boolean, consentbox?: boolean) {
+  updateUserPreferences(anonymous: boolean, mail_updates: boolean, consentbox?: boolean, url?: string) {
     let preferences = {
       anonymous: anonymous,
       mail_updates: mail_updates
     };
+
     if (consentbox) {
       preferences['activated'] = consentbox;
+    }
+    if (url) {
+      preferences['url'] = url;
     }
 
     let headers = new Headers();
