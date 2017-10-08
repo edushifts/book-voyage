@@ -217,7 +217,7 @@ class PreferencesSerializer(serializers.Serializer):
     anonymous = serializers.BooleanField(read_only=False, required=False)
     mail_updates = serializers.BooleanField(read_only=False, required=False)
     activated = serializers.BooleanField(read_only=False, required=False)
-    url = serializers.URLField(read_only=False, required=False)
+    url = serializers.URLField(read_only=False, required=False, allow_blank=True)
 
     def create(self, validated_data):
         return Preferences(**validated_data)
@@ -260,7 +260,7 @@ class PreferencesSerializer(serializers.Serializer):
 
         # Add url to user profile if specified
         try:
-            if 'url' in self.data and self.data['url']:  # If user profile exists
+            if 'url' in self.data:  # If user profile exists
                 if UserProfile.objects.filter(user=user).count():
                     instance = UserProfile.objects.get(user=user)
                     instance.url = self.data['url']
@@ -275,6 +275,7 @@ class PreferencesSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    url = serializers.URLField(read_only=False, required=False, allow_blank=True)
 
     class Meta:
         model = UserProfile
