@@ -197,3 +197,23 @@ class BookBatch(models.Model):
 
     class Meta:
         verbose_name_plural = "Book batches"
+
+class UserProfile(models.Model):
+    """
+    Describes a book release event
+    event - event name
+    country - country name
+    location - place of distribution
+    date - first day of distribution (will default to time 00:00)
+    """
+    user = models.OneToOneField(
+        User,
+        related_name='profile'
+    )
+    url = models.URLField()
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = "User Profile"

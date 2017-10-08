@@ -11,7 +11,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 # Register models
-from .models import Author, Book, BookInstance, BookHolding, BookOwning, BookBatch
+from .models import Author, Book, BookInstance, BookHolding, BookOwning, BookBatch, UserProfile
 from django.contrib.auth.models import User
 
 
@@ -100,6 +100,7 @@ Register administration panels
 
 
 admin.site.register(Author)
+admin.site.register(UserProfile)
 admin.site.register(Book, BookAdmin)
 admin.site.register(BookInstance, BookInstanceAdmin)
 admin.site.register(BookHolding, BookHoldingAdmin)
