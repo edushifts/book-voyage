@@ -381,8 +381,8 @@ export class MapService {
       let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
 
       let socialButton;
-      if (5 == 5) {
-        socialButton = '<a title="https://google.com/" href="https://google.com/"><i class="socialButton fa fa-external-link" aria-hidden="true"></i></a>';
+      if (bookHolding.holder.url) {
+        socialButton = '<a class="socialButtonLink" title="' + bookHolding.holder.url + '" href="' + bookHolding.holder.url + '"><i class="socialButton fa fa-info-circle" aria-hidden="true"></i></a>';
       } else {
         socialButton = "";
       }
@@ -416,8 +416,16 @@ export class MapService {
         journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a>'
       }
 
+      let socialButton;
+      if (currentOwning.owner.url) {
+        socialButton = '<a class="socialButtonLink" title="' + currentOwning.owner.url + '" href="' + currentOwning.owner.url + '"><i class="socialButton fa fa-info-circle" aria-hidden="true"></i></a>';
+      } else {
+        socialButton = "";
+      }
+
       owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " "
-        + currentOwning.owner.last_name + "</b><br>" + currentOwning.message
+        + currentOwning.owner.last_name
+        + socialButton + "</b><br>" + currentOwning.message
         + "<br>" + '<span class="popup-date">' + currentOwning.time + journeyLink + '</span>');
       return owningMarker;
     }
