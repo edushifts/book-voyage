@@ -25,8 +25,9 @@
   width: 250px;
   margin-left: 20px;
   font-weight: bold;
-  font-family: 'BebasNeue', sans-serif;
+  font-family: 'Alegre Sans', sans-serif;
   font-size: 60px;
+  text-align: center;
 }
 
 .arrowImg {
@@ -67,7 +68,7 @@ screen and (max-height: 650px){
     width: 150px;
     margin-left: 10px;
     font-weight: bold;
-    font-family: 'BebasNeue', sans-serif;
+    font-family: 'Alegre Sans', sans-serif;
     font-size: 36px;
   }
   .reminderButton {
