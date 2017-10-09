@@ -83,5 +83,8 @@
   "TRAVELLING": "Reizend",
   "ARRIVED": "Gearriveerd",
   "BOOK_JOURNEY": "Boekavontuur #",
-  "WAITING": "Wachtend"
+  "WAITING": "Wachtend",
+  "EVENT": "Evenement",
+  "BOOK_NUMBER": "Boek #",
+  "THIS_IS_YOU": "Dit ben jij!"
 }

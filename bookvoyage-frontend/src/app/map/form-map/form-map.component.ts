@@ -6,7 +6,7 @@ import {Router, ActivatedRoute, Params} from "@angular/router";
 import {BookService} from "../../book/book.service";
 import {NgForm} from "@angular/forms";
 import {MetaService} from "@ngx-meta/core";
-import { getOrdinal, getOrdinalNL } from "../../shared/get-ordinal.function"
+import { getOrdinal, getOrdinalES, getOrdinalNL, getOrdinalPT } from "../../shared/get-ordinal.function"
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
@@ -113,6 +113,10 @@ export class FormMapComponent implements OnInit, OnDestroy {
             (amount: number) => {
               if(this.translate.currentLang == "nl") {
                 this.currentHolder = getOrdinalNL(amount+1);
+              } if (this.translate.currentLang == "pt") {
+                this.currentHolder = getOrdinalPT(amount+1);
+              } if (this.translate.currentLang == "es") {
+                this.currentHolder = getOrdinalES(amount+1);
               } else {
                 this.currentHolder = getOrdinal(amount+1);
               }
