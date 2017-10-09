@@ -83,5 +83,8 @@
   "TRAVELLING": "Travelling",
   "ARRIVED": "Arrived",
   "BOOK_JOURNEY": "Book Journey #",
-  "WAITING": "Waiting"
+  "WAITING": "Waiting",
+  "EVENT": "Event",
+  "BOOK_NUMBER": "Book #",
+  "THIS_IS_YOU": "This is you!"
 }

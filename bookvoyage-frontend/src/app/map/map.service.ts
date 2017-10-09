@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import { rainbow } from "../shared/rainbow.function";
+import { TranslateService } from "@ngx-translate/core";
 
 // prevents Typescript errors with leaflet
 declare let L: any;
@@ -49,7 +50,7 @@ export class MapService {
     this.customMarker = null;
   }
 
-  constructor(private bookService: BookService) {
+  constructor(private bookService: BookService, private translate: TranslateService) {
     // make holdingAmount observable
     this.holdingAmount$ = this.holdingAmount.asObservable();
     this.owningAmount$ = this.owningAmount.asObservable();
@@ -158,10 +159,15 @@ export class MapService {
   addCustomMarker(map, coords: Coordinates, zoom: boolean) {
     this.customMarker = L.marker(coords, {icon: this.purpleIcon}).addTo(map);
 
-    this.customMarker .bindPopup("This is you!");
-    if (zoom) {
-      map.flyTo(this.customMarker.getLatLng(), 12);
-    }
+    this.translate.get("THIS_IS_YOU").subscribe(
+      (translation: string) => {
+        this.customMarker .bindPopup(translation);
+        if (zoom) {
+          map.flyTo(this.customMarker.getLatLng(), 12);
+        }
+      }
+    )
+
   }
 
   resetCustomMarker(map) {
@@ -179,22 +185,26 @@ export class MapService {
 
         let batchMarkers = [];
 
-        for (let bookBatch of bookBatches) {
+        this.translate.get("EVENT").subscribe(
+          (translation: string) => {
+            for (let bookBatch of bookBatches) {
+              let batchLocation: Coordinates = {
+                lng: bookBatch.location[0].coordinates[0],
+                lat: bookBatch.location[0].coordinates[1]
+              };
 
-          let batchLocation: Coordinates = {
-            lng: bookBatch.location[0].coordinates[0],
-            lat: bookBatch.location[0].coordinates[1]
-          };
+              // render marker
+              let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
 
-          // render marker
-          let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
 
-          // add event details
-          batchMarker.bindPopup("<b>Event: " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + '<span class="popup-date">' + bookBatch.date + '</span>');
+              // add event details
+              batchMarker.bindPopup("<b>" + translation + ": " + bookBatch.event + "</b><br>" + bookBatch.country + "<br>" + '<span class="popup-date">' + bookBatch.date + '</span>');
 
-          batchMarkers.push(batchMarker);
-        }
-        L.layerGroup(batchMarkers).addTo(map);
+              batchMarkers.push(batchMarker);
+            }
+            L.layerGroup(batchMarkers).addTo(map);
+          }
+        )
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
@@ -207,27 +217,31 @@ export class MapService {
 
         let unassignedOwnings = [];
 
-        for (let owning of ownings) {
+        this.translate.get("WAITING").subscribe(
+          (translation: string) => {
+            for (let owning of ownings) {
 
-          let owningLocation: Coordinates = {
-            lng: owning.location[0].coordinates[0],
-            lat: owning.location[0].coordinates[1]
-          };
+              let owningLocation: Coordinates = {
+                lng: owning.location[0].coordinates[0],
+                lat: owning.location[0].coordinates[1]
+              };
 
-          // render marker
-          let owningMarker = L.marker(owningLocation, {icon: this.darkGreenIcon, zIndexOffset: -1000});
+              // render marker
+              let owningMarker = L.marker(owningLocation, {icon: this.darkGreenIcon, zIndexOffset: -1000});
 
-          // add pop-up message
-          let journeyLink = '';
-          journeyLink = ' / waiting ';
+              // add pop-up message
+              let journeyLink = '';
+              journeyLink = ' / ' + translation + ' ';
 
-          owningMarker.bindPopup("<b>" + owning.owner.first_name + " "
-            + owning.owner.last_name + "</b><br>" + owning.message
-            + "<br>" + '<span class="popup-date">' + owning.time + journeyLink + '</span>');
+              owningMarker.bindPopup("<b>" + owning.owner.first_name + " "
+                + owning.owner.last_name + "</b><br>" + owning.message
+                + "<br>" + '<span class="popup-date">' + owning.time + journeyLink + '</span>');
 
-          unassignedOwnings.push(owningMarker);
-        }
-        L.layerGroup(unassignedOwnings).addTo(map);
+              unassignedOwnings.push(owningMarker);
+            }
+            L.layerGroup(unassignedOwnings).addTo(map);
+          }
+        )
       },
       (errorData) => {
         console.log("Error loading book locations: " + errorData);
@@ -316,8 +330,11 @@ export class MapService {
             lng: bookInstance.batch.location[0].coordinates[0],
             lat: bookInstance.batch.location[0].coordinates[1],
           };
-          let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
-          batch = batchMarker.bindPopup("<b>Event: " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + '<span class="popup-date">' + bookInstance.batch.date + '</span>');
+          this.translate.get("EVENT").subscribe(
+            (translation: string) => {
+            let batchMarker = L.marker(batchLocation, {icon: this.orangeIcon});
+            batch = batchMarker.bindPopup("<b>" + translation + ": " + bookInstance.batch.event + "</b><br>" + bookInstance.batch.country + "<br>" + '<span class="popup-date">' + bookInstance.batch.date + '</span>');
+          })
         }
 
         // place all holder data on map of this instance if available/desired
@@ -370,9 +387,13 @@ export class MapService {
   addHolderMarkers(bookInstance, addLink) {
     let journeyLink = '';
     if (addLink) {
-      journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a>'
+      this.translate.get("BOOK_NUMBER").subscribe(
+        (translation: string) => {
+        journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">' + translation + bookInstance.id + '</a>'
+      })
     }
     let bookHoldings = [];
+
     for (let bookHolding of bookInstance.holdings) {
       let holdingLocation: Coordinates = {
         lng: bookHolding.location[0].coordinates[0],
@@ -380,8 +401,16 @@ export class MapService {
       };
       let holdingMarker = L.marker(holdingLocation, {icon: this.blueIcon});
 
+      let socialButton;
+      if (bookHolding.holder.url) {
+        socialButton = '<a target="_blank" class="socialButtonLink" title="' + bookHolding.holder.url + '" href="' + bookHolding.holder.url + '"><i class="socialButton fa fa-info-circle" aria-hidden="true"></i></a>';
+      } else {
+        socialButton = "";
+      }
+
       // add pop-up message
       holdingMarker.bindPopup("<b>" + bookHolding.holder.first_name + " " + bookHolding.holder.last_name +
+        socialButton +
         "</b><br>" + bookHolding.message +
         "<br>" +
         '<span class="popup-date">' + bookHolding.time + journeyLink + '</span>');
@@ -405,11 +434,22 @@ export class MapService {
       // add pop-up message
       let journeyLink = '';
       if (addLink && bookInstance.holdings) {
-        journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">book #' + bookInstance.id + '</a>'
+        this.translate.get("BOOK_NUMBER").subscribe(
+          (translation: string) => {
+            journeyLink = ' / <a href="/journey/' + bookInstance.id + '/">' + translation + bookInstance.id + '</a>'
+          })
+      }
+
+      let socialButton;
+      if (currentOwning.owner.url) {
+        socialButton = '<a target="_blank" class="socialButtonLink" title="' + currentOwning.owner.url + '" href="' + currentOwning.owner.url + '"><i class="socialButton fa fa-info-circle" aria-hidden="true"></i></a>';
+      } else {
+        socialButton = "";
       }
 
       owningMarker.bindPopup("<b>" + currentOwning.owner.first_name + " "
-        + currentOwning.owner.last_name + "</b><br>" + currentOwning.message
+        + currentOwning.owner.last_name
+        + socialButton + "</b><br>" + currentOwning.message
         + "<br>" + '<span class="popup-date">' + currentOwning.time + journeyLink + '</span>');
       return owningMarker;
     }

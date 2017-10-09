@@ -197,3 +197,19 @@ class BookBatch(models.Model):
 
     class Meta:
         verbose_name_plural = "Book batches"
+
+
+class UserProfile(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        related_name='profile',
+        blank=True,
+    )
+    url = models.URLField()
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = "User Profile"

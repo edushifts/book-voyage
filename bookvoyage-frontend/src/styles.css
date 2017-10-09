@@ -57,7 +57,16 @@ html, body {
   text-decoration: none;
 }
 
-/* FOR SOCIAL BUTTONS */
+/* FOR SOCIAL BUTTONS ON MARKERS */
+
+.socialButton {
+  margin-left: 5px;
+}
+a.socialButtonLink {
+  color: #FFC60B;
+}
+
+/* FOR SOCIAL BUTTONS ON SIDE */
 
 @media screen and (max-height: 500px), (max-width: 500px) {
   share-buttons {

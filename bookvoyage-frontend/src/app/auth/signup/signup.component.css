@@ -21,7 +21,8 @@
 input[type="email"],
 input[type="password"],
 input[type="submit"],
-input[type="text"] {
+input[type="text"],
+input[type="url"] {
   background: #1d335f;
   border: none;
   font-size: 20px;

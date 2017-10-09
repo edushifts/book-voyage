@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
 
 # Import models
-from .models import BookInstance, BookBatch, BookHolding, BookOwning
+from .models import BookInstance, BookBatch, BookHolding, BookOwning, UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
@@ -209,6 +209,12 @@ class PreferencesViewSet(APIView):
             raise ParseError(detail="Authentication error" + request.context, code=400)
         else:
             try:
+                # Check if user profile exists in the first place
+                if UserProfile.objects.filter(user=user).count():
+                    url = UserProfile.objects.get(user=user).url
+                else:
+                    url = ""  # if not, return blank
+
                 # Then return group membership statuses
                 if user.groups.filter(name="Anonymous").count():
                     anonymous = True
@@ -230,7 +236,8 @@ class PreferencesViewSet(APIView):
                 # Then return these statuses
                 try:
                     serializer = PreferencesSerializer(
-                        data={'anonymous': anonymous, 'mail_updates': mail_updates, 'activated': activated})
+                        data={'anonymous': anonymous, 'mail_updates': mail_updates,
+                              'activated': activated, 'url': url})
                     serializer.is_valid()
                 except Exception:
                     raise ParseError(detail="Serializer error", code=400)
