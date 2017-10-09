@@ -25,6 +25,7 @@ class UserGenSerializer(serializers.ModelSerializer):
     """
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     def get_first_name(self, user):
         if user.groups.filter(name='Anonymous').exists():
@@ -38,9 +39,18 @@ class UserGenSerializer(serializers.ModelSerializer):
         else:
             return user.last_name
 
+    def get_url(self, user):
+        if user.groups.filter(name='Anonymous').exists():
+            return ""
+        else:
+            if UserProfile.objects.filter(user=user).count():
+                return UserProfile.objects.get(user=user).url
+            else:
+                return ""
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name')
+        fields = ('first_name', 'last_name', 'url')
 
 
 class BookInstanceMinSerializer(serializers.ModelSerializer):
