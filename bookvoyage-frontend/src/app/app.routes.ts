@@ -16,6 +16,7 @@ import {AuthGuard} from "./auth/auth-guard.service";
 import {AuthGuardReverse} from "./auth/auth-guard-reverse";
 import {MetaGuard} from '@ngx-meta/core'
 import {Routes} from "@angular/router";
+import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.component";
 
 
 export const routes: Routes = [
@@ -66,6 +67,7 @@ export const routes: Routes = [
       ]},
     ]},
     { path: 'journeys', component: BookListComponent, pathMatch: 'full', canActivate: [AuthGuard]},
+    { path: 'privacy-policy', component: PrivacyPolicyComponent, pathMatch: 'full'},
     { path: '**', redirectTo: '' } // TODO: should be a 404 page that redirects
   ]}
 ];

@@ -15,19 +15,6 @@
   padding-right: 20px;
 }
 
-.menuButton {
-  display: inline-block;
-  width: 200px;
-  background-color: #1d335f;
-  color: white;
-  font-family: 'Alegre Sans', sans-serif;
-  font-size: 1.2em;
-  margin: 0px;
-  padding: 0px;
-  cursor: pointer;
-  border: none;
-}
-
 .inline {
   display: inline-block;
   margin: 0 10px !important;

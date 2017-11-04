@@ -1,0 +1,25 @@
+.privacyPolicyWrapper {
+  margin: 30px auto;
+  width: 90%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.secondaryFont {
+  font-size: .9em;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+a {
+  color: #1d335f;
+}
+
+.menuButton {
+  padding: 10px;
+}

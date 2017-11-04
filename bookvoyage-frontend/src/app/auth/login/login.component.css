@@ -75,15 +75,6 @@ input[type="submit"]:disabled {
   background: red !important;
 }
 
-.resetPassword {
-  text-align: center;
-  background: #ffffff;
-  font-size: 14px;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 10px;
-}
-
 @media screen and (max-height: 780px) {
   .mainContainer {
     padding-top: 10vh;

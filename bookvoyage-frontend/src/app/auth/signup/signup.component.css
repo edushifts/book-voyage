@@ -82,13 +82,6 @@ input[type="submit"]:disabled {
 .ngValid {
   background-color: green;
 }
-.menuBig {
-  font-size: 60px;
-  text-align: center;
-  margin: 0px;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px #fff, -2px -2px #fff, 2px 0px #fff, 0px 2px #fff;
-}
 
 input.ng-invalid.ng-touched {
   background: red;

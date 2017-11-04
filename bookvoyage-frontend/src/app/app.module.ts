@@ -46,6 +46,7 @@ import { PasswordComponent } from './auth/manage-account/password/password.compo
 import { environment } from "../environments/environment";
 import { RequestResetComponent } from "./auth/login/request-reset/request-reset.component";
 import { HttpModule } from "@angular/http";
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 
 
@@ -88,7 +89,8 @@ export function createTranslateLoader(http: HttpClient) {
     PasswordResetComponent,
     BookListComponent,
     BookListItemComponent,
-    RequestResetComponent
+    RequestResetComponent,
+    PrivacyPolicyComponent
     // FormMapOwnerComponent # WIP
   ],
   imports: [

@@ -86,5 +86,8 @@
   "WAITING": "Waiting",
   "EVENT": "Event",
   "BOOK_NUMBER": "Book #",
-  "THIS_IS_YOU": "This is you!"
+  "THIS_IS_YOU": "This is you!",
+  "READ_PRIVACY_POLICY": "Read our Privacy Policy",
+  "GO_BACK": "Go back",
+  "PRIVACY_POLICY": "Privacy Policy"
 }

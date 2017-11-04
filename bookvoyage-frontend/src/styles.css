@@ -36,6 +36,36 @@ html, body {
   z-index: 4000;
 }
 
+.menuBig {
+  font-size: 60px;
+  text-align: center;
+  margin: 0px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px #fff, -2px -2px #fff, 2px 0px #fff, 0px 2px #fff;
+}
+
+.menuButton {
+  display: inline-block;
+  width: 200px;
+  background-color: #1d335f;
+  color: white;
+  font-family: 'Alegre Sans', sans-serif;
+  font-size: 1.2em;
+  margin: 0px;
+  padding: 0px;
+  cursor: pointer;
+  border: none;
+}
+
+.secondaryButton {
+  text-align: center;
+  background: #ffffff;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 10px;
+}
+
 /*Map tweaks*/
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background: #1d335f !important;
