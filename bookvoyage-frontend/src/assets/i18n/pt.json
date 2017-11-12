@@ -86,7 +86,11 @@
   "WAITING": "Aguardando",
   "EVENT": "Evento",
   "BOOK_NUMBER": "Livro #",
-  "THIS_IS_YOU": "Este é você!"
+  "THIS_IS_YOU": "Este é você!",
+  "READ_PRIVACY_POLICY": "Leia nossa política de privacidade",
+  "GO_BACK": "Voltar",
+  "PRIVACY_POLICY": "Política de Privacidade",
+  "ABOUT": "Sobre"
 }
 
 
