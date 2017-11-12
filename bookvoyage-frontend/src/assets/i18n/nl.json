@@ -86,5 +86,10 @@
   "WAITING": "Wachtend",
   "EVENT": "Evenement",
   "BOOK_NUMBER": "Boek #",
-  "THIS_IS_YOU": "Dit ben jij!"
+  "THIS_IS_YOU": "Dit ben jij!",
+  "READ_PRIVACY_POLICY": "Lees ons privacybeleid",
+  "GO_BACK": "Ga terug",
+  "PRIVACY_POLICY": "Privacybeleid",
+  "ABOUT": "Meer info",
+  "PRIVACY_POLICY_AVAILABILITY": "Dit document is momenteel alleen beschikbaar in het Engels."
 }
