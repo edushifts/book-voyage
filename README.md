@@ -1,12 +1,13 @@
 # Book Voyage
  
-***Empowering books to travel*** *| [Visit our live instance here](https://now.edushifts.world/)*
+***Empowering books to travel*** 
 
-![platform preview](https://edushifts.world/docs/BookVoyage_preview_20170722.png)
+_This application was built for the [EDUshifts Now! book](https://www.edushifts.world/). That experiment has now concluded. Feel invited to repurpose this code however you see fit._
+
+![platform preview](https://user-images.githubusercontent.com/4922048/183244879-69890ff8-bec6-4779-8112-e90fb9d83b80.png)
 
 [![Build Status](https://travis-ci.org/edushifts/book-voyage.svg?branch=master)](https://travis-ci.org/edushifts/book-voyage)
 [![Python Style guide](https://img.shields.io/badge/code_style-PEP8-yellowgreen.svg)](https://www.python.org/dev/peps/pep-0008/)
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Book-Voyage/Lobby)
 
 ## Ready for a new kind of journey?
 
@@ -30,20 +31,10 @@ It all started with a [crowdfunding campaign](https://www.generosity.com/educati
 This sparked us to test the theory of *six degrees of separation* that would exist between any two people. Instead of simply sharing ideas through a passive book, we wished to create a network of people; a movement united by having shared the ideas in our book.
 
 **This concept is a pilot that we would love to involve you in. If proven succesful, let's make sure many more book voyages will happen across the globe!**
- 
-## What do we need?
- 
-**You!** In specific, we are looking for (Angular 2+) front-end developers who are looking for a Javascript challenge in map APIs, as well as Django/Python developers to contribute to our back-end implementation.
-
-We are very open to suggestions to extend the platform in interesting directions, so please leave a message if you have a great new feature in mind.
 
 ## How to run it?
 
 The application has two components: a front-end based on Angular and a back-end based on Django. Interaction happens through an API. Users only use the front-end; administration is performed through Django.
-
-### For Users
-
-You will only need to run the Django server with a compiled website in it. This production version is currently not on GitHub yet. If you require it, please leave us a message in the issues.
 
 ### For Developers
 
@@ -55,9 +46,3 @@ You will find the instructions for running the front-end [here](https://github.c
 
 #### General tips for unexperienced programmers
 *All these are but humble suggestions from a recent learner.* You can use any major operating system, but a Linux (virtual) machine comes recommended if you want to work on the back-end. If you don't run Linux already, [this virtual machine](https://box.scotch.io/) is pretty great. Using a [virtual python environment](https://askubuntu.com/a/865644) also comes recommended. If you want to focus on Angular development, you may want to work in your native OS rather than a virtual machine to avoid some issues with automatic refreshing.
-
-## Get involved
-
-If you run into any issues or would just like to get in contact with us, then join [our Gitter](https://gitter.im/Book-Voyage/Lobby)!
- 
-[EDUshifts]: https://www.edushifts.world/
